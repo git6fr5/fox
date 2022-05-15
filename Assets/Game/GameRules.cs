@@ -12,11 +12,12 @@ public class GameRules : MonoBehaviour {
     /* --- Variables --- */
     #region Variables
 
-    // Tags.
-    public static string PlayerTag = "Player";
-
     // Instance.
     public static GameRules Instance;
+
+    // Player.
+    [SerializeField] private Player mainPlayer;
+    public static Player MainPlayer => Instance.mainPlayer;
 
     // Movement.
     [SerializeField] private float movementPrecision = 0.05f;
@@ -27,6 +28,8 @@ public class GameRules : MonoBehaviour {
     // Ticks.
     [SerializeField] private float timeScale = 1f;
     public static float Ticks;
+    [SerializeField] private float m_FrameRate = 1f;
+    public static float FrameRate => Instance.m_FrameRate;
 
     // Layers
     [SerializeField] private LayerMask groundCollisionLayer;

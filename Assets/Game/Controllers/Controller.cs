@@ -36,16 +36,17 @@ public abstract class Controller : MonoBehaviour {
     #region Variables
     
     // Components.
-    [HideInInspector] public Rigidbody2D m_Body; // Handles physics calculations.
+    [HideInInspector] protected Rigidbody2D m_Body; // Handles physics calculations.
+    public Rigidbody2D Body => m_Body;
 
     // Settings.
     [Space(2), Header("Settings")]
-    [SerializeField] private float m_Height;
-    [SerializeField] private float m_Speed;
-    [SerializeField] private float m_Acceleration;
-    [SerializeField] private float m_JumpForce;
-    [SerializeField] private float m_Weight;
-    [SerializeField] private float m_Floatiness;
+    [SerializeField] protected float m_Height;
+    [SerializeField] protected float m_Speed;
+    [SerializeField] protected float m_Acceleration;
+    [SerializeField] protected float m_JumpForce;
+    [SerializeField] protected float m_Weight;
+    [SerializeField] protected float m_Floatiness;
 
     // Controls
     [Space(2), Header("Controls")]
@@ -85,6 +86,7 @@ public abstract class Controller : MonoBehaviour {
     // Runs once every fixed interval.
     private void FixedUpdate() {
         float deltaTime = Time.fixedDeltaTime;
+        ProcessThink(deltaTime);
         ProcessMovement(deltaTime);
         DebugMovement(deltaTime);
     }
@@ -107,7 +109,7 @@ public abstract class Controller : MonoBehaviour {
     
     protected abstract void GetInput();
 
-    private void ProcessMovement(float deltaTime) {
+    protected virtual void ProcessMovement(float deltaTime) {
         float target = m_Speed * m_MoveInput;
         if (Mathf.Abs(target - m_Body.velocity.x) >= m_Acceleration * deltaTime) {
             float deltaVelocity = Mathf.Sign(target - m_Body.velocity.x) * m_Acceleration * deltaTime;
@@ -118,7 +120,7 @@ public abstract class Controller : MonoBehaviour {
         }
     }
 
-    private void ProcessJump() {
+    protected virtual void ProcessJump() {
         m_Body.gravityScale = m_Weight * GameRules.GravityScale;
         if (m_FloatInput && AirborneFlag == Airborne.Rising) {
             m_Body.gravityScale *= m_Floatiness;
@@ -126,6 +128,10 @@ public abstract class Controller : MonoBehaviour {
         if (m_JumpInput && AirborneFlag == Airborne.Grounded) {
             m_Body.velocity = new Vector2(m_Body.velocity.x, m_JumpForce);
         }
+    }
+
+    protected virtual void ProcessThink(float deltaTime) {
+        
     }
     
     #endregion
@@ -168,7 +174,9 @@ public abstract class Controller : MonoBehaviour {
     #region Debug
 
     void OnDrawGizmos() {
-        Gizmos.DrawWireSphere(transform.position + Vector3.down * m_Height, GameRules.MovementPrecision);
+        if (GameRules.Instance != null) {
+            Gizmos.DrawWireSphere(transform.position + Vector3.down * m_Height, GameRules.MovementPrecision);
+        }
     }
 
     private void DebugMovement(float deltaTime) {

@@ -100,13 +100,9 @@ public class Screen : MonoBehaviour {
     /* --- Settings --- */
     #region Settings
 
-    private Player m_Player;
     private void Follow() {
-        if (m_Player == null) {
-            m_Player = (Player)GameObject.FindObjectOfType(typeof(Player));
-            return;
-        }
-        transform.position = new Vector3(m_Player.transform.position.x, m_Player.transform.position.y, transform.position.z);
+        if (GameRules.MainPlayer == null) { return; }
+        transform.position = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y, transform.position.z);
         m_Origin = transform.position;
     }
 

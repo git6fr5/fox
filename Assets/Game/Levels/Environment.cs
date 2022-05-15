@@ -13,9 +13,9 @@ public class Environment : MonoBehaviour {
     #region Variables
 
     // Characters.
-    [SerializeField] private Transform m_CharacterTransform;
-    [HideInInspector] private List<Entity> m_Characters;
-    public List<Entity> Characters => m_Characters;
+    [SerializeField] private Transform m_EntityTransform;
+    [HideInInspector] private List<Entity> m_Entities;
+    public List<Entity> Entities => m_Entities;
 
     // Tile.
     [SerializeField] private RuleTile m_Tile;
@@ -27,7 +27,7 @@ public class Environment : MonoBehaviour {
     #region Initialization
     
     public void Init() {
-        FindEntities(m_CharacterTransform, ref m_Characters);
+        FindEntities(m_EntityTransform, ref m_Entities);
     }
 
     private void FindEntities(Transform parent, ref List<Entity> entityList) {

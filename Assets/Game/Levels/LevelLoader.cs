@@ -15,7 +15,6 @@ using LDtkTile = LDtkUnity.TileInstance;
 /// <summary>
 /// 
 /// </summary>
-[RequireComponent(typeof(Level))]
 [RequireComponent(typeof(Environment))]
 public class LevelLoader : MonoBehaviour {
 
@@ -40,29 +39,29 @@ public class LevelLoader : MonoBehaviour {
     #region Variables
 
     // Layer Names
-    public static string CharacterLayer = "Characters";
+    public static string ControlLayer = "Controls";
+    public static string EntityLayer = "Entities";
     public static string GroundLayer = "Ground";
 
     // Grid Size
     public static int GridSize = 16;
 
     // Components.
-    [SerializeField] private LDtkComponentProject m_LDtkData;
-    [HideInInspector] private Environment m_Environment;
-    [HideInInspector] private Level m_CurrLevel;
-    [HideInInspector] private LdtkJson m_JSON;
+    [SerializeField] protected LDtkComponentProject m_LDtkData;
+    [HideInInspector] protected Environment m_Environment;
+    [HideInInspector] protected LdtkJson m_JSON;
 
     #endregion
 
     /* --- Unity --- */
     #region Unity
     
-    void Start() {
+    protected virtual void Start() {
         m_JSON = m_LDtkData.FromJson();
         m_Environment = GetComponent<Environment>();
         m_Environment.Init();
-        m_CurrLevel = GetComponent<Level>();
-        OpenLevel(m_CurrLevel.LevelName);
+        // m_CurrLevel = GetComponent<Level>();
+        // OpenLevel(m_CurrLevel.LevelName);
     }
     
     #endregion
@@ -70,9 +69,9 @@ public class LevelLoader : MonoBehaviour {
     /* --- File Loading --- */
     #region File
 
-    public void OpenLevel(string levelName) {
-        LDtkLevel ldtkLevel = GetLevel(levelName);
-        OpenLevel(ldtkLevel);
+    public void OpenLevel(Level level) {
+        LDtkLevel ldtkLevel = GetLevel(level.LevelName);
+        LoadLevel(level, ldtkLevel);
     }
 
     protected LDtkLevel GetLevel(string levelName) {
@@ -85,15 +84,20 @@ public class LevelLoader : MonoBehaviour {
         return null;
     }
 
-    protected void OpenLevel(LDtkLevel ldtkLevel) {
+    protected void LoadLevel(Level level, LDtkLevel ldtkLevel) {
         if (ldtkLevel != null) {
             // Load the data.
-            List<LDtkTileData> characterData = LoadLayer(ldtkLevel, CharacterLayer);
+            List<LDtkTileData> entityData = LoadLayer(ldtkLevel, EntityLayer);
             List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
             // Load the level.
-            m_CurrLevel.GenerateEntities(characterData, m_Environment.Characters);
-            m_CurrLevel.GenerateTiles(groundData, m_Environment.Tile);
+            level.GenerateEntities(entityData, m_Environment.Entities);
+            level.GenerateTiles(groundData, m_Environment.Tile);
         }
+    }
+
+    protected void Unload(Level level) {
+        level.DestroyEntities();
+        level.ClearMap();
     }
 
     #endregion
@@ -101,7 +105,7 @@ public class LevelLoader : MonoBehaviour {
     /* --- Layer Loading --- */
     #region Layer
     
-    private List<LDtkTileData> LoadLayer(LDtkUnity.Level ldtkLevel, string layerName) {
+    protected List<LDtkTileData> LoadLayer(LDtkUnity.Level ldtkLevel, string layerName) {
         List<LDtkTileData> layerData = new List<LDtkTileData>();
         LDtkLayer layer = GetLayer(ldtkLevel, layerName);
         if (layer == null) { return layerData; }
@@ -114,7 +118,7 @@ public class LevelLoader : MonoBehaviour {
     }
 
     
-    private LDtkUnity.LayerInstance GetLayer(LDtkLevel ldtkLevel, string layerName) {
+    protected LDtkUnity.LayerInstance GetLayer(LDtkLevel ldtkLevel, string layerName) {
         for (int i = 0; i < ldtkLevel.LayerInstances.Length; i++) {
             LDtkLayer layer = ldtkLevel.LayerInstances[i];
             if (layer.IsTilesLayer && layer.Identifier == layerName) {
@@ -124,7 +128,7 @@ public class LevelLoader : MonoBehaviour {
         return null;
     }
 
-    private Vector2Int? GetTileID(List<LDtkTileData> data, Vector2Int gridPosition) {
+    protected Vector2Int? GetTileID(List<LDtkTileData> data, Vector2Int gridPosition) {
         for (int i = 0; i < data.Count; i++) {
             if (gridPosition == data[i].gridPosition) {
                 return (Vector2Int?)data[i].vectorID;
