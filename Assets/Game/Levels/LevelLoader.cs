@@ -89,9 +89,11 @@ public class LevelLoader : MonoBehaviour {
             // Load the data.
             List<LDtkTileData> entityData = LoadLayer(ldtkLevel, EntityLayer);
             List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
+            List<LDtkTileData> controlData = LoadLayer(ldtkLevel, ControlLayer);
             // Load the level.
             level.GenerateEntities(entityData, m_Environment.Entities);
             level.GenerateTiles(groundData, m_Environment.Tile);
+            level.SetControls(controlData);
         }
     }
 

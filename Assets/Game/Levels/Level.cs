@@ -76,7 +76,7 @@ public class Level : MonoBehaviour {
             if (entityBase != null) {
                 Entity newEntity = Instantiate(entityBase.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
                 Vector3 entityPosition = GridToWorldPosition(entityData[i].gridPosition);
-                newEntity.Init(entityPosition);
+                newEntity.Init(entityData[i].gridPosition, entityPosition);
                 m_Entities.Add(newEntity);
             }
         }
@@ -99,6 +99,23 @@ public class Level : MonoBehaviour {
 
     public void ClearMap() {
         m_Map.ClearAllTiles();
+    }
+
+    public void SetControls(List<LDtkTileData> controlData) {
+        for (int i = 0; i < controlData.Count; i++) {
+            
+            // Arrows.
+            if (controlData[i].vectorID.y == 2) {
+                for (int j = 0; j < m_Entities.Count; j++) {
+                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                        if (m_Entities[j].GetComponent<Platform>() != null) {
+                            m_Entities[j].GetComponent<Platform>().Init(i, controlData);
+                        }
+                    }
+                }
+            }
+
+        }
     }
     
     #endregion
