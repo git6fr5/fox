@@ -52,7 +52,9 @@ public class Spritesheet : MonoBehaviour {
 
     void Update() {
         float deltaTime = Time.deltaTime;
-        // Animate(deltaTime);
+        if (m_Sprites != null && m_Sprites.Length > 0) {
+            Animate(deltaTime);
+        }
         Rotate();
     }
 
@@ -65,7 +67,9 @@ public class Spritesheet : MonoBehaviour {
         // Caching components.
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Controller = GetComponent<Controller>();
-        // Organize();
+        if (m_Sprites != null && m_Sprites.Length > 0) {
+            Organize();
+        }
     }
 
     // Organizes the sprite sheet into its animations.

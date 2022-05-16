@@ -29,7 +29,6 @@ public class Player : Controller {
         m_JumpInput = Input.GetKeyDown(m_JumpKey);
         m_FloatInput = Input.GetKeyDown(m_JumpKey) ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_FloatInput);
 
-
         m_ClimbInput = Input.GetAxisRaw("Vertical");
         m_CanClimb = m_CanClimb ? CheckFall() : CheckClimb();
         m_WallClimbing = m_CanClimb && (m_WallClimbing ? true : (m_ClimbInput != 0f ? true : false));

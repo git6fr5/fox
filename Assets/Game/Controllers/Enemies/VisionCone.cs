@@ -25,6 +25,9 @@ public class VisionCone : MonoBehaviour {
 
     [HideInInspector] private Controller m_Controller;
     [HideInInspector] private Player m_Player;
+    public Player player => m_Player;
+
+    [SerializeField] private LayerMask m_Mask;
     
     #endregion
 
@@ -44,7 +47,7 @@ public class VisionCone : MonoBehaviour {
 
     public void Search(float deltaTime) {
 
-        print("Looking for player");
+        // print("Looking for player");
 
         m_LightRays = new List<Vector3>();
         if (m_Active) {
@@ -66,9 +69,9 @@ public class VisionCone : MonoBehaviour {
             float distance = m_PassiveRange;
 
             // Cast the ray.
-            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance);
+            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
             if (hit.collider != null && hit.collider.gameObject != m_Controller.gameObject) {
-                print("Hitting Something " + hit.collider.name);
+                // print("Hitting Something " + hit.collider.name);
                 distance = (transform.position - (Vector3)hit.point).magnitude;
                 Player player = hit.collider.GetComponent<Player>();
                 if (player != null) {
@@ -95,7 +98,7 @@ public class VisionCone : MonoBehaviour {
         float distance = m_ActiveRange;
 
         // Cast the ray.
-        RaycastHit2D hit = Physics2D.Raycast(start, direction, distance);
+        RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
         if (hit.collider != null && hit.collider.gameObject != gameObject) {
             print("Hitting Something " + hit.collider.name);
             distance = (transform.position - (Vector3)hit.point).magnitude;

@@ -265,7 +265,7 @@ MonoBehaviour:
   movementPrecision: 0.05
   gravityScale: 1
   timeScale: 1
-  m_FrameRate: 1
+  m_FrameRate: 6
   groundCollisionLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -427,8 +427,6 @@ MonoBehaviour:
   m_PassiveRange: 3
   m_ActiveRange: 10
   m_Active: 0
-  m_Controller: {fileID: 0}
-  m_Player: {fileID: 0}
 --- !u!1 &1345446401
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +439,7 @@ GameObject:
   - component: {fileID: 1345446406}
   - component: {fileID: 1345446405}
   - component: {fileID: 1345446404}
+  - component: {fileID: 1345446409}
   - component: {fileID: 1345446408}
   m_Layer: 0
   m_Name: Main Camera
@@ -509,15 +508,15 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: -0.0808356
+    y: -0.16420664
+    width: 1.1625795
+    height: 1.3284132
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 0.9033333
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -561,7 +560,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MainCamera: {fileID: 0}
+  m_PixelPerfectCamera: {fileID: 1345446409}
   m_Origin: {x: 0, y: 0, z: 0}
+  m_ScreenSize: {x: 40, y: 22.5}
   m_Curve:
     serializedVersion: 2
     m_Curve:
@@ -599,6 +600,29 @@ MonoBehaviour:
   m_ShakeDuration: 0.5
   m_ElapsedTime: 0
   m_Shake: 0
+--- !u!114 &1345446409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345446401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_AssetsPPU: 32
+  m_RefResolutionX: 1280
+  m_RefResolutionY: 720
+  m_CropFrame: 3
+  m_GridSnapping: 2
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1 &1547017457
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,11 +990,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 0}
   m_Controller: {fileID: 0}
-  m_Sprites: []
-  m_IdleFrames: 0
-  m_MovementFrames: 0
-  m_RisingFrames: 0
-  m_FallingFrames: 0
+  m_Sprites:
+  - {fileID: -408745867, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1774376953, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -30633845, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 469308360, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 686746433, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 894285150, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 767069962, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1016638169, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 594067739, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  m_IdleFrames: 1
+  m_MovementFrames: 6
+  m_RisingFrames: 1
+  m_FallingFrames: 1
   m_DeathFrames: 0
   m_CurrentFrame: 0
   m_Ticks: 0
@@ -1024,6 +1057,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

@@ -10,6 +10,7 @@ using UnityEngine.Rendering.Universal;
 /// Screen.
 /// </summary>
 [RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(PixelPerfectCamera))]
 public class Screen : MonoBehaviour {
 
     /* --- Variables --- */
@@ -22,9 +23,13 @@ public class Screen : MonoBehaviour {
 
     // Components.
     [HideInInspector] public Camera m_MainCamera;
+    [SerializeField] public PixelPerfectCamera m_PixelPerfectCamera;
 
     // Settings.
     [SerializeField, ReadOnly] private Vector3 m_Origin;
+    [SerializeField, ReadOnly] private Vector2 m_ScreenSize;
+    public static Vector2 ScreenSize => Instance.m_ScreenSize;
+
 
     [Header("Shake")]
     [SerializeField] private AnimationCurve m_Curve;
@@ -61,6 +66,7 @@ public class Screen : MonoBehaviour {
     public void Init() {
         m_MainCamera = GetComponent<Camera>();
         m_Origin = transform.position;
+        m_ScreenSize = new Vector2(m_PixelPerfectCamera.refResolutionX, m_PixelPerfectCamera.refResolutionY) / m_PixelPerfectCamera.assetsPPU;
         Instance = this;
     }
 
@@ -108,6 +114,17 @@ public class Screen : MonoBehaviour {
 
     private void SetProfile() {
         //
+    }
+
+    #endregion
+
+    /* --- Debugging --- */
+    #region Debugging
+
+    void OnDrawGizmos() {
+        Vector3 screenSize = new Vector3((float)m_PixelPerfectCamera.refResolutionX / m_PixelPerfectCamera.assetsPPU, (float)m_PixelPerfectCamera.refResolutionY / m_PixelPerfectCamera.assetsPPU, 0f);
+        Gizmos.DrawWireCube(transform.position, screenSize);
+        this.m_ScreenSize = screenSize;
     }
 
     #endregion
