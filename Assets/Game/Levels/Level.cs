@@ -35,7 +35,8 @@ public class Level : MonoBehaviour {
     public List<Vector2Int> ControlPositions => m_ControlPositions;
 
     // Components.
-    [SerializeField] private Tilemap m_Map;
+    [SerializeField] private Tilemap m_Ground;
+    [SerializeField] private Tilemap m_Background;
     [SerializeField] private List<Entity> m_Entities = new List<Entity>();
 
     #endregion
@@ -46,10 +47,15 @@ public class Level : MonoBehaviour {
     public void Init(int jsonID, LdtkJson json) {
         transform.localPosition = Vector3.zero;
 
-        m_Map = new GameObject("Map", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
-        m_Map.transform.SetParent(transform);
-        m_Map.transform.localPosition = Vector3.zero;
-        m_Map.gameObject.layer = LayerMask.NameToLayer("Ground");;
+        m_Ground = new GameObject("Map", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
+        m_Ground.transform.SetParent(transform);
+        m_Ground.transform.localPosition = Vector3.zero;
+        m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");;
+
+        m_Background = new GameObject("Background", typeof(Tilemap), typeof(TilemapRenderer)).GetComponent<Tilemap>();
+        m_Background.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BackgroundRenderingLayer;
+        m_Background.transform.SetParent(transform);
+        m_Background.transform.localPosition = Vector3.zero;
 
         m_ID = jsonID;
         m_LevelName = json.Levels[jsonID].Identifier;
@@ -85,7 +91,9 @@ public class Level : MonoBehaviour {
     public void DestroyEntities() {
         if (m_Entities != null && m_Entities.Count > 0) {
             for (int i = 0; i < m_Entities.Count; i++) {
-                Destroy(m_Entities[i].gameObject);
+                if (m_Entities[i] != null) {
+                    Destroy(m_Entities[i].gameObject);
+                }
             }
         }
     }
@@ -93,12 +101,21 @@ public class Level : MonoBehaviour {
     public void GenerateTiles(List<LDtkTileData> tileData, RuleTile tile) {
         for (int i = 0; i < tileData.Count; i++) {
             Vector3Int tilePosition = GridToTilePosition(tileData[i].gridPosition);
-            m_Map.SetTile(tilePosition, tile);
+            m_Ground.SetTile(tilePosition, tile);
         }
     }
 
     public void ClearMap() {
-        m_Map.ClearAllTiles();
+        m_Ground.ClearAllTiles();
+    }
+
+    public void SetBackground(RuleTile tile) {
+        for (int i = 0; i < m_Height; i++) {
+            for (int j = 0; j < m_Width; j++) {
+                Vector3Int tilePosition = GridToTilePosition(new Vector2Int(j, i));
+                m_Background.SetTile(tilePosition, tile);
+            }
+        }
     }
 
     public void SetControls(List<LDtkTileData> controlData) {
@@ -114,7 +131,6 @@ public class Level : MonoBehaviour {
                     }
                 }
             }
-
         }
     }
     

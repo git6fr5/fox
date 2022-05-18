@@ -64,7 +64,7 @@ GameObject:
   - component: {fileID: 1760666778566409603}
   - component: {fileID: 1760666778566409600}
   - component: {fileID: 1760666778566409606}
-  - component: {fileID: 1760666778566409613}
+  - component: {fileID: 7309283389934957731}
   - component: {fileID: 1760666778566409601}
   m_Layer: 0
   m_Name: Enemy
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Height: 0.5
-  m_Speed: 1.5
+  m_Speed: 3
   m_Acceleration: 200
   m_JumpForce: 12
   m_Weight: 20
@@ -211,10 +211,10 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1760666778566409613
+--- !u!114 &7309283389934957731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -223,20 +223,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 1760666778566409604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f54ff66a994a9a4ca7eada67d1a436b, type: 3}
+  m_Script: {fileID: 11500000, guid: c7bfc02814882e4439d06621376f3db7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 0}
   m_Controller: {fileID: 0}
-  m_Sprites: []
-  m_IdleFrames: 0
-  m_MovementFrames: 0
-  m_RisingFrames: 0
-  m_FallingFrames: 0
+  m_Sprites:
+  - {fileID: -87715655, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: 1172476151, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -1014330682, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: 1569571692, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -1051817902, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: 549522480, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -1305324292, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -1907864969, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: 1410412119, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -803173416, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -653056022, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  - {fileID: -1570369351, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  m_IdleFrames: 2
+  m_MovementFrames: 4
+  m_RisingFrames: 1
+  m_FallingFrames: 1
   m_DeathFrames: 0
   m_CurrentFrame: 0
   m_Ticks: 0
   m_FrameRate: 0
+  m_AggroIdleFrames: 4
 --- !u!114 &1760666778566409601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,6 +277,7 @@ GameObject:
   - component: {fileID: 1760666778776897756}
   - component: {fileID: 1760666778776897757}
   - component: {fileID: 1760666778776897746}
+  - component: {fileID: 2055146699066440778}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -364,12 +378,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  m_Sprite: {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.16, y: 0.16}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -388,5 +402,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Speed: 12
+  m_Lifetime: 10
   m_Body: {fileID: 0}
   m_Hitbox: {fileID: 0}
+--- !u!114 &2055146699066440778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760666778776897744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b358c237acd8455468fd35a030ba938b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SpriteRenderer: {fileID: 0}
+  m_Sprites:
+  - {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  - {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  m_Ticks: 0
+  m_Loop: 1
+  m_Pause: 0
+  m_PauseOnEnd: 0

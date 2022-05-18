@@ -93,6 +93,7 @@ public class LevelLoader : MonoBehaviour {
             // Load the level.
             level.GenerateEntities(entityData, m_Environment.Entities);
             level.GenerateTiles(groundData, m_Environment.Tile);
+            level.SetBackground(m_Environment.BackgroundTile);
             level.SetControls(controlData);
         }
     }

@@ -31,6 +31,9 @@ public class GameRules : MonoBehaviour {
     [SerializeField] private float m_FrameRate = 1f;
     public static float FrameRate => Instance.m_FrameRate;
 
+    // Rendering Layers.
+    public static string BackgroundRenderingLayer = "Background";
+
     // Layers
     [SerializeField] private LayerMask groundCollisionLayer;
     public static LayerMask GroundCollisionLayer => Instance.groundCollisionLayer;

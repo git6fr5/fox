@@ -20,6 +20,8 @@ public class Environment : MonoBehaviour {
     // Tile.
     [SerializeField] private RuleTile m_Tile;
     public RuleTile Tile => m_Tile; 
+    [SerializeField] private RuleTile m_BackgroundTile;
+    public RuleTile BackgroundTile => m_BackgroundTile; 
 
     #endregion
 

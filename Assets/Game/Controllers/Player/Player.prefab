@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8984214373028524409}
   - component: {fileID: 8984214373028524408}
   - component: {fileID: 8984214373028524412}
-  - component: {fileID: 8984214373028524415}
+  - component: {fileID: 875844552602168661}
   - component: {fileID: 8984214373028524411}
   m_Layer: 3
   m_Name: Player
@@ -89,9 +89,9 @@ MonoBehaviour:
   m_Height: 0.5
   m_Speed: 10
   m_Acceleration: 200
-  m_JumpForce: 22.5
+  m_JumpForce: 25
   m_Weight: 20
-  m_Floatiness: 0.25
+  m_Floatiness: 0.4
   m_MoveInput: 0
   m_JumpInput: 0
   m_FloatInput: 0
@@ -113,11 +113,13 @@ MonoBehaviour:
   m_WallClimbTicks: 0
   m_WallClimbDuration: 1
   m_ClimbBufferTicks: 0
+  m_WallJumpForce: 17.5
+  m_WallClimbSpeed: 6.5
   m_DashInput: {x: 0, y: 0}
   m_CanDash: 0
   m_Dashing: 0
   m_EndDash: 0
-  m_DashSpeed: 25
+  m_DashSpeed: 20
   m_DashDuration: 0.125
   m_Swimming: 0
   m_SwimMoveInput: {x: 0, y: 0}
@@ -176,7 +178,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8984214373028524415
+--- !u!114 &875844552602168661
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,7 +187,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8984214373028524405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f54ff66a994a9a4ca7eada67d1a436b, type: 3}
+  m_Script: {fileID: 11500000, guid: f7a837b5454887a4ca02507bfa2aa0cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 0}
@@ -200,14 +202,26 @@ MonoBehaviour:
   - {fileID: 767069962, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: 1016638169, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: 594067739, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
-  m_IdleFrames: 1
-  m_MovementFrames: 6
+  - {fileID: -1570735634, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1224596599, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -2009480159, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -2013718946, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1278198099, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -1691295478, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1832555620, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  m_IdleFrames: 2
+  m_MovementFrames: 4
   m_RisingFrames: 1
   m_FallingFrames: 1
   m_DeathFrames: 0
   m_CurrentFrame: 0
   m_Ticks: 0
   m_FrameRate: 0
+  m_WallClimbIdleFrames: 1
+  m_WallClimbMovingFrames: 4
+  m_WallClimbRisingFrames: 1
+  m_WallClimbFallingFrames: 1
+  m_DashFrames: 1
 --- !u!114 &8984214373028524411
 MonoBehaviour:
   m_ObjectHideFlags: 0

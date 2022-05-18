@@ -15,7 +15,8 @@ public class Projectile : MonoBehaviour {
     /* --- Variables --- */
     #region Variables
 
-    [SerializeField] private float m_Speed;
+    [SerializeField] private float m_Speed = 10f;
+    [SerializeField] private float m_Lifetime = 10f;
     
     [SerializeField] private Rigidbody2D m_Body;
     [SerializeField] private CircleCollider2D m_Hitbox;
@@ -54,6 +55,8 @@ public class Projectile : MonoBehaviour {
         
         gameObject.SetActive(true);
         m_Body.velocity = direction * m_Speed;
+
+        Destroy(gameObject, m_Lifetime);
     }
     
     #endregion

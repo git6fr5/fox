@@ -16,6 +16,7 @@ public class Enemy : Controller {
     [SerializeField, ReadOnly] private float m_Direction = 1f;
 
     [SerializeField] private VisionCone m_VisionCone;
+    public bool Aggro => m_VisionCone.Active;
     
     [SerializeField] private Projectile m_Projectile;
     [SerializeField] private float m_AttackTicks;

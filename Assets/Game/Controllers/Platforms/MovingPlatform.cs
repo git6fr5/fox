@@ -98,7 +98,13 @@ public class MovingPlatform : Platform {
     protected virtual void ProcessMovement(float deltaTime) {
         if (m_Path == null || m_Path.Length == 0) { return; }
 
-        Vector3 velocity = (m_Path[m_PathIndex] - transform.position).normalized * m_Speed;
+        Vector3 displacement = m_Path[m_PathIndex] - transform.position;
+        if (displacement.sqrMagnitude < GameRules.MovementPrecision * GameRules.MovementPrecision) {
+            transform.position = m_Path[m_PathIndex];
+            return;
+        }
+
+        Vector3 velocity = displacement.normalized * m_Speed;
         transform.position += velocity * deltaTime;
         for (int i = 0; i < m_Container.Count; i++) {
             m_Container[i].transform.position += velocity * deltaTime;

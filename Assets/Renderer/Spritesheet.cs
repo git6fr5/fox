@@ -17,7 +17,7 @@ public class Spritesheet : MonoBehaviour {
     [Space(2), Header("Components")]
     [HideInInspector] public SpriteRenderer m_SpriteRenderer;
     [HideInInspector] public Controller m_Controller;
-    [SerializeField] private Sprite[] m_Sprites;
+    [SerializeField] protected Sprite[] m_Sprites;
 
     /* --- Parameters --- */
     [Space(2), Header("Parameters")]
@@ -39,7 +39,7 @@ public class Spritesheet : MonoBehaviour {
     [HideInInspector] private Sprite[] m_PreviousAnimation;
     [SerializeField, ReadOnly] private int m_CurrentFrame;
     [SerializeField, ReadOnly] private float m_Ticks;
-    [SerializeField, ReadOnly] private float m_FrameRate;
+    [SerializeField, ReadOnly] protected float m_FrameRate;
     
     #endregion
     
@@ -63,7 +63,7 @@ public class Spritesheet : MonoBehaviour {
     /* --- Initialization --- */
     #region Initialization
 
-    public void Init() {
+    public virtual void Init() {
         // Caching components.
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Controller = GetComponent<Controller>();
@@ -73,18 +73,18 @@ public class Spritesheet : MonoBehaviour {
     }
 
     // Organizes the sprite sheet into its animations.
-    public void Organize() {
+    public virtual int Organize() {
         int startIndex = 0;
         startIndex = SliceSheet(startIndex, m_IdleFrames, ref m_IdleAnimation);
         startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
         startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);
         startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);
         startIndex = SliceSheet(startIndex, m_DeathFrames, ref m_DeathAnimation);
-
+        return startIndex;
     }
 
     // Slices an animation out of the the sheet.
-    private int SliceSheet(int startIndex, int length, ref Sprite[] array) {
+    protected int SliceSheet(int startIndex, int length, ref Sprite[] array) {
         List<Sprite> splicedSprites = new List<Sprite>();
         for (int i = startIndex; i < startIndex + length; i++) {
             splicedSprites.Add(m_Sprites[i]);
@@ -109,7 +109,7 @@ public class Spritesheet : MonoBehaviour {
     }
 
     // Gets the current animation info.
-    public Sprite[] GetAnimation() {
+    public virtual Sprite[] GetAnimation() {
         m_FrameRate = GameRules.FrameRate;
         if (m_Controller.AirborneFlag != Controller.Airborne.Grounded) {
             switch (m_Controller.AirborneFlag) {
@@ -128,7 +128,7 @@ public class Spritesheet : MonoBehaviour {
         }
     }
 
-    private void Rotate() {
+    protected virtual void Rotate() {
         if (m_Controller.DirectionFlag == Controller.Direction.Left) {
             transform.eulerAngles = 180f * Vector3.up;
         }

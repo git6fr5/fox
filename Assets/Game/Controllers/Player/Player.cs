@@ -23,6 +23,11 @@ public class Player : Controller {
     [SerializeField, ReadOnly] private float m_WallClimbTicks = 0f;
     [SerializeField] private float m_WallClimbDuration = 1f;
     [SerializeField, ReadOnly] private float m_ClimbBufferTicks = 0f;
+    [SerializeField] private float m_WallJumpForce = 0f;
+    [SerializeField] private float m_WallClimbSpeed = 0f;
+    public bool WallClimbing => m_WallClimbing;
+    public bool WallJumping => m_WallJumping;
+    public float ClimbInput => m_ClimbInput;
 
     // Dash.
     [SerializeField, ReadOnly] private Vector2 m_DashInput = Vector2.zero;
@@ -31,6 +36,7 @@ public class Player : Controller {
     [SerializeField, ReadOnly] private bool m_EndDash = false;
     [SerializeField] private float m_DashSpeed = 40f;
     [SerializeField] private float m_DashDuration = 0.5f;
+    public bool Dashing => m_Dashing;
 
     // Swim.
     [SerializeField] private bool m_Swimming = false;
@@ -55,7 +61,7 @@ public class Player : Controller {
 
         // Dashing.
         m_DashInput = (AirborneFlag != Airborne.Grounded && Input.GetKeyDown(m_JumpKey)) ? new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))  : Vector2.zero;
-        m_CanDash = m_WallClimbing || m_Dashing ? false : (AirborneFlag == Airborne.Grounded ? true : m_CanDash);
+        m_CanDash = m_WallClimbing || m_Dashing ? false : ((m_WallJumping || AirborneFlag == Airborne.Grounded) ? true : m_CanDash);
         m_EndDash = !m_Dashing ? false : (Input.GetKeyUp(m_JumpKey) ? true : m_EndDash);
 
         // Swimming
@@ -134,7 +140,7 @@ public class Player : Controller {
     }
 
     private void ProcessWallClimbingMovement(float deltaTime) {
-        float target = m_Speed * m_ClimbInput;
+        float target = m_WallClimbSpeed * m_ClimbInput;
         if (Mathf.Abs(target - m_Body.velocity.y) >= m_Acceleration * deltaTime) {
             float deltaVelocity = Mathf.Sign(target - m_Body.velocity.y) * m_Acceleration * deltaTime;
             m_Body.velocity = new Vector2(0f, m_Body.velocity.y + deltaVelocity);
@@ -144,14 +150,10 @@ public class Player : Controller {
     }
 
     private void ProcessWallJump() {
-        m_Body.gravityScale = 0f; // Don't fall.
+        m_Body.gravityScale = 0f;
         if (m_WallJump) {
-            print("Wall Jump");
             float wallJumpDirection = m_ClimbDirection;
-            if (m_ClimbInput == 0f) {
-                wallJumpDirection *= 3f;
-            }
-            m_Body.velocity = m_JumpForce * (new Vector2(-wallJumpDirection, 1f)).normalized;
+            m_Body.velocity = m_WallJumpForce * (new Vector2(-wallJumpDirection, 1f)).normalized;
         }
     }
 
