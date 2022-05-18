@@ -68,7 +68,7 @@ public class Enemy : Controller {
     /* --- Attack --- */
     #region Attack
     
-    private void Attack() {
+    protected void Attack() {
 
         if (m_AttackTicks >= m_AttackCooldown) {
             m_AttackTicks -= m_AttackCooldown;

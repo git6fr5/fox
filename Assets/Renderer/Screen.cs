@@ -108,8 +108,47 @@ public class Screen : MonoBehaviour {
 
     private void Follow() {
         if (GameRules.MainPlayer == null) { return; }
-        transform.position = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y, transform.position.z);
-        m_Origin = transform.position;
+
+        Level level = GameRules.MainPlayer.level;
+        if (level == null) {
+            transform.position = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y, transform.position.z);
+            m_Origin = transform.position;
+        }
+        else {
+            int maxW = 40; int boundW = 23;
+            int maxH = 26; int boundH = 15;
+
+            float width = level.Width >= maxW ? boundW : (float)GameRules.MainPlayer.level.Width;
+            float height = level.Height >= maxH ? boundH : (float)GameRules.MainPlayer.level.Height;
+            
+            float x = level.Width >= maxW ? GameRules.MainPlayer.transform.position.x : (float)GameRules.MainPlayer.level.Center.x;
+            float y = level.Height >= maxH ? GameRules.MainPlayer.transform.position.y : (float)GameRules.MainPlayer.level.Center.y;
+
+            bool left = x + width / 2f > (float)GameRules.MainPlayer.level.Center.x + level.Width / 2f;
+            bool right = x - width / 2f < (float)GameRules.MainPlayer.level.Center.x - level.Width / 2f;
+            if (left) {
+                x = (float)GameRules.MainPlayer.level.Center.x + (level.Width - width) / 2f;
+            }
+            else if (right) {
+                x = (float)GameRules.MainPlayer.level.Center.x - (level.Width - width) / 2f;
+            }
+
+            bool up = y + height / 2f > (float)GameRules.MainPlayer.level.Center.y + level.Height / 2f;
+            bool down = y - height / 2f < (float)GameRules.MainPlayer.level.Center.y - level.Height / 2f;
+            if (up) {
+                y = (float)GameRules.MainPlayer.level.Center.y + (level.Height - height) / 2f;
+            }
+            else if (down) {
+                y = (float)GameRules.MainPlayer.level.Center.y - (level.Height - height) / 2f;
+            }
+
+            transform.position = new Vector3(x, y, transform.position.z);
+            m_PixelPerfectCamera.refResolutionX = m_PixelPerfectCamera.assetsPPU * (int)width;
+            m_PixelPerfectCamera.refResolutionY = m_PixelPerfectCamera.assetsPPU * (int)height;
+            
+            m_Origin = transform.position;
+            m_ScreenSize = new Vector2(m_PixelPerfectCamera.refResolutionX, m_PixelPerfectCamera.refResolutionY) / m_PixelPerfectCamera.assetsPPU;
+        }
     }
 
     private void SetProfile() {

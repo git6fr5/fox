@@ -94,7 +94,7 @@ public class LevelLoader : MonoBehaviour {
             level.GenerateEntities(entityData, m_Environment.Entities);
             level.GenerateTiles(groundData, m_Environment.Tile);
             level.SetBackground(m_Environment.BackgroundTile);
-            level.SetControls(controlData);
+            level.SetControls(controlData, m_Environment);
         }
     }
 

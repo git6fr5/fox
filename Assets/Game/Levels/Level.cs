@@ -35,9 +35,13 @@ public class Level : MonoBehaviour {
     public List<Vector2Int> ControlPositions => m_ControlPositions;
 
     // Components.
+    [SerializeField] private BoxCollider2D m_Box;
     [SerializeField] private Tilemap m_Ground;
     [SerializeField] private Tilemap m_Background;
     [SerializeField] private List<Entity> m_Entities = new List<Entity>();
+
+    // Position.
+    public Vector2 Center => (Vector2)GridToWorldPosition(new Vector2Int(m_Width / 2, m_Height / 2)) - new Vector2( m_Width % 2 == 0 ? 0.5f : 0f, m_Height % 2 == 1 ? 0f : -0.5f);
 
     #endregion
 
@@ -65,6 +69,12 @@ public class Level : MonoBehaviour {
         m_WorldHeight = (int)(json.Levels[jsonID].WorldY / json.DefaultGridSize);
         m_WorldWidth = (int)(json.Levels[jsonID].WorldX / json.DefaultGridSize);
 
+
+        m_Box = gameObject.AddComponent<BoxCollider2D>();
+        m_Box.isTrigger = true;
+        m_Box.size = new Vector2((float)(m_Width - 2), (float)(m_Height - 2));
+        m_Box.offset = Center;
+
     }
 
     public void SetControlPositions(List<Vector2Int> controlPositions) {
@@ -72,6 +82,22 @@ public class Level : MonoBehaviour {
     }
 
     #endregion
+
+    void OnTriggerEnter2D(Collider2D collider) {
+        Player temp = collider.GetComponent<Player>();
+        ProcessCollision(temp);
+    }
+    
+    void OnTriggerExit2D(Collider2D collider) {
+        Player temp = collider.GetComponent<Player>();
+    }
+
+    void ProcessCollision(Player player) {
+        if (player == null) {
+            return;
+        }
+        player.SetLevel(this);
+    }
 
     /* --- Generation --- */
     #region Generation
@@ -118,7 +144,7 @@ public class Level : MonoBehaviour {
         }
     }
 
-    public void SetControls(List<LDtkTileData> controlData) {
+    public void SetControls(List<LDtkTileData> controlData, Environment environment) {
         for (int i = 0; i < controlData.Count; i++) {
             
             // Arrows.
@@ -131,6 +157,15 @@ public class Level : MonoBehaviour {
                     }
                 }
             }
+
+            // Checkpoint.
+            if (controlData[i].vectorID == Vector2.zero) {
+                Entity newEntity = Instantiate(environment.Checkpoint.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
+                Vector3 entityPosition = GridToWorldPosition(controlData[i].gridPosition);
+                newEntity.Init(controlData[i].gridPosition, entityPosition);
+                m_Entities.Add(newEntity);
+            }
+
         }
     }
     

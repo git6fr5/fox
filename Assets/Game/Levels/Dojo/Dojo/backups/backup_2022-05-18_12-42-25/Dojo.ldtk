@@ -4216,7 +4216,7 @@
 			]
 		},
 		{
-			"identifier": "Level_18",
+			"identifier": "Level_21",
 			"iid": "dd039960-b4d0-11ec-a44f-a772d2b8954b",
 			"uid": 45,
 			"worldX": -464,
@@ -4260,8 +4260,7 @@
 					"overrideTilesetUid": null,
 					"gridTiles": [
 						{ "px": [16,144], "src": [48,32], "f": 0, "t": 11, "d": [55] },
-						{ "px": [16,384], "src": [0,16], "f": 0, "t": 4, "d": [145] },
-						{ "px": [64,384], "src": [0,0], "f": 0, "t": 0, "d": [148] }
+						{ "px": [16,384], "src": [0,16], "f": 0, "t": 4, "d": [145] }
 					],
 					"entityInstances": []
 				},

@@ -17,6 +17,9 @@ public class Environment : MonoBehaviour {
     [HideInInspector] private List<Entity> m_Entities;
     public List<Entity> Entities => m_Entities;
 
+    [SerializeField] private Entity m_Checkpoint;
+    public Entity Checkpoint => m_Checkpoint;
+
     // Tile.
     [SerializeField] private RuleTile m_Tile;
     public RuleTile Tile => m_Tile; 

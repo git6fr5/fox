@@ -23,8 +23,8 @@ public class WorldLoader : LevelLoader {
         base.Start();
         CollectLevels();
         LoadLevels();
-        StartCoroutine(IELoadLevels());
         StartCoroutine(IESetPlayer());
+        StartCoroutine(IELoadLevels());
     }
 
     private void CollectLevels() {

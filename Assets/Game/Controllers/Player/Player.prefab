@@ -113,7 +113,7 @@ MonoBehaviour:
   m_WallClimbTicks: 0
   m_WallClimbDuration: 1
   m_ClimbBufferTicks: 0
-  m_WallJumpForce: 17.5
+  m_WallJumpForce: 20
   m_WallClimbSpeed: 6.5
   m_DashInput: {x: 0, y: 0}
   m_CanDash: 0
@@ -126,6 +126,8 @@ MonoBehaviour:
   m_SwimSpeed: 12
   m_SwimAcceleration: 50
   m_SwimResistance: 0.995
+  m_Level: {fileID: 0}
+  m_Checkpoint: {fileID: 0}
 --- !u!212 &8984214373028524412
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class Player : Controller {
 
+    #region Input
+
     public static float m_ClimbBufferDuration = 0.15f;
 
     [SerializeField, ReadOnly] private KeyCode m_JumpKey = KeyCode.Space;
@@ -45,6 +47,8 @@ public class Player : Controller {
     [SerializeField] private float m_SwimAcceleration = 50f;
     [SerializeField] private float m_SwimResistance = 0.995f;
 
+    // Attack.
+
     protected override void GetInput() {
 
         // Basic.
@@ -69,6 +73,8 @@ public class Player : Controller {
         m_SwimMoveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         // Flying
+
+        // Attacking
 
     }
 
@@ -205,6 +211,45 @@ public class Player : Controller {
         if (targetVelocity.x == 0f && Mathf.Abs(m_Body.velocity.x) < GameRules.MovementPrecision) {
             m_Body.velocity = new Vector2(0f, m_Body.velocity.y);
         }
+    }
+    
+    #endregion
+
+    #endregion
+
+    #region Level
+    
+    [SerializeField] private Level m_Level;
+    public Level level => m_Level;
+
+    [SerializeField] private Checkpoint m_Checkpoint;
+    public Checkpoint checkpoint => m_Checkpoint;
+
+    public void SetLevel(Level level) {
+        m_Level = level;
+    }
+
+    public void SetCheck(Checkpoint checkpoint) {
+        m_Checkpoint = checkpoint;
+    }
+
+    #endregion
+
+    /* --- Attack --- */
+    #region Attack
+    
+    protected void Attack() {
+
+        if (m_AttackTicks >= m_AttackCooldown) {
+            m_AttackTicks = 0f;
+            Fire();
+        }
+
+    }
+
+    private void Fire() {
+        Vector3 playerDirection = (m_VisionCone.player.transform.position - transform.position).normalized;
+        m_Projectile.Create(playerDirection);
     }
     
     #endregion
