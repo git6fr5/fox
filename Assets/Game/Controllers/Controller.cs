@@ -39,6 +39,10 @@ public abstract class Controller : MonoBehaviour {
     [HideInInspector] protected Rigidbody2D m_Body; // Handles physics calculations.
     public Rigidbody2D Body => m_Body;
 
+    // Health.
+    [SerializeField] protected float m_MaxHealth = 1f;
+    [SerializeField, ReadOnly] protected float m_Health;
+
     // Settings.
     [Space(2), Header("Settings")]
     [SerializeField] protected float m_Height;
@@ -106,6 +110,7 @@ public abstract class Controller : MonoBehaviour {
         m_Body = GetComponent<Rigidbody2D>();
         m_Body.constraints = RigidbodyConstraints2D.FreezeRotation;
         m_PreviousPosition = transform.position;
+        m_Health = m_MaxHealth;
     }
 
     #endregion
@@ -138,7 +143,7 @@ public abstract class Controller : MonoBehaviour {
 
     protected void ProcessAttack() {
         if (m_AttackInput) {
-            m_Projectile.Fire(m_AttackDirection);
+            m_Projectile.Fire(m_AttackDirection, m_Body.velocity);
         }
     }
 
@@ -210,6 +215,22 @@ public abstract class Controller : MonoBehaviour {
         } else {
             m_DebugJumpStartPosition = transform.position;
         }
+    }
+
+    #endregion
+
+    /* --- Health --- */
+    #region Health
+
+    public void Hurt(float damage) {
+        m_Health -= damage;
+        if (m_Health <= 0f) {
+            Kill();
+        }
+    }
+
+    public void Kill() {
+        Destroy(gameObject);
     }
 
     #endregion

@@ -11,6 +11,10 @@ public class PlayerSpritesheet : Spritesheet {
 
     [HideInInspector] private Player m_Player;
 
+    [Space(2), Header("Double Jump")]
+    [SerializeField] private int m_DoubleJumpFrames;
+    [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
+
     [Space(2), Header("Wall Climbing")]
     [SerializeField] private int m_WallClimbIdleFrames;
     [SerializeField] private int m_WallClimbMovingFrames;
@@ -28,6 +32,8 @@ public class PlayerSpritesheet : Spritesheet {
     [SerializeField] private int m_DashFrames;
     [HideInInspector] private Sprite[] m_DashAnimation;
 
+    
+
     public override void Init() {
         m_Player = GetComponent<Player>();
         base.Init();
@@ -35,6 +41,7 @@ public class PlayerSpritesheet : Spritesheet {
 
     public override int Organize() {
         int startIndex = base.Organize();
+        startIndex = SliceSheet(startIndex, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
         startIndex = SliceSheet(startIndex, m_WallClimbIdleFrames, ref m_WallClimbIdleAnimation);
         startIndex = SliceSheet(startIndex, m_WallClimbMovingFrames, ref m_WallClimbMovingAnimation);
         startIndex = SliceSheet(startIndex, m_WallClimbRisingFrames, ref m_WallJumpRisingAnimation);
@@ -48,6 +55,10 @@ public class PlayerSpritesheet : Spritesheet {
         m_FrameRate = GameRules.FrameRate;
         if (m_Player.Dashing) {
             return m_DashAnimation;
+        }
+
+        if (m_Player.DoubleJumping) {
+            return m_DoubleJumpAnimation;
         }
 
         if (m_Player.WallClimbing) {

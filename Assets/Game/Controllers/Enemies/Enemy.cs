@@ -62,6 +62,7 @@ public class Enemy : Controller {
 
     protected override void ProcessThink(float deltaTime) {
         m_Ticks += deltaTime;
+        base.ProcessThink(deltaTime);
     }
 
     #endregion

@@ -40,6 +40,13 @@ public class Player : Controller {
     [SerializeField] private float m_DashDuration = 0.5f;
     public bool Dashing => m_Dashing;
 
+    // Double Jump.
+    [SerializeField, ReadOnly] private bool m_DoubleJumpInput = false;
+    [SerializeField, ReadOnly] private bool m_CanDoubleJump = false;
+    [SerializeField, ReadOnly] private float m_DoubleJumpForce = 20f;
+    [SerializeField, ReadOnly] private bool m_DoubleJumping = false;
+    public bool DoubleJumping => m_DoubleJumping;
+
     // Swim.
     [SerializeField] private bool m_Swimming = false;
     [SerializeField, ReadOnly] private Vector2 m_SwimMoveInput = Vector2.zero;
@@ -61,10 +68,15 @@ public class Player : Controller {
         m_CanClimb = m_CanClimb ? CheckFall() : CheckClimb();
         m_WallClimbing = m_CanClimb && (m_WallClimbing ? true : (m_ClimbInput != 0f ? true : false));
         m_WallJump = !m_WallClimbing ? false : (Input.GetKeyDown(m_JumpKey) ? true : false);
-        m_WallJumping = AirborneFlag == Airborne.Grounded ? false : (m_WallJump ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_WallJumping));
+        m_WallJumping = m_Dashing || AirborneFlag == Airborne.Grounded ? false : (m_WallJump ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_WallJumping));
 
         // Dashing.
-        m_DashInput = (AirborneFlag != Airborne.Grounded && Input.GetKeyDown(m_JumpKey)) ? new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))  : Vector2.zero;
+        // m_DashInput = (AirborneFlag != Airborne.Grounded && Input.GetKeyDown(m_JumpKey)) ? new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))  : Vector2.zero;
+        float y = Input.GetAxisRaw("Vertical");
+        float x1 = DirectionFlag == Direction.Right ? 1f : -1f;
+        float x2 = Input.GetAxisRaw("Horizontal");
+        Vector2 directionalInput = y == 0f ? new Vector2(x1, 0f) : new Vector2(x2, y);
+        m_DashInput = Input.GetMouseButtonDown(1) ? (directionalInput == Vector2.zero ? new Vector2(0f, 1f) : directionalInput) : Vector2.zero;
         m_CanDash = m_WallClimbing || m_Dashing ? false : ((m_WallJumping || AirborneFlag == Airborne.Grounded) ? true : m_CanDash);
         m_EndDash = !m_Dashing ? false : (Input.GetKeyUp(m_JumpKey) ? true : m_EndDash);
 
@@ -78,6 +90,10 @@ public class Player : Controller {
         m_AttackInput = Input.GetMouseButtonDown(0);
         m_AttackDirection = (Screen.MousePosition - (Vector2)transform.position).normalized;
 
+        // Double Jump.
+        m_DoubleJumpInput = (AirborneFlag != Airborne.Grounded && Input.GetKeyDown(m_JumpKey)) ? true  : false;
+        m_CanDoubleJump = m_WallClimbing || m_Dashing ? false : ((m_WallJumping || AirborneFlag == Airborne.Grounded) ? true : m_CanDoubleJump);
+        m_DoubleJumping = m_DoubleJumpInput && m_CanDoubleJump ? true : (m_WallClimbing || m_Dashing || AirborneFlag == Airborne.Grounded ? false : m_DoubleJumping);
     }
 
     protected override void ProcessMovement(float deltaTime) {
@@ -102,11 +118,14 @@ public class Player : Controller {
             ProcessDash();
         }
         else if (m_Dashing) {
-
+            // 
         }
         else if (m_WallClimbing) {
             ProcessWallJump();
-        } 
+        }
+        else if (m_DoubleJumpInput && m_CanDoubleJump) {
+            m_Body.velocity = new Vector2(m_Body.velocity.x, m_DoubleJumpForce);
+        }
         else {
             base.ProcessJump();
         }

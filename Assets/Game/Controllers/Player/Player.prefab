@@ -87,10 +87,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85078d985ea211b46a1d695c3df87779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MaxHealth: 1
+  m_Health: 0
   m_Height: 0.5
   m_Speed: 10
   m_Acceleration: 200
-  m_JumpForce: 25
+  m_JumpForce: 27.5
   m_Weight: 20
   m_Floatiness: 0.4
   m_MoveInput: 0
@@ -125,6 +127,10 @@ MonoBehaviour:
   m_EndDash: 0
   m_DashSpeed: 20
   m_DashDuration: 0.125
+  m_DoubleJumpInput: 0
+  m_CanDoubleJump: 0
+  m_DoubleJumpForce: 20
+  m_DoubleJumping: 0
   m_Swimming: 0
   m_SwimMoveInput: {x: 0, y: 0}
   m_SwimSpeed: 12
@@ -215,6 +221,7 @@ MonoBehaviour:
   - {fileID: 1278198099, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: -1691295478, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: 1832555620, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1063652664, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   m_IdleFrames: 2
   m_MovementFrames: 4
   m_RisingFrames: 1
@@ -223,6 +230,7 @@ MonoBehaviour:
   m_CurrentFrame: 0
   m_Ticks: 0
   m_FrameRate: 0
+  m_DoubleJumpFrames: 1
   m_WallClimbIdleFrames: 1
   m_WallClimbMovingFrames: 4
   m_WallClimbRisingFrames: 1
