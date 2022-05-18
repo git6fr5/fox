@@ -53,6 +53,7 @@ public abstract class Controller : MonoBehaviour {
     [SerializeField, ReadOnly] protected float m_MoveInput;
     [SerializeField, ReadOnly] protected bool m_JumpInput;
     [SerializeField, ReadOnly] protected bool m_FloatInput;
+    [SerializeField, ReadOnly] protected bool m_AttackInput;
 
     // Flags.
     [Space(2), Header("Flags")]
@@ -67,6 +68,10 @@ public abstract class Controller : MonoBehaviour {
     [SerializeField, ReadOnly] private float m_DebugJumpHeight;
     [SerializeField, ReadOnly] private float m_DebugJumpDistance;
     [SerializeField, ReadOnly] private Vector3 m_DebugJumpStartPosition;
+
+    // Combat.
+    [SerializeField] private Projectile m_Projectile;
+    [SerializeField, ReadOnly] protected Vector2 m_AttackDirection;
     
     #endregion
 
@@ -81,6 +86,7 @@ public abstract class Controller : MonoBehaviour {
         GetInput();
         GetFlags();
         ProcessJump();
+        ProcessAttack();
     }
 
     // Runs once every fixed interval.
@@ -130,8 +136,14 @@ public abstract class Controller : MonoBehaviour {
         }
     }
 
+    protected void ProcessAttack() {
+        if (m_AttackInput) {
+            m_Projectile.Fire(m_AttackDirection);
+        }
+    }
+
     protected virtual void ProcessThink(float deltaTime) {
-        
+        m_Projectile.UpdateCooldown(deltaTime);
     }
     
     #endregion

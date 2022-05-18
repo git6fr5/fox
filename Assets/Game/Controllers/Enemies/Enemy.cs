@@ -18,10 +18,6 @@ public class Enemy : Controller {
     [SerializeField] private VisionCone m_VisionCone;
     public bool Aggro => m_VisionCone.Active;
     
-    [SerializeField] private Projectile m_Projectile;
-    [SerializeField] private float m_AttackTicks;
-    [SerializeField] private float m_AttackCooldown;
-    
     #endregion
 
     /* --- Overrides --- */
@@ -29,59 +25,45 @@ public class Enemy : Controller {
     
     protected override void GetInput() {
 
-        if (!m_VisionCone.Active) {
-            if (m_Ticks >= m_PathDuration) {
-                m_Direction *= -1f;
-                m_Ticks -= m_PathDuration;
-            }
-
-            m_MoveInput = m_Direction;
-            m_JumpInput = false;
-            m_FloatInput = false;
-        }
-        else {
-            float playerDirection = Mathf.Sign((m_VisionCone.player.transform.position - transform.position).x);
-            float direction = DirectionFlag == Direction.Right ? 1f : -1f;
-            if (direction != playerDirection) {
-                m_MoveInput = playerDirection;
-            }
-            else {
-                m_MoveInput = 0f;
-            }
-            m_JumpInput = false;
-            m_FloatInput = false;
-            
-            Attack();
+        if (!Aggro) {
+            IdleBehaviour();
+        } else {
+            AggroBehaviour();
         }
         
     }
 
+    private void IdleBehaviour() {
+        if (m_Ticks >= m_PathDuration) {
+            m_Direction *= -1f;
+            m_Ticks -= m_PathDuration;
+        }
+
+        m_MoveInput = m_Direction;
+        m_JumpInput = false;
+        m_FloatInput = false;
+    }
+
+    private void AggroBehaviour() {
+        float playerDirection = Mathf.Sign((m_VisionCone.player.transform.position - transform.position).x);
+        float direction = DirectionFlag == Direction.Right ? 1f : -1f;
+        if (direction != playerDirection) {
+            m_MoveInput = playerDirection;
+        }
+        else {
+            m_MoveInput = 0f;
+        }
+
+        m_JumpInput = false;
+        m_FloatInput = false;
+        m_AttackInput = true;
+        m_AttackDirection = ((Vector2)m_VisionCone.player.transform.position - (Vector2)transform.position).normalized;
+    }
+
     protected override void ProcessThink(float deltaTime) {
         m_Ticks += deltaTime;
-        if (m_VisionCone.Active) {
-            m_AttackTicks += deltaTime;
-        }
     }
 
-    #endregion
-
-    /* --- Attack --- */
-    #region Attack
-    
-    protected void Attack() {
-
-        if (m_AttackTicks >= m_AttackCooldown) {
-            m_AttackTicks -= m_AttackCooldown;
-            Fire();
-        }
-
-    }
-
-    private void Fire() {
-        Vector3 playerDirection = (m_VisionCone.player.transform.position - transform.position).normalized;
-        m_Projectile.Create(playerDirection);
-    }
-    
     #endregion
 
 }

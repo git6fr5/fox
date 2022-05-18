@@ -75,6 +75,8 @@ public class Player : Controller {
         // Flying
 
         // Attacking
+        m_AttackInput = Input.GetMouseButtonDown(0);
+        m_AttackDirection = (Screen.MousePosition - (Vector2)transform.position).normalized;
 
     }
 
@@ -117,6 +119,7 @@ public class Player : Controller {
         if (m_CanClimb) {
             m_ClimbBufferTicks += deltaTime;
         }
+        base.ProcessThink(deltaTime);
     }
 
     /* --- Climbing --- */
@@ -233,25 +236,6 @@ public class Player : Controller {
         m_Checkpoint = checkpoint;
     }
 
-    #endregion
-
-    /* --- Attack --- */
-    #region Attack
-    
-    protected void Attack() {
-
-        if (m_AttackTicks >= m_AttackCooldown) {
-            m_AttackTicks = 0f;
-            Fire();
-        }
-
-    }
-
-    private void Fire() {
-        Vector3 playerDirection = (m_VisionCone.player.transform.position - transform.position).normalized;
-        m_Projectile.Create(playerDirection);
-    }
-    
     #endregion
 
 }

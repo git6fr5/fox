@@ -33,7 +33,8 @@ Transform:
   m_LocalPosition: {x: 8.56, y: -4.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4299607835434631549}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -95,6 +96,7 @@ MonoBehaviour:
   m_MoveInput: 0
   m_JumpInput: 0
   m_FloatInput: 0
+  m_AttackInput: 0
   MovementFlag: 0
   DirectionFlag: 0
   AirborneFlag: 0
@@ -102,6 +104,8 @@ MonoBehaviour:
   m_DebugJumpHeight: 0
   m_DebugJumpDistance: 0
   m_DebugJumpStartPosition: {x: 0, y: 0, z: 0}
+  m_Projectile: {fileID: 4299607835434631548}
+  m_AttackDirection: {x: 0, y: 0}
   m_JumpKey: 32
   m_ClimbInput: 0
   m_ClimbDirection: 0
@@ -238,3 +242,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_VectorID: {x: 0, y: 0}
   m_GridPosition: {x: 0, y: 0}
+--- !u!1001 &278201346962173332
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8984214373028524410}
+    m_Modifications:
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144490, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_Name
+      value: Shuriken
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068747371602144490, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 56da8d222d339544199cab4c16191391, type: 3}
+--- !u!114 &4299607835434631548 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4068747371602144488, guid: 56da8d222d339544199cab4c16191391, type: 3}
+  m_PrefabInstance: {fileID: 278201346962173332}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aa78c2e6b4cffc4880d2402d17dd3ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4299607835434631549 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
+  m_PrefabInstance: {fileID: 278201346962173332}
+  m_PrefabAsset: {fileID: 0}

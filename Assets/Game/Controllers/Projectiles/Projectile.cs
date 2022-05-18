@@ -20,6 +20,10 @@ public class Projectile : MonoBehaviour {
     
     [SerializeField] private Rigidbody2D m_Body;
     [SerializeField] private CircleCollider2D m_Hitbox;
+
+    [SerializeField] private float m_Ticks = 0f;
+    [SerializeField] private float m_Cooldown = 0.5f;
+    public bool CanFire => m_Ticks == 0f;
     
     #endregion
 
@@ -38,10 +42,20 @@ public class Projectile : MonoBehaviour {
 
     /* --- Initialization --- */
     #region Initialization
-    
-    public void Create(Vector3 direction) {
-        Projectile projectile = Instantiate(gameObject, transform.position, Quaternion.identity, null).GetComponent<Projectile>();
-        projectile.Init(direction);
+
+    public void Fire(Vector3 direction) {
+        if (CanFire) {
+            Projectile projectile = Instantiate(gameObject, transform.position, Quaternion.identity, null).GetComponent<Projectile>();
+            projectile.Init(direction);
+            m_Ticks = m_Cooldown;
+        }
+    }
+
+    public void UpdateCooldown(float deltaTime) {
+        m_Ticks -= deltaTime;
+        if (m_Ticks < 0f) {
+            m_Ticks = 0f;
+        }
     }
 
     public void Init(Vector3 direction) {
