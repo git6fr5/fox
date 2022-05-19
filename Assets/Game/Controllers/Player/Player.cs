@@ -67,8 +67,9 @@ public class Player : Controller {
 
         // Ducking.
         // m_DuckInput = Input.GetAxisRaw("Vertical") == -1f;
-        m_DuckInput = Input.GetKeyDown(KeyCode.S) && AirborneFlag == Airborne.Grounded ? true : (Input.GetKeyUp(KeyCode.S) || (m_Ducked) ? false : m_DuckInput);
+        m_DuckInput = (Input.GetAxisRaw("Vertical") == -1f && m_NotDucking) && AirborneFlag == Airborne.Grounded ? true : (Input.GetKeyUp(KeyCode.S) || (m_Ducked) ? false : m_DuckInput);
         m_Ducked = m_DuckInput && AirborneFlag == Airborne.Falling;
+        m_NotDucking = Input.GetAxisRaw("Vertical") != -1f;
 
         // Climbing.
         m_ClimbInput = Input.GetAxisRaw("Vertical");
@@ -131,11 +132,15 @@ public class Player : Controller {
             ProcessWallJump();
         }
         else if (m_DoubleJumpInput && m_CanDoubleJump) {
-            m_Body.velocity = new Vector2(m_Body.velocity.x, m_DoubleJumpForce);
-        }
-        else {
+            ProcessDoubleJump();
+        } else {
             base.ProcessJump();
         }
+    }
+
+    private void ProcessDoubleJump() {
+        m_Body.velocity = new Vector2(m_Body.velocity.x, m_DoubleJumpForce);
+        m_CanDoubleJump = false;
     }
 
     protected override void ProcessThink(float deltaTime) {

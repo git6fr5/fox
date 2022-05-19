@@ -56,10 +56,17 @@ public abstract class Controller : MonoBehaviour {
     [Space(2), Header("Controls")]
     [SerializeField, ReadOnly] protected float m_MoveInput;
     [SerializeField, ReadOnly] protected bool m_JumpInput;
+    [SerializeField, ReadOnly] protected bool m_AttackInput;
+
+    // Floating.
     [SerializeField, ReadOnly] protected bool m_FloatInput;
+    // [SerializeField, ReadOnly] protected float m_FloatTicks;
+    // private static float m_FloatHangTime = 0.15f;
+    
+    // Ducks
     [SerializeField, ReadOnly] protected bool m_DuckInput;
     [SerializeField, ReadOnly] protected bool m_Ducked;
-    [SerializeField, ReadOnly] protected bool m_AttackInput;
+    [SerializeField, ReadOnly] protected bool m_NotDucking;
 
     // Flags.
     [Space(2), Header("Flags")]
@@ -142,9 +149,17 @@ public abstract class Controller : MonoBehaviour {
             m_Body.velocity = new Vector2(m_Body.velocity.x, m_JumpForce);
             AirborneFlag = Airborne.Rising;
         }
+
         if (m_FloatInput && AirborneFlag == Airborne.Rising) {
             m_Body.gravityScale *= m_Floatiness;
         }
+
+        // if (!m_FloatInput && AirborneFlag == Airborne.Rising) {
+        //     m_Body.velocity = new Vector2(m_Body.velocity.x, m_Body.velocity.y * 0.95f);
+        // }
+        // if (m_FloatTicks < m_FloatHangTime && AirborneFlag == Airborne.Rising) {
+        //     m_Body.gravityScale *= m_Floatiness;
+        // }
     }
 
     protected void ProcessDuck() {
@@ -164,6 +179,12 @@ public abstract class Controller : MonoBehaviour {
 
     protected virtual void ProcessThink(float deltaTime) {
         m_Projectile.UpdateCooldown(deltaTime);
+        // if (m_FloatInput) {
+        //     m_FloatTicks = 0f;
+        // }
+        // else {
+        //     m_FloatTicks += deltaTime;
+        // }
     }
     
     #endregion
