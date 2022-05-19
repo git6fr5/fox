@@ -197,19 +197,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.208901
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.16635859
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.58128977
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.66543436
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956439, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_RootOrder
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000f966e5bd2f5c9db69306aefe490db3f8
+  m_ApplyToSortingLayers: 00000000f966e5bd2f5c9db69306aefe490db3f8cbd009087362d624
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -623,6 +623,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 334274060}
     m_Modifications:
+    - target: {fileID: 4299607835434631539, guid: 70ce5957409283940a4dca6da758013e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787698229103996827, guid: 70ce5957409283940a4dca6da758013e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8984214373028524405, guid: 70ce5957409283940a4dca6da758013e, type: 3}
       propertyPath: m_Name
       value: Player
@@ -670,6 +678,10 @@ PrefabInstance:
     - target: {fileID: 8984214373028524410, guid: 70ce5957409283940a4dca6da758013e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8984214373028524412, guid: 70ce5957409283940a4dca6da758013e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8984214373028524415, guid: 70ce5957409283940a4dca6da758013e, type: 3}
       propertyPath: m_IdleFrames
@@ -811,8 +823,20 @@ PrefabInstance:
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 1760666778566409604, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760666778566409604, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760666778566409606, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760666778566409606, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1760666778566409607, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
       propertyPath: m_RootOrder
@@ -857,6 +881,10 @@ PrefabInstance:
     - target: {fileID: 1760666778566409607, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1760666778776897746, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
+      propertyPath: m_Cooldown
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1760666778776897757, guid: 9fff4bc8c2b85c04db9ef44a1d541a39, type: 3}
       propertyPath: m_Size.x
@@ -934,6 +962,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5854894066794356719, guid: 19c731041e2518648a3f9fc7a38b39bc, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5854894066794356719, guid: 19c731041e2518648a3f9fc7a38b39bc, type: 3}
       propertyPath: m_DynamicOccludee
       value: 0
       objectReference: {fileID: 0}
@@ -1007,6 +1039,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7815116569269064917, guid: 8f2d1da4140c46f4cb1fd48d9a800f8a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7815116569269064917, guid: 8f2d1da4140c46f4cb1fd48d9a800f8a, type: 3}
       propertyPath: m_DynamicOccludee
       value: 0
       objectReference: {fileID: 0}
@@ -1024,6 +1060,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1946149503}
     m_Modifications:
+    - target: {fileID: 8209008930223423403, guid: 0cb71495db62c8845be3de16b63644ba, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8209008930223423403, guid: 0cb71495db62c8845be3de16b63644ba, type: 3}
       propertyPath: m_DynamicOccludee
       value: 1

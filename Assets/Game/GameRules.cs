@@ -32,11 +32,15 @@ public class GameRules : MonoBehaviour {
     public static float FrameRate => Instance.m_FrameRate;
 
     // Rendering Layers.
+    public static string BorderRenderingLayer = "Border";
     public static string BackgroundRenderingLayer = "Background";
 
     // Layers
     [SerializeField] private LayerMask groundCollisionLayer;
     public static LayerMask GroundCollisionLayer => Instance.groundCollisionLayer;
+    
+    [SerializeField] private LayerMask climbCollisionLayer;
+    public static LayerMask ClimbCollisionLayer => Instance.climbCollisionLayer;
     
 
     #endregion

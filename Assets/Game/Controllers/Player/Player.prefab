@@ -107,6 +107,7 @@ MonoBehaviour:
   m_DebugJumpDistance: 0
   m_DebugJumpStartPosition: {x: 0, y: 0, z: 0}
   m_Projectile: {fileID: 4299607835434631548}
+  m_Targets: []
   m_AttackDirection: {x: 0, y: 0}
   m_JumpKey: 32
   m_ClimbInput: 0
@@ -129,7 +130,7 @@ MonoBehaviour:
   m_DashDuration: 0.125
   m_DoubleJumpInput: 0
   m_CanDoubleJump: 0
-  m_DoubleJumpForce: 20
+  m_DoubleJumpForce: 22.5
   m_DoubleJumping: 0
   m_Swimming: 0
   m_SwimMoveInput: {x: 0, y: 0}
@@ -176,8 +177,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -22149485
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -408745867, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -222,6 +223,12 @@ MonoBehaviour:
   - {fileID: -1691295478, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: 1832555620, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
   - {fileID: 1063652664, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: 1819834008, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -990001852, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -1867090493, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  - {fileID: -1828338784, guid: 8b7847ffb9361de4e91a5240d02fc570, type: 3}
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_IdleFrames: 2
   m_MovementFrames: 4
   m_RisingFrames: 1

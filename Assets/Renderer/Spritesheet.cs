@@ -18,6 +18,7 @@ public class Spritesheet : MonoBehaviour {
     [HideInInspector] public SpriteRenderer m_SpriteRenderer;
     [HideInInspector] public Controller m_Controller;
     [SerializeField] protected Sprite[] m_Sprites;
+    [SerializeField] protected Material[] m_Materials;
 
     /* --- Parameters --- */
     [Space(2), Header("Parameters")]
@@ -70,6 +71,7 @@ public class Spritesheet : MonoBehaviour {
         if (m_Sprites != null && m_Sprites.Length > 0) {
             Organize();
         }
+        m_SpriteRenderer.materials = m_Materials;
     }
 
     // Organizes the sprite sheet into its animations.

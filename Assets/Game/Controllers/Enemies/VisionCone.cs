@@ -37,7 +37,7 @@ public class VisionCone : MonoBehaviour {
     void Start() {
         m_Controller = transform.parent.GetComponent<Controller>();
     }
-    
+
     void FixedUpdate() {
         float deltaTime = Time.fixedDeltaTime;
         Search(deltaTime);
@@ -46,9 +46,6 @@ public class VisionCone : MonoBehaviour {
     #endregion
 
     public void Search(float deltaTime) {
-
-        // print("Looking for player");
-
         m_LightRays = new List<Vector3>();
         if (m_Active) {
             m_Active = ActiveSearch(deltaTime);
@@ -82,10 +79,38 @@ public class VisionCone : MonoBehaviour {
 
             m_LightRays.Add(distance * direction);
             Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
-
+            
         }
 
-        return foundPlayer;
+        if (foundPlayer) {
+            return true;
+        }
+
+        bool aggroedEnemyNearby = false;
+        bool playerWithinActiveRange = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_ActiveRange + 2f * GameRules.MovementPrecision, m_Mask);
+        for (int i = 0; i < colliders.Length; i++) {
+
+            Enemy enemy = colliders[i].GetComponent<Enemy>();
+            if (enemy != null && enemy.Aggro) {
+                aggroedEnemyNearby = true;
+            }
+
+            Player player = colliders[i].GetComponent<Player>();
+            if (player != null) {
+                m_Player = player;
+                playerWithinActiveRange = true;
+            }
+        }
+
+        if (playerWithinActiveRange && m_Player.IsHot) {
+            return ActiveSearch(deltaTime);
+        }
+        if (aggroedEnemyNearby && playerWithinActiveRange) {
+            return ActiveSearch(deltaTime);
+        }
+
+        return false;
     }
 
     private bool ActiveSearch(float deltaTime) {
@@ -111,6 +136,10 @@ public class VisionCone : MonoBehaviour {
 
         Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
         return foundPlayer;
+    }
+
+    void OnDrawGizmos() {
+        Gizmos.DrawWireSphere(transform.position, m_ActiveRange);
     }
 
 }

@@ -57,6 +57,8 @@ public abstract class Controller : MonoBehaviour {
     [SerializeField, ReadOnly] protected float m_MoveInput;
     [SerializeField, ReadOnly] protected bool m_JumpInput;
     [SerializeField, ReadOnly] protected bool m_FloatInput;
+    [SerializeField, ReadOnly] protected bool m_DuckInput;
+    [SerializeField, ReadOnly] protected bool m_Ducked;
     [SerializeField, ReadOnly] protected bool m_AttackInput;
 
     // Flags.
@@ -74,7 +76,9 @@ public abstract class Controller : MonoBehaviour {
     [SerializeField, ReadOnly] private Vector3 m_DebugJumpStartPosition;
 
     // Combat.
-    [SerializeField] private Projectile m_Projectile;
+    [SerializeField] protected Projectile m_Projectile;
+    public bool IsHot => m_Projectile != null && !m_Projectile.CanFire;
+    [SerializeField] protected List<string> m_Targets;
     [SerializeField, ReadOnly] protected Vector2 m_AttackDirection;
     
     #endregion
@@ -90,6 +94,7 @@ public abstract class Controller : MonoBehaviour {
         GetInput();
         GetFlags();
         ProcessJump();
+        ProcessDuck();
         ProcessAttack();
     }
 
@@ -133,17 +138,27 @@ public abstract class Controller : MonoBehaviour {
 
     protected virtual void ProcessJump() {
         m_Body.gravityScale = m_Weight * GameRules.GravityScale;
+        if (m_JumpInput && AirborneFlag == Airborne.Grounded) {
+            m_Body.velocity = new Vector2(m_Body.velocity.x, m_JumpForce);
+            AirborneFlag = Airborne.Rising;
+        }
         if (m_FloatInput && AirborneFlag == Airborne.Rising) {
             m_Body.gravityScale *= m_Floatiness;
         }
-        if (m_JumpInput && AirborneFlag == Airborne.Grounded) {
-            m_Body.velocity = new Vector2(m_Body.velocity.x, m_JumpForce);
+    }
+
+    protected void ProcessDuck() {
+        if (m_DuckInput) {
+            gameObject.layer = LayerMask.NameToLayer("Ducking");
+        }
+        else {
+            gameObject.layer = LayerMask.NameToLayer("Characters");
         }
     }
 
     protected void ProcessAttack() {
         if (m_AttackInput) {
-            m_Projectile.Fire(m_AttackDirection, m_Body.velocity);
+            m_Projectile.Fire(m_AttackDirection, m_Body.velocity, m_Targets);
         }
     }
 
@@ -176,11 +191,16 @@ public abstract class Controller : MonoBehaviour {
     }
 
     private void GetAirborneFlag() {
+
         Collider2D ground = Physics2D.OverlapCircle(transform.position + Vector3.down * m_Height, GameRules.MovementPrecision, GameRules.GroundCollisionLayer);
         if (ground == null) {
             AirborneFlag = m_Body.velocity.y < 0 ? Airborne.Falling : Airborne.Rising;
         }
         else {
+            if (m_Body.velocity.y > 0 && m_FloatInput == true) {
+                AirborneFlag = Airborne.Rising;
+                return;
+            }
             AirborneFlag = Airborne.Grounded;
         }
     }

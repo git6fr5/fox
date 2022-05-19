@@ -42,6 +42,8 @@ public class Enemy : Controller {
         m_MoveInput = m_Direction;
         m_JumpInput = false;
         m_FloatInput = false;
+        m_AttackInput = false;
+
     }
 
     private void AggroBehaviour() {
@@ -57,7 +59,10 @@ public class Enemy : Controller {
         m_JumpInput = false;
         m_FloatInput = false;
         m_AttackInput = true;
-        m_AttackDirection = ((Vector2)m_VisionCone.player.transform.position - (Vector2)transform.position).normalized;
+
+        Vector2 playerPosition = m_VisionCone.player.transform.position;
+        Vector2 playerDisplacement = (Vector2)playerPosition - (Vector2)transform.position;
+        m_AttackDirection = playerDisplacement.normalized; // + Vector2.up * Mathf.Abs(playerDisplacement.x) / (0.25f * m_Projectile.Speed * m_Projectile.Speed);
     }
 
     protected override void ProcessThink(float deltaTime) {

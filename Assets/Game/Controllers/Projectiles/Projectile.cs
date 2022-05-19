@@ -17,38 +17,47 @@ public class Projectile : MonoBehaviour {
 
     [SerializeField] private float m_Damage = 1f;
     [SerializeField] private float m_Speed = 10f;
+    public float Speed => m_Speed;
     [SerializeField] private float m_Lifetime = 10f;
     
-    [SerializeField] private Rigidbody2D m_Body;
-    [SerializeField] private CircleCollider2D m_Hitbox;
+    [HideInInspector] private Rigidbody2D m_Body;
+    [HideInInspector] private CircleCollider2D m_Hitbox;
+    [HideInInspector] private SpriteRenderer m_SpriteRenderer;
 
-    [SerializeField] private float m_Ticks = 0f;
+    [SerializeField, ReadOnly] private float m_Ticks = 0f;
     [SerializeField] private float m_Cooldown = 0.5f;
     public bool CanFire => m_Ticks == 0f;
+    public bool IsHot => m_Ticks != 0f;
 
-    private int m_Collisions;
+    [SerializeField, ReadOnly] private List<string> m_Targets;
     
     #endregion
 
     /* --- Unity --- */
     #region Unity
     
-    void OnCollisionEnter2D(Collision2D collision) {
-        Controller temp = collision.gameObject.GetComponent<Controller>();
+    void OnTriggerEnter2D(Collider2D collider) {
+        Controller temp = collider.GetComponent<Controller>();
+
         if (temp != null) {
             ProcessCollision(temp);
         }
-        m_Collisions += 1;
-        if (m_Collisions >= 3) {
-            Destroy(gameObject);
+
+        if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+            m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
+            // m_SpriteRenderer.sortingLayerName = GameRules.BackgroundRenderingLayer;
+            // m_SpriteRenderer.sortingOrder = -5;
         }
+        
     }
     
     private void ProcessCollision(Controller controller) {
         // Target typee pls otherwise enemies will just kill each other and
         // the player will just murder themselvessss.
-        controller.Hurt(m_Damage);
-        Destroy(gameObject);
+        if (m_Targets.Contains(controller.gameObject.tag)) {
+            controller.Hurt(m_Damage);
+            Destroy(gameObject);
+        }
     }
 
     #endregion
@@ -56,10 +65,10 @@ public class Projectile : MonoBehaviour {
     /* --- Initialization --- */
     #region Initialization
 
-    public void Fire(Vector3 direction, Vector2 refvel) {
+    public void Fire(Vector3 direction, Vector2 referenceVelocity, List<string> targets) {
         if (CanFire) {
             Projectile projectile = Instantiate(gameObject, transform.position, Quaternion.identity, null).GetComponent<Projectile>();
-            projectile.Init(direction, refvel);
+            projectile.Init(direction, referenceVelocity, targets);
             m_Ticks = m_Cooldown;
         }
     }
@@ -71,18 +80,23 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    public void Init(Vector3 direction, Vector2 refvel) {
+    public float torque;
+
+    public void Init(Vector3 direction, Vector2 referenceVelocity, List<string> targets) {
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Body = GetComponent<Rigidbody2D>();
         m_Body.gravityScale = 0f;
         m_Hitbox = GetComponent<CircleCollider2D>();
-        m_Hitbox.isTrigger = false;
+        m_Hitbox.isTrigger = true;
         transform.position += direction * (2f * (m_Hitbox.radius + GameRules.MovementPrecision));
 
         // m_Map.gameObject.layer = LayerMask.NameToLayer("IgnoreRaycast");;
         
         gameObject.SetActive(true);
-        m_Body.velocity = (Vector2)direction * m_Speed + refvel;
+        m_Body.velocity = (Vector2)direction * m_Speed + referenceVelocity;
+        m_Body.angularVelocity = torque;
         gameObject.layer = LayerMask.NameToLayer("Projectile");;
+        m_Targets = targets;
 
         Destroy(gameObject, m_Lifetime);
     }

@@ -52,3 +52,6 @@ MonoBehaviour:
   groundCollisionLayer:
     serializedVersion: 2
     m_Bits: 192
+  climbCollisionLayer:
+    serializedVersion: 2
+    m_Bits: 64

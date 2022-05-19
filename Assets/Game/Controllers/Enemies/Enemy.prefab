@@ -46,11 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Angle: 5
   m_PassiveRange: 7.5
-  m_ActiveRange: 15
+  m_ActiveRange: 12
   m_Active: 0
   m_Mask:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 584
 --- !u!1 &1760666778566409604
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,6 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ea6558355c04c843b486c22eb5e692e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MaxHealth: 1
+  m_Health: 0
   m_Height: 0.5
   m_Speed: 3
   m_Acceleration: 200
@@ -157,8 +159,9 @@ MonoBehaviour:
   m_DebugJumpDistance: 0
   m_DebugJumpStartPosition: {x: 0, y: 0, z: 0}
   m_Projectile: {fileID: 1760666778776897746}
+  m_Targets: []
   m_AttackDirection: {x: 0, y: 0}
-  m_PathDuration: 2.5
+  m_PathDuration: 0.5
   m_Ticks: 0
   m_Direction: 1
   m_VisionCone: {fileID: 1760666778422134346}
@@ -200,10 +203,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -22149485
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  m_Sprite: {fileID: -87715655, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -211,7 +214,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &7309283389934957731
@@ -241,6 +244,8 @@ MonoBehaviour:
   - {fileID: -803173416, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
   - {fileID: -653056022, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
   - {fileID: -1570369351, guid: 3a1a5af2c3e128b4c944a702afd02137, type: 3}
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_IdleFrames: 2
   m_MovementFrames: 4
   m_RisingFrames: 1

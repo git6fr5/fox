@@ -18,7 +18,7 @@ TagManager:
   - Ground
   - Platform
   - Projectile
-  - 
+  - Ducking
   - 
   - 
   - 
@@ -53,6 +53,12 @@ TagManager:
     locked: 0
   - name: Characters
     uniqueID: 4272817811
+    locked: 0
+  - name: Projectiles
+    uniqueID: 134861003
+    locked: 0
+  - name: Border
+    uniqueID: 618029683
     locked: 0
   - name: UI
     uniqueID: 4172483913

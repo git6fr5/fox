@@ -43,7 +43,7 @@ public class Player : Controller {
     // Double Jump.
     [SerializeField, ReadOnly] private bool m_DoubleJumpInput = false;
     [SerializeField, ReadOnly] private bool m_CanDoubleJump = false;
-    [SerializeField, ReadOnly] private float m_DoubleJumpForce = 20f;
+    [SerializeField] private float m_DoubleJumpForce = 20f;
     [SerializeField, ReadOnly] private bool m_DoubleJumping = false;
     public bool DoubleJumping => m_DoubleJumping;
 
@@ -60,8 +60,15 @@ public class Player : Controller {
 
         // Basic.
         m_MoveInput = Input.GetAxisRaw("Horizontal");
+
+        // Jumping.
         m_JumpInput = Input.GetKeyDown(m_JumpKey);
         m_FloatInput = Input.GetKeyDown(m_JumpKey) ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_FloatInput);
+
+        // Ducking.
+        // m_DuckInput = Input.GetAxisRaw("Vertical") == -1f;
+        m_DuckInput = Input.GetKeyDown(KeyCode.S) && AirborneFlag == Airborne.Grounded ? true : (Input.GetKeyUp(KeyCode.S) || (m_Ducked) ? false : m_DuckInput);
+        m_Ducked = m_DuckInput && AirborneFlag == Airborne.Falling;
 
         // Climbing.
         m_ClimbInput = Input.GetAxisRaw("Vertical");
@@ -76,7 +83,7 @@ public class Player : Controller {
         float x1 = DirectionFlag == Direction.Right ? 1f : -1f;
         float x2 = Input.GetAxisRaw("Horizontal");
         Vector2 directionalInput = y == 0f ? new Vector2(x1, 0f) : new Vector2(x2, y);
-        m_DashInput = Input.GetMouseButtonDown(1) ? (directionalInput == Vector2.zero ? new Vector2(0f, 1f) : directionalInput) : Vector2.zero;
+        m_DashInput = Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.K) ? (directionalInput == Vector2.zero ? new Vector2(0f, 1f) : directionalInput) : Vector2.zero;
         m_CanDash = m_WallClimbing || m_Dashing ? false : ((m_WallJumping || AirborneFlag == Airborne.Grounded) ? true : m_CanDash);
         m_EndDash = !m_Dashing ? false : (Input.GetKeyUp(m_JumpKey) ? true : m_EndDash);
 
@@ -146,7 +153,7 @@ public class Player : Controller {
 
     private bool CheckClimb() {
         Vector3 direction = DirectionFlag == Direction.Right ? Vector3.right : Vector3.left;
-        Collider2D ground = Physics2D.OverlapCircle(transform.position + direction * m_Width, GameRules.MovementPrecision, GameRules.GroundCollisionLayer);
+        Collider2D ground = Physics2D.OverlapCircle(transform.position + direction * m_Width, GameRules.MovementPrecision, GameRules.ClimbCollisionLayer);
         if (ground != null) {
             m_ClimbDirection = direction.x;
             return true;
@@ -201,9 +208,9 @@ public class Player : Controller {
             m_Body.velocity = direction.normalized * m_DashSpeed;
             int m_Precision = 6;
             for (int i = 0; i < m_Precision; i++) {
-                if (i > 0 && m_EndDash) {
-                    break;
-                }
+                // if (i > 0 && m_EndDash) {
+                //     break;
+                // }
                 yield return new WaitForSeconds(duration / (float)m_Precision);
             }
             m_Dashing = false;
