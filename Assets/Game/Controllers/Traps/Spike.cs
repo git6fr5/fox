@@ -7,28 +7,50 @@ using UnityEngine;
 ///<summary>
 ///
 ///<summary>
-public class Spike : Trap {
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
+public class Spike : MonoBehaviour {
 
-    private Vector2 m_Offset = new Vector2(0f, -0.5f);
-    private Vector2 m_Size = new Vector2(1f, 0.25f);
+    [HideInInspector] protected SpriteRenderer m_SpriteRenderer;
+    [HideInInspector] protected BoxCollider2D m_Hitbox;
 
-    protected override bool Trigger() {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position + (Vector3)m_Offset, m_Size, 0f);
-        for (int i = 0; i < colliders.Length; i++) {
-            if (colliders[i].GetComponent<Player>()) {
-                print("Hello");
-                return true;
-            }
+    protected Vector2 m_Offset = new Vector2(0f, -0.25f);
+    protected Vector2 m_Size = new Vector2(1f, 0.5f);
+    [SerializeField] protected float m_Rotation = 0f;
+
+    void Start() {
+        Init();
+    }
+
+    public virtual void Init() {
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        m_Hitbox = GetComponent<BoxCollider2D>();
+        m_Hitbox.size = m_Size;
+        m_Hitbox.offset = m_Offset;
+        m_Hitbox.isTrigger = true;
+
+        gameObject.SetActive(true);
+        transform.eulerAngles = new Vector3(0f, 0f, m_Rotation);
+    }
+
+    void OnTriggerEnter2D(Collider2D collider) {
+        Controller temp = collider.GetComponent<Controller>();
+        if (temp != null) {
+            ProcessCollision(temp);
         }
-        return false;
+    }
+    
+    private void ProcessCollision(Controller controller) {
+        controller.Hurt(0.05f);
+
+        Vector2 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector2.up;
+        controller.Knockback(35f * direction.normalized, 0.075f);
     }
 
-    protected override void Activate() {
-        
-    }
-
-    private void OnDrawGizmos() {
-        Gizmos.DrawWireCube(transform.position + (Vector3)m_Offset, (Vector3)m_Size);
+    public void Flip() {
+        m_SpriteRenderer.enabled = !m_SpriteRenderer.enabled;
+        m_Hitbox.enabled = !m_Hitbox.enabled;
     }
 
 }

@@ -156,13 +156,13 @@
 		},
 		{
 			"__cWid": 4,
-			"__cHei": 4,
+			"__cHei": 3,
 			"identifier": "Controls",
 			"uid": 8,
 			"relPath": "Controls.png",
 			"embedAtlas": null,
 			"pxWid": 64,
-			"pxHei": 64,
+			"pxHei": 48,
 			"tileGridSize": 16,
 			"spacing": 0,
 			"padding": 0,
@@ -171,7 +171,7 @@
 			"enumTags": [],
 			"customData": [],
 			"savedSelections": [],
-			"cachedPixelData": { "opaqueTiles": "0000000000000000", "averageColors": "a6100000000000005f000000000000004f005f004f007f001f001f001f001f00" }
+			"cachedPixelData": { "opaqueTiles": "000000000000", "averageColors": "a6100000000000005f000000000000004f005f004f007f00" }
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },
 	"levels": [

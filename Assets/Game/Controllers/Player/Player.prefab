@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Projectile: {fileID: 4299607835434631548}
   m_Targets:
   - Enemy
+  - Switch
   m_AttackDirection: {x: 0, y: 0}
   m_JumpKey: 32
   m_ClimbInput: 0

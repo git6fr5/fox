@@ -22,6 +22,8 @@ public class Level : MonoBehaviour {
     public int ID => m_ID;
     [SerializeField, ReadOnly] private string m_LevelName;
     public string LevelName => m_LevelName;
+    [SerializeField, ReadOnly] private LDtkUnity.Level m_LDtkLevel;
+    public LDtkUnity.Level LDtkLevel => m_LDtkLevel;
     [SerializeField, ReadOnly] private int m_Height;
     public int Height => m_Height;
     [SerializeField, ReadOnly] private int m_Width;
@@ -63,6 +65,7 @@ public class Level : MonoBehaviour {
         m_Background.transform.localPosition = Vector3.zero;
 
         m_ID = jsonID;
+        m_LDtkLevel = json.Levels[jsonID];
         m_LevelName = json.Levels[jsonID].Identifier;
         m_Height = (int)(json.Levels[jsonID].PxHei / json.DefaultGridSize);
         m_Width = (int)(json.Levels[jsonID].PxWid / json.DefaultGridSize);
@@ -147,6 +150,17 @@ public class Level : MonoBehaviour {
 
     public void SetControls(List<LDtkTileData> controlData, Environment environment) {
         for (int i = 0; i < controlData.Count; i++) {
+
+            // Circles.
+            if (controlData[i].vectorID.y == 1) {
+                for (int j = 0; j < m_Entities.Count; j++) {
+                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                        if (m_Entities[j].GetComponent<SwitchSpike>() != null) {
+                            m_Entities[j].GetComponent<SwitchSpike>().InitOff();
+                        }
+                    }
+                }
+            }
             
             // Arrows.
             if (controlData[i].vectorID.y == 2) {
@@ -154,6 +168,18 @@ public class Level : MonoBehaviour {
                     if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
                         if (m_Entities[j].GetComponent<Platform>() != null) {
                             m_Entities[j].GetComponent<Platform>().Init(i, controlData);
+                        }
+                    }
+                }
+            }
+
+            // Offsets.
+            if (controlData[i].vectorID.y == 3) {
+                for (int j = 0; j < m_Entities.Count; j++) {
+                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                        if (m_Entities[j].GetComponent<TimedSpike>() != null) {
+                            print("Spike");
+                            m_Entities[j].GetComponent<TimedSpike>().Init(controlData[i].vectorID.x);
                         }
                     }
                 }
@@ -167,6 +193,19 @@ public class Level : MonoBehaviour {
                 m_Entities.Add(newEntity);
             }
 
+        }
+
+        List<ElevatorPlatform> elevators = new List<ElevatorPlatform>();
+        List<SwitchSpike> switchSpikes = new List<SwitchSpike>();
+        List<Lever> levers = new List<Lever>();
+        for (int i = 0; i < m_Entities.Count; i++) {
+            if (m_Entities[i].GetComponent<ElevatorPlatform>() != null) { elevators.Add(m_Entities[i].GetComponent<ElevatorPlatform>()); }
+            if (m_Entities[i].GetComponent<SwitchSpike>() != null) { switchSpikes.Add(m_Entities[i].GetComponent<SwitchSpike>()); }
+            if (m_Entities[i].GetComponent<Lever>() != null) { levers.Add(m_Entities[i].GetComponent<Lever>()); }
+        }
+
+        for (int i = 0; i < levers.Count; i++) {
+            levers[i].Init(elevators, switchSpikes);
         }
     }
     

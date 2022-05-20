@@ -43,9 +43,13 @@ public class Projectile : MonoBehaviour {
         }
 
         Controller temp = collider.GetComponent<Controller>();
-
         if (temp != null) {
             ProcessCollision(temp);
+        }
+
+        Lever lever = collider.GetComponent<Lever>();
+        if (lever != null) {
+            ProcessCollision(lever);
         }
 
         if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
@@ -64,6 +68,16 @@ public class Projectile : MonoBehaviour {
             controller.Hurt(m_Damage);
             controller.Knockback(m_Body.velocity , 0.075f);
             Destroy(gameObject);
+        }
+    }
+
+    private void ProcessCollision(Lever lever) {
+        // Target typee pls otherwise enemies will just kill each other and
+        // the player will just murder themselvessss.
+        if (m_Targets.Contains("Switch")) {
+            lever.Activate();
+            m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
+            m_IsHot = false;
         }
     }
 

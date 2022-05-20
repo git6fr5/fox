@@ -70,7 +70,7 @@ public class LevelLoader : MonoBehaviour {
     #region File
 
     public void OpenLevel(Level level) {
-        LDtkLevel ldtkLevel = GetLevel(level.LevelName);
+        LDtkLevel ldtkLevel = level.LDtkLevel; // GetLevel(level.LevelName);
         LoadLevel(level, ldtkLevel);
     }
 

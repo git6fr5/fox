@@ -6,18 +6,17 @@ using LDtkTileData = LevelLoader.LDtkTileData;
 
 public class ElevatorPlatform : MovingPlatform {
 
+    public void SwitchState() {
+        // Sets the target for this platform.
+        if (m_Path == null || m_Path.Length == 0) { return; }
+        
+        m_PathIndex = (m_PathIndex + 1) % m_Path.Length;
+        Debug.DrawLine(transform.position, m_Path[m_PathIndex], Color.white);
+    }
+
     // Sets the target for this platform.
     protected override void Target() {
-        bool foundPlayer = false;
-        for (int i = 0; i < m_Container.Count; i++) {
-            if (m_Container[i].GetComponent<Player>() != null) {
-                foundPlayer = true;
-                break;
-            }
-        }
-        if (!foundPlayer) { return; }
-
-        base.Target();
+        // nothing.
     }
 
     // Moves this platform.
