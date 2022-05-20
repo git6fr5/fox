@@ -169,6 +169,9 @@ public class Level : MonoBehaviour {
                         if (m_Entities[j].GetComponent<Platform>() != null) {
                             m_Entities[j].GetComponent<Platform>().Init(i, controlData);
                         }
+                        if (m_Entities[j].GetComponent<Enemy>() != null) {
+                            m_Entities[j].GetComponent<Enemy>().InitPath(i, controlData);
+                        }
                     }
                 }
             }

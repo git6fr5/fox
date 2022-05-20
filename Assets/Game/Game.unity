@@ -197,19 +197,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0
+      value: 0.208901
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: 0.16635859
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.58128977
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.66543436
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956439, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_RootOrder
@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LDtkData: {fileID: -1690365423034721001, guid: 7cbc9712daf62164496ed59dd79f9a18, type: 3}
-  startingLevelName: Level_27
+  startingLevelName: Level_18
   m_Levels: []
   loadLevels: []
   loadedLevels: []

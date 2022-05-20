@@ -186,7 +186,7 @@
 			"pxHei": 256,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,
@@ -3228,7 +3228,7 @@
 			]
 		},
 		{
-			"identifier": "Level_13",
+			"identifier": "Level_14",
 			"iid": "a0629b60-b4d0-11ec-b3b7-2b474c10a192",
 			"uid": 51,
 			"worldX": 1472,
@@ -3603,7 +3603,7 @@
 			]
 		},
 		{
-			"identifier": "Level_14",
+			"identifier": "Level_18",
 			"iid": "feaaa780-b4d0-11ec-b3b7-6f9301aa5781",
 			"uid": 57,
 			"worldX": -128,
@@ -4201,7 +4201,7 @@
 			]
 		},
 		{
-			"identifier": "Level_15",
+			"identifier": "Level_19",
 			"iid": "73ba7a40-b4d0-11ec-9e73-39902373dc0f",
 			"uid": 59,
 			"worldX": 1360,
@@ -4428,7 +4428,7 @@
 			]
 		},
 		{
-			"identifier": "Level_16",
+			"identifier": "Level_20",
 			"iid": "77ba57a0-b4d0-11ec-9e73-a1cfa94e3fda",
 			"uid": 60,
 			"worldX": 1040,
@@ -4902,7 +4902,7 @@
 			"pxHei": 320,
 			"__bgColor": "#696A79",
 			"bgColor": null,
-			"useAutoIdentifier": true,
+			"useAutoIdentifier": false,
 			"bgRelPath": null,
 			"bgPos": null,
 			"bgPivotX": 0.5,
