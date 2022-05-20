@@ -68,7 +68,7 @@ GameObject:
   - component: {fileID: 1760666778566409601}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,8 +149,11 @@ MonoBehaviour:
   m_Floatiness: 0.25
   m_MoveInput: 0
   m_JumpInput: 0
-  m_FloatInput: 0
   m_AttackInput: 0
+  m_FloatInput: 0
+  m_DuckInput: 0
+  m_Ducked: 0
+  m_NotDucking: 0
   MovementFlag: 0
   DirectionFlag: 0
   AirborneFlag: 0
@@ -159,7 +162,8 @@ MonoBehaviour:
   m_DebugJumpDistance: 0
   m_DebugJumpStartPosition: {x: 0, y: 0, z: 0}
   m_Projectile: {fileID: 1760666778776897746}
-  m_Targets: []
+  m_Targets:
+  - Player
   m_AttackDirection: {x: 0, y: 0}
   m_PathDuration: 0.5
   m_Ticks: 0

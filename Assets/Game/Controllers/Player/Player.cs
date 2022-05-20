@@ -154,6 +154,12 @@ public class Player : Controller {
         base.ProcessThink(deltaTime);
     }
 
+    public override void Knockback(Vector2 velocity, float duration) {
+        base.Knockback(velocity, duration);
+        m_WallClimbing = false;
+        m_EndDash = true;
+    }
+
     /* --- Climbing --- */
     #region Climbing
 

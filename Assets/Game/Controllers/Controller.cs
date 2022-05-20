@@ -62,6 +62,10 @@ public abstract class Controller : MonoBehaviour {
     [SerializeField, ReadOnly] protected bool m_FloatInput;
     // [SerializeField, ReadOnly] protected float m_FloatTicks;
     // private static float m_FloatHangTime = 0.15f;
+
+    // Knockback.
+    [SerializeField, ReadOnly] protected float m_KnockbackTicks;
+    public bool m_Knockedback => m_KnockbackTicks > 0f;
     
     // Ducks
     [SerializeField, ReadOnly] protected bool m_DuckInput;
@@ -98,6 +102,8 @@ public abstract class Controller : MonoBehaviour {
     }
 
     private void Update() {
+        if (m_Knockedback) { return; }
+
         GetInput();
         GetFlags();
         ProcessJump();
@@ -109,6 +115,8 @@ public abstract class Controller : MonoBehaviour {
     private void FixedUpdate() {
         float deltaTime = Time.fixedDeltaTime;
         ProcessThink(deltaTime);
+        
+        if (m_Knockedback) { return; }
         ProcessMovement(deltaTime);
         DebugMovement(deltaTime);
     }
@@ -185,6 +193,9 @@ public abstract class Controller : MonoBehaviour {
         // else {
         //     m_FloatTicks += deltaTime;
         // }
+        if (m_KnockbackTicks > 0f) {
+            m_KnockbackTicks -= deltaTime;
+        }
     }
     
     #endregion
@@ -264,10 +275,17 @@ public abstract class Controller : MonoBehaviour {
     #region Health
 
     public void Hurt(float damage) {
+        if (m_Knockedback) { return; }
+
         m_Health -= damage;
         if (m_Health <= 0f) {
             Kill();
         }
+    }
+
+    public virtual void Knockback(Vector2 velocity, float duration) {
+        m_Body.velocity = velocity;
+        m_KnockbackTicks = duration;
     }
 
     public void Kill() {

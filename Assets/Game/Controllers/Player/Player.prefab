@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8984214373028524411}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Floatiness: 0.4
   m_MoveInput: 0
   m_JumpInput: 0
-  m_FloatInput: 0
   m_AttackInput: 0
+  m_FloatInput: 0
+  m_KnockbackTicks: 0
   m_DuckInput: 0
   m_Ducked: 0
   m_NotDucking: 0
@@ -110,7 +111,8 @@ MonoBehaviour:
   m_DebugJumpDistance: 0
   m_DebugJumpStartPosition: {x: 0, y: 0, z: 0}
   m_Projectile: {fileID: 4299607835434631548}
-  m_Targets: []
+  m_Targets:
+  - Enemy
   m_AttackDirection: {x: 0, y: 0}
   m_JumpKey: 32
   m_ClimbInput: 0
@@ -267,6 +269,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8984214373028524410}
     m_Modifications:
+    - target: {fileID: 4068747371602144488, guid: 56da8d222d339544199cab4c16191391, type: 3}
+      propertyPath: m_Damage
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 4068747371602144489, guid: 56da8d222d339544199cab4c16191391, type: 3}
       propertyPath: m_RootOrder
       value: 0

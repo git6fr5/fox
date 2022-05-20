@@ -27,9 +27,10 @@ public class Projectile : MonoBehaviour {
     [SerializeField, ReadOnly] private float m_Ticks = 0f;
     [SerializeField] private float m_Cooldown = 0.5f;
     public bool CanFire => m_Ticks == 0f;
-    public bool IsHot => m_Ticks != 0f;
 
     [SerializeField, ReadOnly] private List<string> m_Targets;
+
+    [SerializeField, ReadOnly] private bool m_IsHot = false;
     
     #endregion
 
@@ -37,6 +38,10 @@ public class Projectile : MonoBehaviour {
     #region Unity
     
     void OnTriggerEnter2D(Collider2D collider) {
+        if (!m_IsHot) {
+            return;
+        }
+
         Controller temp = collider.GetComponent<Controller>();
 
         if (temp != null) {
@@ -45,6 +50,7 @@ public class Projectile : MonoBehaviour {
 
         if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
+            m_IsHot = false;
             // m_SpriteRenderer.sortingLayerName = GameRules.BackgroundRenderingLayer;
             // m_SpriteRenderer.sortingOrder = -5;
         }
@@ -56,8 +62,13 @@ public class Projectile : MonoBehaviour {
         // the player will just murder themselvessss.
         if (m_Targets.Contains(controller.gameObject.tag)) {
             controller.Hurt(m_Damage);
+            controller.Knockback(m_Body.velocity , 0.075f);
             Destroy(gameObject);
         }
+    }
+
+    public bool WillThisBeReadyToFireIn(float ticks) {
+        return (m_Ticks - ticks) <= 0f;
     }
 
     #endregion
@@ -92,6 +103,8 @@ public class Projectile : MonoBehaviour {
 
         // m_Map.gameObject.layer = LayerMask.NameToLayer("IgnoreRaycast");;
         
+        m_IsHot = true;
+
         gameObject.SetActive(true);
         m_Body.velocity = (Vector2)direction * m_Speed + referenceVelocity;
         m_Body.angularVelocity = torque;
