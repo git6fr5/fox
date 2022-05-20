@@ -67,7 +67,7 @@ public class Player : Controller {
 
         // Ducking.
         // m_DuckInput = Input.GetAxisRaw("Vertical") == -1f;
-        m_DuckInput = (Input.GetAxisRaw("Vertical") == -1f && m_NotDucking) && AirborneFlag == Airborne.Grounded ? true : (Input.GetKeyUp(KeyCode.S) || (m_Ducked) ? false : m_DuckInput);
+        m_DuckInput = m_WallClimbing || ((Input.GetAxisRaw("Vertical") == -1f && m_NotDucking) && AirborneFlag == Airborne.Grounded) ? true : (Input.GetKeyUp(KeyCode.S) || (m_Ducked) ? false : m_DuckInput);
         m_Ducked = m_DuckInput && AirborneFlag == Airborne.Falling;
         m_NotDucking = Input.GetAxisRaw("Vertical") != -1f;
 
@@ -76,7 +76,7 @@ public class Player : Controller {
         m_CanClimb = m_CanClimb ? CheckFall() : CheckClimb();
         m_WallClimbing = m_CanClimb && (m_WallClimbing ? true : (m_ClimbInput != 0f ? true : false));
         m_WallJump = !m_WallClimbing ? false : (Input.GetKeyDown(m_JumpKey) ? true : false);
-        m_WallJumping = m_Dashing || AirborneFlag == Airborne.Grounded ? false : (m_WallJump ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_WallJumping));
+        m_WallJumping = !m_WallClimbing && (m_Dashing || AirborneFlag == Airborne.Grounded) ? false : (m_WallJump ? true : (Input.GetKeyUp(m_JumpKey) ? false : m_WallJumping));
 
         // Dashing.
         // m_DashInput = (AirborneFlag != Airborne.Grounded && Input.GetKeyDown(m_JumpKey)) ? new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))  : Vector2.zero;
@@ -133,7 +133,8 @@ public class Player : Controller {
         }
         else if (m_DoubleJumpInput && m_CanDoubleJump) {
             ProcessDoubleJump();
-        } else {
+        } 
+        else {
             base.ProcessJump();
         }
     }
