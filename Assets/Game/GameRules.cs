@@ -34,6 +34,7 @@ public class GameRules : MonoBehaviour {
     // Rendering Layers.
     public static string BorderRenderingLayer = "Border";
     public static string BackgroundRenderingLayer = "Background";
+    public static string UIRenderingLayer = "UI";
 
     // Layers
     [SerializeField] private LayerMask groundCollisionLayer;
