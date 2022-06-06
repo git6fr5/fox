@@ -14,13 +14,13 @@ public class HeadsUpDisplay : MonoBehaviour {
     #region Variables
     
     // Player.
-    [SerializeField] private Controller m_Controller;
+    [SerializeField] private State m_State;
 
     // Cooldown.
     [SerializeField] private SpriteRenderer m_Cooldown;
     
     // Healthbar.
-    private bool HealthChanged => m_MaxHearts != m_Controller.MaxHealth || m_Hearts != m_Controller.Health;
+    private bool HealthChanged => m_MaxHearts != m_State.MaxHealth || m_Hearts != m_State.Health;
     [SerializeField] private List<SpriteRenderer> m_Healthbar = new List<SpriteRenderer>();
     [SerializeField, ReadOnly] private bool m_ShowingHealthbar;
     [SerializeField, ReadOnly] private float m_HealthbarTicks;
@@ -103,7 +103,7 @@ public class HeadsUpDisplay : MonoBehaviour {
 
     private void SetHealthbar() {
         // Update the max hearts.
-        m_MaxHearts = m_Controller.MaxHealth;
+        m_MaxHearts = m_State.MaxHealth;
         if (m_Healthbar.Count < m_MaxHearts) {
             for (int i = m_Healthbar.Count; i < m_MaxHearts; i++) {
                 AddHeart(i);
@@ -111,7 +111,7 @@ public class HeadsUpDisplay : MonoBehaviour {
         }
 
         // Update the hearts.
-        m_Hearts = m_Controller.Health;
+        m_Hearts = m_State.Health;
         for (int i = 0; i < m_Hearts; i++) {
             m_Healthbar[i].sprite = m_HeartSprite;
         }
@@ -137,14 +137,14 @@ public class HeadsUpDisplay : MonoBehaviour {
     #region Cooldown
 
     private void UpdateCooldown() {
-        if (m_Controller.projectile.CanFire) {
+        if (m_State.Projectile.CanFire) {
             m_Cooldown.gameObject.SetActive(false);
             return;
         }
 
         m_Cooldown.gameObject.SetActive(true);
-        float ratio = m_Controller.projectile.Ticks / m_Controller.projectile.Cooldown;
-        float offset = 1f - (m_Controller.projectile.Ticks / m_Controller.projectile.Cooldown);
+        float ratio = m_State.Projectile.Ticks / m_State.Projectile.Cooldown;
+        float offset = 1f - (m_State.Projectile.Ticks / m_State.Projectile.Cooldown);
         // m_Cooldown.material.SetFloat("_RatioX", ratio);
         m_Cooldown.transform.localScale = new Vector3(ratio, 1f, 1f);
         m_Cooldown.transform.localPosition = new Vector3(-offset / 2f, 0.75f, 1f);

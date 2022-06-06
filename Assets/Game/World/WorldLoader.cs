@@ -59,7 +59,7 @@ public class WorldLoader : LevelLoader {
         for (int i = 0; i < m_Levels.Length; i++) {
             if (startingLevelName == m_Levels[i].LevelName && m_Levels[i].ControlPositions != null && m_Levels[i].ControlPositions.Count > 0) {
                 GameRules.MainPlayer.transform.position = m_Levels[i].GridToWorldPosition(m_Levels[i].ControlPositions[0]);
-                GameRules.MainPlayer.Body.velocity = Vector2.zero;
+                GameRules.MainPlayer.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 break;
             }
         }

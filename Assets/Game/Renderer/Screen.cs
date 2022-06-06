@@ -19,7 +19,7 @@ public class Screen : MonoBehaviour {
     // Instance.
     public static Screen Instance;
     public static Camera MainCamera => Instance.m_MainCamera;
-    public static Vector2 MousePosition => (Vector2)Instance.m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+    public static Vector2 MousePosition => (Vector2)Instance.m_MainCamera.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
 
     // Components.
     [HideInInspector] public Camera m_MainCamera;

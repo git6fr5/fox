@@ -1,0 +1,39 @@
+private void Dash() {
+
+        if (m_State.CanDash && m_Input.Dash && m_Input.DashDirection != )
+        m_State.StartDash();
+        m_Body.velocity = Vector2.zero;
+        m_Body.gravityScale = 0f;
+        StartCoroutine(IEDash(m_DashDuration, m_DashInput));
+
+        IEnumerator IEDash(float duration, Vector2 direction) {
+            yield return new WaitForSeconds(0.05f);
+            m_Body.velocity = direction.normalized * m_DashSpeed;
+            int m_Precision = 6;
+            for (int i = 0; i < m_Precision; i++) {
+                yield return new WaitForSeconds(duration / (float)m_Precision);
+            }
+            m_State.EndDash();
+            yield return null;
+        }
+
+    }
+
+    private void Swim(float deltaTime) {
+        // Process the physics.
+        Vector2 targetVelocity = (Vector3)m_SwimMoveInput.normalized * m_SwimSpeed;
+        Vector2 deltaVelocity = (targetVelocity - m_Body.velocity) * m_SwimAcceleration * deltaTime;
+        m_Body.velocity += deltaVelocity;
+        
+        // Resistance
+        if (targetVelocity == Vector2.zero) {
+            m_Body.velocity *= m_SwimResistance;
+        }
+        // Check for released inputs.
+        if (targetVelocity.y == 0f && Mathf.Abs(m_Body.velocity.y) < GameRules.MovementPrecision) {
+            m_Body.velocity = new Vector2(m_Body.velocity.x, 0f);
+        }
+        if (targetVelocity.x == 0f && Mathf.Abs(m_Body.velocity.x) < GameRules.MovementPrecision) {
+            m_Body.velocity = new Vector2(0f, m_Body.velocity.y);
+        }
+    }

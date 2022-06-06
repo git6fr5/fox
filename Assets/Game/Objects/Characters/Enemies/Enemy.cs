@@ -9,7 +9,7 @@ using LDtkTileData = LevelLoader.LDtkTileData;
 ///<summary>
 ///
 ///<summary>
-public class Enemy : Controller {
+public class Enemy : Input {
 
     /* --- Variables --- */
     #region Variables
@@ -19,7 +19,7 @@ public class Enemy : Controller {
 
     [SerializeField] private float m_PathDuration;
     [SerializeField] private float m_Ticks;
-    [SerializeField, ReadOnly] private float m_Direction = 1f;
+    // [SerializeField, ReadOnly] private float m_Direction = 1f;
 
     [SerializeField] private VisionCone m_VisionCone;
 
@@ -67,101 +67,101 @@ public class Enemy : Controller {
     /* --- Overrides --- */
     #region Overrides
     
-    protected override void GetInput() {
+    // protected override void GetInput() {
 
-        bool wasAggro = Aggro;
-        Aggro = m_VisionCone.Active;
+    //     bool wasAggro = Aggro;
+    //     Aggro = m_VisionCone.Active;
 
-        if (Aggro && !wasAggro) {
-            JustSawPlayer();
-            return;
-        }
+    //     if (Aggro && !wasAggro) {
+    //         JustSawPlayer();
+    //         return;
+    //     }
 
-        if (!Aggro) {
-            IdleBehaviour();
-        } 
-        else {
-            AggroBehaviour();
-        }
+    //     if (!Aggro) {
+    //         IdleBehaviour();
+    //     } 
+    //     else {
+    //         AggroBehaviour();
+    //     }
         
-    }
+    // }
 
-    private void IdleBehaviour() {
-        // if (m_Ticks >= m_PathDuration) {
-        //     m_Direction *= -1f;
-        //     m_Ticks -= m_PathDuration;
-        // }
+    // private void IdleBehaviour() {
+    //     // if (m_Ticks >= m_PathDuration) {
+    //     //     m_Direction *= -1f;
+    //     //     m_Ticks -= m_PathDuration;
+    //     // }
 
-        Target();
-        Vector3 displacement = m_Path[m_PathIndex] - transform.position;
-        if (displacement.sqrMagnitude < GameRules.MovementPrecision * GameRules.MovementPrecision) {
-            m_MoveInput = 0f;
-            return;
-        }
-        else {
-            m_MoveInput = Mathf.Sign(displacement.x);
-        }
+    //     Target();
+    //     Vector3 displacement = m_Path[m_PathIndex] - transform.position;
+    //     if (displacement.sqrMagnitude < GameRules.MovementPrecision * GameRules.MovementPrecision) {
+    //         m_MoveInput = 0f;
+    //         return;
+    //     }
+    //     else {
+    //         m_MoveInput = Mathf.Sign(displacement.x);
+    //     }
 
-        m_JumpInput = false;
-        m_FloatInput = false;
-        m_AttackInput = false;
+    //     m_JumpInput = false;
+    //     m_FloatInput = false;
+    //     m_AttackInput = false;
 
-    }
+    // }
 
-    private void AggroBehaviour() {
-        float playerDirection = Mathf.Sign((m_VisionCone.player.transform.position - transform.position).x);
-        float direction = DirectionFlag == Direction.Right ? 1f : -1f;
-        if (direction != playerDirection) {
-            m_MoveInput = playerDirection;
-        }
-        else {
-            m_MoveInput = 0f;
-        }
+    // private void AggroBehaviour() {
+    //     float playerDirection = Mathf.Sign((m_VisionCone.player.transform.position - transform.position).x);
+    //     float direction = DirectionFlag == Direction.Right ? 1f : -1f;
+    //     if (direction != playerDirection) {
+    //         m_MoveInput = playerDirection;
+    //     }
+    //     else {
+    //         m_MoveInput = 0f;
+    //     }
 
-        m_FloatInput = true;
+    //     m_FloatInput = true;
 
-        m_JumpInput = false;
-        // if (m_Projectile.WillThisBeReadyToFireIn(0.2f)) {
-        //     m_JumpInput = true;
-        // }
-        m_AttackInput = m_AggroTicks >= m_AggroBufferInterval ? true : (m_AggroTicks <= 0f ? false : m_AttackInput);
+    //     m_JumpInput = false;
+    //     // if (m_Projectile.WillThisBeReadyToFireIn(0.2f)) {
+    //     //     m_JumpInput = true;
+    //     // }
+    //     m_AttackInput = m_AggroTicks >= m_AggroBufferInterval ? true : (m_AggroTicks <= 0f ? false : m_AttackInput);
 
-        Vector2 playerPosition = m_VisionCone.player.transform.position;
-        Vector2 playerDisplacement = (Vector2)playerPosition - (Vector2)transform.position;
-        m_AttackDirection = playerDisplacement.normalized; // + Vector2.up * Mathf.Abs(playerDisplacement.x) / (0.25f * m_Projectile.Speed * m_Projectile.Speed);
-    }
+    //     Vector2 playerPosition = m_VisionCone.player.transform.position;
+    //     Vector2 playerDisplacement = (Vector2)playerPosition - (Vector2)transform.position;
+    //     m_AttackDirection = playerDisplacement.normalized; // + Vector2.up * Mathf.Abs(playerDisplacement.x) / (0.25f * m_Projectile.Speed * m_Projectile.Speed);
+    // }
 
-    private void JustSawPlayer() {
-        m_MoveInput = 0f;
-        m_JumpInput = true;
-        m_FloatInput = true;
-        m_AttackInput = false;
-    }
+    // private void JustSawPlayer() {
+    //     m_MoveInput = 0f;
+    //     m_JumpInput = true;
+    //     m_FloatInput = true;
+    //     m_AttackInput = false;
+    // }
 
-    // Sets the target for this platform.
-    protected virtual void Target() {
-        if (m_Path == null || m_Path.Length == 0) { return; }
+    // // Sets the target for this platform.
+    // protected virtual void Target() {
+    //     if (m_Path == null || m_Path.Length == 0) { return; }
         
-        if ((m_Path[m_PathIndex] - transform.position).sqrMagnitude < GameRules.MovementPrecision * GameRules.MovementPrecision) {
-            m_PathIndex = (m_PathIndex + 1) % m_Path.Length;
-        }
-        Debug.DrawLine(transform.position, m_Path[m_PathIndex], Color.white);
+    //     if ((m_Path[m_PathIndex] - transform.position).sqrMagnitude < GameRules.MovementPrecision * GameRules.MovementPrecision) {
+    //         m_PathIndex = (m_PathIndex + 1) % m_Path.Length;
+    //     }
+    //     Debug.DrawLine(transform.position, m_Path[m_PathIndex], Color.white);
 
-    }
+    // }
 
-    protected override void ProcessThink(float deltaTime) {
-        m_Ticks += deltaTime;
+    // protected override void ProcessThink(float deltaTime) {
+    //     m_Ticks += deltaTime;
 
-        if (m_VisionCone.Active) {
-            m_AggroTicks += deltaTime;
-        }
-        else if (!m_VisionCone.Active) {
-            m_AggroTicks -= deltaTime;
-        }
-        m_AggroTicks = m_AggroTicks >= m_AggroBufferInterval ? m_AggroBufferInterval : (m_AggroTicks <= 0f ? 0f : m_AggroTicks);
+    //     if (m_VisionCone.Active) {
+    //         m_AggroTicks += deltaTime;
+    //     }
+    //     else if (!m_VisionCone.Active) {
+    //         m_AggroTicks -= deltaTime;
+    //     }
+    //     m_AggroTicks = m_AggroTicks >= m_AggroBufferInterval ? m_AggroBufferInterval : (m_AggroTicks <= 0f ? 0f : m_AggroTicks);
 
-        base.ProcessThink(deltaTime);
-    }
+    //     base.ProcessThink(deltaTime);
+    // }
 
     #endregion
 

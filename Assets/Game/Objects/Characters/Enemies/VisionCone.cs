@@ -9,137 +9,137 @@ using UnityEngine;
 ///<summary>
 public class VisionCone : MonoBehaviour {
 
-    /* --- Variables --- */
-    #region Variables
+    // /* --- Variables --- */
+    // #region Variables
     
-    public static int m_Precision = 3;
+    // public static int m_Precision = 3;
 
-    [SerializeField] private float m_Angle = 30f;
-    [SerializeField] private float m_PassiveRange = 3f;
-    [SerializeField] private float m_ActiveRange = 7.5f;
+    // [SerializeField] private float m_Angle = 30f;
+    // [SerializeField] private float m_PassiveRange = 3f;
+    // [SerializeField] private float m_ActiveRange = 7.5f;
 
-    [HideInInspector] private List<Vector3> m_LightRays;
+    // [HideInInspector] private List<Vector3> m_LightRays;
 
-    [SerializeField] private bool m_Active;
-    public bool Active => m_Active;
+    // [SerializeField] private bool m_Active;
+    // public bool Active => m_Active;
 
-    [HideInInspector] private Controller m_Controller;
-    [HideInInspector] private Player m_Player;
-    public Player player => m_Player;
+    // [HideInInspector] private Controller m_Controller;
+    // [HideInInspector] private Player m_Player;
+    // public Player player => m_Player;
 
-    [SerializeField] private LayerMask m_Mask;
+    // [SerializeField] private LayerMask m_Mask;
     
-    #endregion
+    // #endregion
 
-    /* --- Unity --- */
-    #region Unity
+    // /* --- Unity --- */
+    // #region Unity
 
-    void Start() {
-        m_Controller = transform.parent.GetComponent<Controller>();
-    }
+    // void Start() {
+    //     m_Controller = transform.parent.GetComponent<Controller>();
+    // }
 
-    void FixedUpdate() {
-        float deltaTime = Time.fixedDeltaTime;
-        Search(deltaTime);
-    }
+    // void FixedUpdate() {
+    //     float deltaTime = Time.fixedDeltaTime;
+    //     Search(deltaTime);
+    // }
     
-    #endregion
+    // #endregion
 
-    public void Search(float deltaTime) {
-        m_LightRays = new List<Vector3>();
-        if (m_Active) {
-            m_Active = ActiveSearch(deltaTime);
-            return;
-        }
-        m_Active = PassiveSearch(deltaTime);
-    }
+    // public void Search(float deltaTime) {
+    //     m_LightRays = new List<Vector3>();
+    //     if (m_Active) {
+    //         m_Active = ActiveSearch(deltaTime);
+    //         return;
+    //     }
+    //     m_Active = PassiveSearch(deltaTime);
+    // }
 
-    private bool PassiveSearch(float deltaTime) {
+    // private bool PassiveSearch(float deltaTime) {
 
-        bool foundPlayer = false;
-        for (int i = 0; i < m_Precision; i++) {
+    //     bool foundPlayer = false;
+    //     for (int i = 0; i < m_Precision; i++) {
 
-            // Set up the ray.
-            Vector3 start = transform.position;
-            Vector3 baseDirection = m_Controller.DirectionFlag == Controller.Direction.Right ? Vector3.right : Vector3.left;
-            Vector3 direction = Quaternion.Euler(0f, 0f, -m_Angle + i * (2f * m_Angle / m_Precision)) * baseDirection;
-            float distance = m_PassiveRange;
+    //         // Set up the ray.
+    //         Vector3 start = transform.position;
+    //         Vector3 baseDirection = m_Controller.DirectionFlag == Controller.Direction.Right ? Vector3.right : Vector3.left;
+    //         Vector3 direction = Quaternion.Euler(0f, 0f, -m_Angle + i * (2f * m_Angle / m_Precision)) * baseDirection;
+    //         float distance = m_PassiveRange;
 
-            // Cast the ray.
-            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
-            if (hit.collider != null && hit.collider.gameObject != m_Controller.gameObject) {
-                // print("Hitting Something " + hit.collider.name);
-                distance = (transform.position - (Vector3)hit.point).magnitude;
-                Player player = hit.collider.GetComponent<Player>();
-                if (player != null) {
-                    m_Player = player;
-                    foundPlayer = true;
-                }
-            }
+    //         // Cast the ray.
+    //         RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
+    //         if (hit.collider != null && hit.collider.gameObject != m_Controller.gameObject) {
+    //             // print("Hitting Something " + hit.collider.name);
+    //             distance = (transform.position - (Vector3)hit.point).magnitude;
+    //             Player player = hit.collider.GetComponent<Player>();
+    //             if (player != null) {
+    //                 m_Player = player;
+    //                 foundPlayer = true;
+    //             }
+    //         }
 
-            m_LightRays.Add(distance * direction);
-            Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
+    //         m_LightRays.Add(distance * direction);
+    //         Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
             
-        }
+    //     }
 
-        if (foundPlayer) {
-            return true;
-        }
+    //     if (foundPlayer) {
+    //         return true;
+    //     }
 
-        bool aggroedEnemyNearby = false;
-        bool playerWithinActiveRange = false;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_ActiveRange + 2f * GameRules.MovementPrecision, m_Mask);
-        for (int i = 0; i < colliders.Length; i++) {
+    //     bool aggroedEnemyNearby = false;
+    //     bool playerWithinActiveRange = false;
+    //     Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, m_ActiveRange + 2f * GameRules.MovementPrecision, m_Mask);
+    //     for (int i = 0; i < colliders.Length; i++) {
 
-            Enemy enemy = colliders[i].GetComponent<Enemy>();
-            if (enemy != null && enemy.Aggro) {
-                aggroedEnemyNearby = true;
-            }
+    //         Enemy enemy = colliders[i].GetComponent<Enemy>();
+    //         if (enemy != null && enemy.Aggro) {
+    //             aggroedEnemyNearby = true;
+    //         }
 
-            Player player = colliders[i].GetComponent<Player>();
-            if (player != null) {
-                m_Player = player;
-                playerWithinActiveRange = true;
-            }
-        }
+    //         Player player = colliders[i].GetComponent<Player>();
+    //         if (player != null) {
+    //             m_Player = player;
+    //             playerWithinActiveRange = true;
+    //         }
+    //     }
 
-        if (playerWithinActiveRange && m_Player.IsHot) {
-            return ActiveSearch(deltaTime);
-        }
-        if (aggroedEnemyNearby && playerWithinActiveRange) {
-            return ActiveSearch(deltaTime);
-        }
+    //     if (playerWithinActiveRange && m_Player.IsHot) {
+    //         return ActiveSearch(deltaTime);
+    //     }
+    //     if (aggroedEnemyNearby && playerWithinActiveRange) {
+    //         return ActiveSearch(deltaTime);
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    private bool ActiveSearch(float deltaTime) {
+    // private bool ActiveSearch(float deltaTime) {
 
-        bool foundPlayer = false;
+    //     bool foundPlayer = false;
 
-        // Set up the ray.
-        Vector3 start = transform.position;
-        Vector3 direction = (m_Player.transform.position - start).normalized;
-        float distance = m_ActiveRange;
+    //     // Set up the ray.
+    //     Vector3 start = transform.position;
+    //     Vector3 direction = (m_Player.transform.position - start).normalized;
+    //     float distance = m_ActiveRange;
 
-        // Cast the ray.
-        RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
-        if (hit.collider != null && hit.collider.gameObject != gameObject) {
-            print("Hitting Something " + hit.collider.name);
-            distance = (transform.position - (Vector3)hit.point).magnitude;
-            Player player = hit.collider.GetComponent<Player>();
-            if (player != null) {
-                m_Player = player;
-                foundPlayer = true;
-            }
-        }
+    //     // Cast the ray.
+    //     RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
+    //     if (hit.collider != null && hit.collider.gameObject != gameObject) {
+    //         print("Hitting Something " + hit.collider.name);
+    //         distance = (transform.position - (Vector3)hit.point).magnitude;
+    //         Player player = hit.collider.GetComponent<Player>();
+    //         if (player != null) {
+    //             m_Player = player;
+    //             foundPlayer = true;
+    //         }
+    //     }
 
-        Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
-        return foundPlayer;
-    }
+    //     Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
+    //     return foundPlayer;
+    // }
 
-    void OnDrawGizmos() {
-        Gizmos.DrawWireSphere(transform.position, m_ActiveRange);
-    }
+    // void OnDrawGizmos() {
+    //     Gizmos.DrawWireSphere(transform.position, m_ActiveRange);
+    // }
 
 }
