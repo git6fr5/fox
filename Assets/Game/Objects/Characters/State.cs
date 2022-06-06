@@ -10,71 +10,60 @@ using UnityEngine;
 [System.Serializable]
 public class State {
 
-    [HideInInspector] private Rigidbody2D m_Body;
-    [HideInInspector] private Transform m_Transform;
+    private Rigidbody2D body;
+    private Transform transform;
 
     // Health.
-    [SerializeField] private int m_MaxHealth;
-    public int MaxHealth => m_MaxHealth;
-    [SerializeField] private int m_Health;
-    public int Health => m_Health;
+    private int maxHealth;
+    private int health;
 
     // Settings.
-    [SerializeField] private float m_Height;
-    public float Height => m_Height;
-    [SerializeField] private float m_Width ;
-    public float Width => m_Width;
-    [SerializeField] private float m_Speed;
-    public float Speed => m_Speed;
-    [SerializeField] private float m_Acceleration;
-    public float Acceleration => m_Acceleration;
+    private float height;
+    private float width ;
+    private float speed;
+    private float acceleration;
 
     // Weapon.
-    [SerializeField] protected Projectile m_Projectile;
-    public Projectile Projectile => m_Projectile;
+    protected Projectile projectile;
 
     // Direction
-    [SerializeField, ReadOnly] private float m_Direction;
-    public float Direction => m_Direction;
-    [SerializeField, ReadOnly] private bool m_Moving;
-    public bool Moving => m_Moving;
+    private float direction;
+    private bool moving;
 
     // Jump.
-    [SerializeField] private float m_JumpForce;
-    public float JumpForce => m_JumpForce;
-    [SerializeField] private float m_Weight;
-    public float Weight => m_Weight;
-    [SerializeField] private float m_Floatiness;
-    public float Floatiness => m_Floatiness;
-    [SerializeField, ReadOnly] private bool m_OnGround;
+    private float jumpforce;
+    private float weight;
+    private float floatiness;
+    private bool onground;
+
+    
+    // Double Jump.
+    private float doublejumpforce;
+    private bool doublejumpreset;
+
+    
+    // Dash.
+    private bool dashreset;
+    private bool dashing;
+    private float dashspeed;
+    private float dashduration;
+    public float DashDuration => m_DashDuration;
+
+    public bool CanDash => m_DashReset && !m_Dashing;
+    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround;
     public bool CanJump => m_OnGround; // AirborneFlag == Airborne.Grounded;
     public bool Rising => m_Body.velocity.y > 0f;
     
-    // Double Jump.
-    [SerializeField] private float m_DoubleJumpForce;
-    public float DoubleJumpForce => m_DoubleJumpForce;
-    [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
-    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround;
-    
-    // Dash.
-    [SerializeField, ReadOnly] private bool m_DashReset;
-    public bool CanDash => m_DashReset && !m_Dashing;
-    [SerializeField, ReadOnly] private bool m_Dashing;
-    public bool Dashing => m_Dashing;
-    [SerializeField] private float m_DashSpeed;
-    public float DashSpeed => m_DashSpeed;
-    [SerializeField] private float m_DashDuration;
-    public float DashDuration => m_DashDuration;
-
-    // Ducking.
-    // [SerializeField, ReadOnly] protected bool m_Ducked;
-    // [SerializeField, ReadOnly] protected bool m_NotDucking;
-
-    // public bool IsHot => m_State.Projectile != null && !m_State.Projectile.CanFire;
-
     // Targets.
-    [SerializeField] protected List<string> m_Targets;
-    public List<string> Targets => m_Targets;
+    protected List<string> targets;
+
+
+
+
+
+
+
+
 
     public void Init(Transform transform, Rigidbody2D body) {
         m_Health = m_MaxHealth;
@@ -100,11 +89,11 @@ public class State {
     }
 
     public void StartDash() {
-        m_Dashing = true;
+        dashing = true;
     }
 
     public void EndDash() {
-        m_Dashing = false;
+        dashing = false;
     }
 
     private void DashReset() {
