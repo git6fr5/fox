@@ -39,7 +39,7 @@ public class Level : MonoBehaviour {
     // Components.
     [SerializeField] private BoxCollider2D m_Box;
     [SerializeField] private Tilemap m_Ground;
-    [SerializeField] private Tilemap m_Background;
+    [SerializeField] private Tilemap m_Water;
     [SerializeField] private List<Entity> m_Entities = new List<Entity>();
 
     // Position.
@@ -59,10 +59,13 @@ public class Level : MonoBehaviour {
         m_Ground.transform.localPosition = Vector3.zero;
         m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");;
 
-        m_Background = new GameObject("Background", typeof(Tilemap), typeof(TilemapRenderer)).GetComponent<Tilemap>();
-        m_Background.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BackgroundRenderingLayer;
-        m_Background.transform.SetParent(transform);
-        m_Background.transform.localPosition = Vector3.zero;
+        m_Water = new GameObject("Water", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
+        // m_Water.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BackgroundRenderingLayer;
+        m_Water.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BorderRenderingLayer;
+        m_Water.GetComponent<TilemapCollider2D>().isTrigger = true;
+        m_Water.transform.SetParent(transform);
+        m_Water.transform.localPosition = Vector3.zero;
+        m_Water.gameObject.layer = LayerMask.NameToLayer("Water");
 
         m_ID = jsonID;
         m_LDtkLevel = json.Levels[jsonID];
@@ -141,21 +144,18 @@ public class Level : MonoBehaviour {
         m_Ground.ClearAllTiles();
     }
 
-    public void SetBackground(List<LDtkTileData> backgroundData, Backgroundsheet tile) {
-        for (int i = 0; i < backgroundData.Count; i++) {
-            Vector3Int tilePosition = GridToTilePosition(backgroundData[i].gridPosition);
-            Backgroundsheet.SetVariation(tilePosition, 3 * backgroundData[i].vectorID.y + backgroundData[i].vectorID.x);
-            m_Background.SetTile(tilePosition, tile);
+    public void GenerateWater(List<LDtkTileData> waterData, Watersheet tile) {
+        for (int i = 0; i < waterData.Count; i++) {
+            Vector3Int tilePosition = GridToTilePosition(waterData[i].gridPosition);
+            Watersheet.SetVariation(tilePosition, 2 * waterData[i].vectorID.y + waterData[i].vectorID.x);
+            m_Water.SetTile(tilePosition, tile);
         }
-        m_Background.RefreshAllTiles();
+        m_Water.RefreshAllTiles();
 
-        // for (int i = 0; i < m_Height; i++) {
-        //     for (int j = 0; j < m_Width; j++) {
-        //         Vector3Int tilePosition = GridToTilePosition(new Vector2Int(j, i));
-        //         m_Background.SetTile(tilePosition, background);
-        //         m_Background.GetTileAt(tilePosition).SetVariation()
-        //     }
-        // }
+    }
+
+    public void SetBackground(ParrallaxBackground background) {
+
     }
 
     public void SetControls(List<LDtkTileData> controlData, Environment environment) {
@@ -164,7 +164,7 @@ public class Level : MonoBehaviour {
             // Circles.
             if (controlData[i].vectorID.y == 1) {
                 for (int j = 0; j < m_Entities.Count; j++) {
-                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                    if (m_Entities[j] != null && m_Entities[j].GridPosition == controlData[i].gridPosition) {
                         if (m_Entities[j].GetComponent<SwitchSpike>() != null) {
                             m_Entities[j].GetComponent<SwitchSpike>().InitOff();
                         }
@@ -175,7 +175,7 @@ public class Level : MonoBehaviour {
             // Arrows.
             if (controlData[i].vectorID.y == 2) {
                 for (int j = 0; j < m_Entities.Count; j++) {
-                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                    if (m_Entities[j] != null && m_Entities[j].GridPosition == controlData[i].gridPosition) {
                         if (m_Entities[j].GetComponent<Platform>() != null) {
                             m_Entities[j].GetComponent<Platform>().Init(i, controlData);
                         }
@@ -189,9 +189,8 @@ public class Level : MonoBehaviour {
             // Offsets.
             if (controlData[i].vectorID.y == 3) {
                 for (int j = 0; j < m_Entities.Count; j++) {
-                    if (m_Entities[j].GridPosition == controlData[i].gridPosition) {
+                    if (m_Entities[j] != null && m_Entities[j].GridPosition == controlData[i].gridPosition) {
                         if (m_Entities[j].GetComponent<TimedSpike>() != null) {
-                            print("Spike");
                             m_Entities[j].GetComponent<TimedSpike>().Init(controlData[i].vectorID.x);
                         }
                     }
@@ -200,10 +199,10 @@ public class Level : MonoBehaviour {
 
             // Checkpoint.
             if (controlData[i].vectorID == Vector2.zero) {
-                Entity newEntity = Instantiate(environment.Checkpoint.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
-                Vector3 entityPosition = GridToWorldPosition(controlData[i].gridPosition);
-                newEntity.Init(controlData[i].gridPosition, entityPosition);
-                m_Entities.Add(newEntity);
+                // Entity newEntity = Instantiate(environment.Checkpoint.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
+                // Vector3 entityPosition = GridToWorldPosition(controlData[i].gridPosition);
+                // newEntity.Init(controlData[i].gridPosition, entityPosition);
+                // m_Entities.Add(newEntity);
             }
 
         }

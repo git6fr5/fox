@@ -34,6 +34,7 @@ public class GameRules : MonoBehaviour {
     // Rendering Layers.
     public static string BorderRenderingLayer = "Border";
     public static string BackgroundRenderingLayer = "Background";
+    public static string ForegroundRenderingLayer = "Foreground";
     public static string UIRenderingLayer = "UI";
 
     // Layers

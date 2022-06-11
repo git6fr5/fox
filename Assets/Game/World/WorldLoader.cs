@@ -12,7 +12,7 @@ public class WorldLoader : LevelLoader {
 
     public string startingLevelName = "The_Beginning";
 
-    public static Vector2Int CheckPointID = new Vector2Int(0, 0);
+    public static Vector2Int LoadPointID = new Vector2Int(0, 0);
 
     public Level[] m_Levels;
     public List<Level> loadLevels = new List<Level>();
@@ -40,7 +40,7 @@ public class WorldLoader : LevelLoader {
             List<LDtkTileData> controlData = LoadLayer(m_JSON.Levels[i], ControlLayer);
             List<Vector2Int> controlPositions = new List<Vector2Int>();
             for (int j = 0; j < controlData.Count; j++) {
-                if (controlData[j].vectorID == CheckPointID) {
+                if (controlData[j].vectorID == LoadPointID) {
                     controlPositions.Add(controlData[j].gridPosition);
                 }
             }
@@ -74,6 +74,8 @@ public class WorldLoader : LevelLoader {
     }
 
     private void LoadLevels() {
+
+        print("Loading Levels");
 
         Player player = GameRules.MainPlayer;
         loadLevels = new List<Level>();

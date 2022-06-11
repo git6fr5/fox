@@ -41,8 +41,8 @@ public class LevelLoader : MonoBehaviour {
     // Layer Names
     public static string ControlLayer = "Controls";
     public static string EntityLayer = "Entities";
+    public static string WaterLayer = "Water";
     public static string GroundLayer = "Ground";
-    public static string BackgroundLayer = "Background";
 
     // Grid Size
     public static int GridSize = 16;
@@ -90,13 +90,15 @@ public class LevelLoader : MonoBehaviour {
             // Load the data.
             List<LDtkTileData> entityData = LoadLayer(ldtkLevel, EntityLayer);
             List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
-            List<LDtkTileData> backgroundData = LoadLayer(ldtkLevel, BackgroundLayer);
+            List<LDtkTileData> waterData = LoadLayer(ldtkLevel, WaterLayer);
             List<LDtkTileData> controlData = LoadLayer(ldtkLevel, ControlLayer);
             // Load the level.
             level.GenerateEntities(entityData, m_Environment.Entities);
             level.GenerateTiles(groundData, m_Environment.Tile);
-            level.SetBackground(backgroundData, m_Environment.BackgroundTile);
+            level.GenerateWater(waterData, m_Environment.Water);
             level.SetControls(controlData, m_Environment);
+            // level.SetBackground(m_Environment.Background);
+            
         }
     }
 
