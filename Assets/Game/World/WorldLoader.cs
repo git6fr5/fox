@@ -8,7 +8,7 @@ using LDtkLevel = LDtkUnity.Level;
 
 public class WorldLoader : LevelLoader {
 
-    public static float BoundLimit = 100f;
+    public static float BoundLimit = 300f;
 
     public string startingLevelName = "The_Beginning";
 
@@ -24,6 +24,7 @@ public class WorldLoader : LevelLoader {
         CollectLevels();
         LoadLevels();
         StartCoroutine(IESetPlayer());
+        LoadLevels();
         StartCoroutine(IELoadLevels());
     }
 
@@ -56,6 +57,11 @@ public class WorldLoader : LevelLoader {
 
     private IEnumerator IESetPlayer() {
         yield return new WaitForSeconds(0.05f);
+
+        if (WorldTransition.LevelName != "") {
+            startingLevelName = WorldTransition.LevelName;
+        }
+
         for (int i = 0; i < m_Levels.Length; i++) {
             if (startingLevelName == m_Levels[i].LevelName && m_Levels[i].ControlPositions != null && m_Levels[i].ControlPositions.Count > 0) {
                 GameRules.MainPlayer.transform.position = m_Levels[i].GridToWorldPosition(m_Levels[i].ControlPositions[0]);

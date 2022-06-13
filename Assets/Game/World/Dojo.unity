@@ -525,6 +525,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 2600842876255463932, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: levelName
+      value: Level_0
+      objectReference: {fileID: 0}
     - target: {fileID: 2755203069952276752, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_State.m_Gold
       value: 50
@@ -532,6 +536,10 @@ PrefabInstance:
     - target: {fileID: 3245893714633272386, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_State.m_Speed
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280585584806589369, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: levelName
+      value: Level_0
       objectReference: {fileID: 0}
     - target: {fileID: 3720056466172232762, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_ActiveSprite
@@ -677,6 +685,10 @@ PrefabInstance:
       propertyPath: m_SpriteShape
       value: 
       objectReference: {fileID: 11400000, guid: 17884565e6575b4469e541528ddc33fb, type: 2}
+    - target: {fileID: 7222949394894200829, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: levelName
+      value: Level_0
+      objectReference: {fileID: 0}
     - target: {fileID: 7664568233406506730, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprite
       value: 

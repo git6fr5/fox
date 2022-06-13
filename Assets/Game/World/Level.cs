@@ -78,7 +78,7 @@ public class Level : MonoBehaviour {
 
         m_Box = gameObject.AddComponent<BoxCollider2D>();
         m_Box.isTrigger = true;
-        m_Box.size = new Vector2((float)(m_Width - 2), (float)(m_Height - 2));
+        m_Box.size = new Vector2((float)(m_Width - 1.25f), (float)(m_Height - 1.25f));
         m_Box.offset = Center;
 
         // m_Background.GetComponent<BackgroundParrallax>().SetParrallaxBounds(m_Box);

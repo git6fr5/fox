@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31845a5d1d28082488a2117e27638c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LDtkData: {fileID: -1690365423034721001, guid: adad7a722fc730e40a2c5b3b0e7fa0bf, type: 3}
+  m_LDtkData: {fileID: -1884331375649943886, guid: 88abddb2478c50b488e4e2063fe6626d, type: 3}
   startingLevelName: Level_0
   m_Levels: []
   loadLevels: []
@@ -677,6 +677,10 @@ PrefabInstance:
       propertyPath: m_SpriteShape
       value: 
       objectReference: {fileID: 11400000, guid: 17884565e6575b4469e541528ddc33fb, type: 2}
+    - target: {fileID: 7222949394894200829, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: levelName
+      value: Level_19
+      objectReference: {fileID: 0}
     - target: {fileID: 7664568233406506730, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprite
       value: 

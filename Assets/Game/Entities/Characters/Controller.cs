@@ -273,7 +273,14 @@ public class Controller : MonoBehaviour {
 
     public void Kill() {
         GameRules.MainCoin.Drop(m_State.Gold, transform.position);
-        Destroy(gameObject);
+
+        if (GetComponent<Player>() != null) {
+            transform.position = GetComponent<Player>().checkpoint.transform.position;
+        }
+        else {
+            Destroy(gameObject);
+        }
+        
     }
 
     void OnDrawGizmos() {
