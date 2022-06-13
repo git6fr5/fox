@@ -9,7 +9,7 @@ public class Samurai : Enemy {
     public Timer m_WaitingAtPosition = new Timer(1f);
     public Timer m_DashTimer = new Timer(0.25f);
     public Timer m_AggroTimer = new Timer(1f);
-    public Timer m_JumpTimer = new Timer(3f);
+    public Timer m_JumpTimer = new Timer(5f);
 
     public override void GetMove() {
 

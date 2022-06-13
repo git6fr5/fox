@@ -527,12 +527,17 @@ MonoBehaviour:
     m_DoubleJumpReset: 0
     m_DashReset: 0
     m_Dashing: 0
-    m_DashSpeed: 15
+    m_DashSpeed: 17.5
     m_DashDuration: 0.175
     m_ClimbSpeed: 7.5
     m_Climbing: 0
     m_FacingWall: 0
-    m_WallJumpForce: 0
+    m_WallJumpForce: 25
+    m_WallJumping: 0
+    m_InWater: 0
+    m_SwimSpeed: 6.5
+    m_SwimAcceleration: 25
+    m_SwimResistance: 0.9975
     m_Targets:
     - Enemy
     - Switch
@@ -625,16 +630,22 @@ MonoBehaviour:
   m_MovementFrames: 6
   m_RisingFrames: 1
   m_FallingFrames: 1
-  m_DeathFrames: 0
   m_DoubleJumpFrames: 2
   m_WallClimbIdleFrames: 1
   m_WallClimbMovingFrames: 4
   m_WallClimbRisingFrames: 1
   m_WallClimbFallingFrames: 1
   m_DashFrames: 4
+  m_SwimFrames: 4
   m_DoubleJumpEffect: {fileID: 4594657080305104696}
   m_DashEffect: {fileID: 1215625609846688409}
+  m_SplashEffect: {fileID: 0}
+  m_StepEffect: {fileID: 0}
+  m_ClimbingStepEffect: {fileID: 0}
+  m_LandedEffect: {fileID: 0}
+  m_WallJumpEffect: {fileID: 0}
   m_CurrentFrame: 0
+  m_PreviousFrame: 0
   m_Ticks: 0
   m_FrameRate: 0
 --- !u!1001 &278201346962173332

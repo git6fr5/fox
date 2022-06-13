@@ -110,8 +110,9 @@ public class Screen : MonoBehaviour {
         if (GameRules.MainPlayer == null) { return; }
 
         Level level = GameRules.MainPlayer.level;
-        if (level == null) {
-            transform.position = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y, transform.position.z);
+        
+        if (true) {
+            transform.position = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y + 4f, transform.position.z);
             m_Origin = transform.position;
         }
         else {

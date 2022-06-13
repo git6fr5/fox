@@ -329,7 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EntityTransform: {fileID: 1946149503}
   m_Checkpoint: {fileID: 579921288}
-  m_Tile: {fileID: 11400000, guid: 64bbe776a2da3534c92c3a998b6099e3, type: 2}
+  m_Tile: {fileID: 11400000, guid: b8da7d05baad01f498f90e1c26959b9e, type: 2}
   m_Water: {fileID: 11400000, guid: 15d35939216718e40baf2dcee589e959, type: 2}
   m_Background: {fileID: 0}
 --- !u!114 &334274063
@@ -505,7 +505,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 334274060}
     m_Modifications:
+    - target: {fileID: 186354472634862435, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 628308044445357970, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 973099768896645879, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -533,9 +541,9 @@ PrefabInstance:
       propertyPath: m_State.m_Gold
       value: 50
       objectReference: {fileID: 0}
-    - target: {fileID: 3245893714633272386, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
-      propertyPath: m_State.m_Speed
-      value: 5
+    - target: {fileID: 3252492072745837352, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3280585584806589369, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: levelName
@@ -581,6 +589,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1196276422, guid: 2b13365a2606b5a478a551585b30a77f, type: 3}
+    - target: {fileID: 5873415156693036512, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6085593654588051750, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -689,6 +701,10 @@ PrefabInstance:
       propertyPath: levelName
       value: Level_16
       objectReference: {fileID: 0}
+    - target: {fileID: 7595990033671366535, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_Sprites.Array.size
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7664568233406506730, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -696,6 +712,10 @@ PrefabInstance:
     - target: {fileID: 7761161902556480882, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8418792187358464487, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8660220096511086831, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_SortingLayer

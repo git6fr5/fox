@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31845a5d1d28082488a2117e27638c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LDtkData: {fileID: -1690365423034721001, guid: adad7a722fc730e40a2c5b3b0e7fa0bf, type: 3}
+  m_LDtkData: {fileID: 1997607203490883509, guid: 8a560a34ea03b25468aedeb9151c3789, type: 3}
   startingLevelName: Level_0
   m_Levels: []
   loadLevels: []
@@ -505,7 +505,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 334274060}
     m_Modifications:
+    - target: {fileID: 186354472634862435, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 628308044445357970, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 973099768896645879, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -532,6 +540,10 @@ PrefabInstance:
     - target: {fileID: 3245893714633272386, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_State.m_Speed
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3252492072745837352, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3720056466172232762, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_ActiveSprite

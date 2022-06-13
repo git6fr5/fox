@@ -50,14 +50,10 @@ public class Level : MonoBehaviour {
     /* --- Initialization --- */
     #region Initialization
 
-    public void Init(int jsonID, LdtkJson json) {
+    public void Init(int jsonID, LdtkJson json, Tilemap ground) {
         transform.localPosition = Vector3.zero;
 
-        m_Ground = new GameObject("Map", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
-        m_Ground.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BorderRenderingLayer;
-        m_Ground.transform.SetParent(transform);
-        m_Ground.transform.localPosition = Vector3.zero;
-        m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");;
+        m_Ground = ground;
 
         m_Water = new GameObject("Water", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
         // m_Water.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BackgroundRenderingLayer;

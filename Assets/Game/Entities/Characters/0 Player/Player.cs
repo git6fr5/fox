@@ -20,6 +20,7 @@ public class Player : Input {
     public override void Update() {
         GetMove();
         GetAttack();
+        GetDuck();
         GetJump();
         GetDash();
         GetClimb();
@@ -30,6 +31,10 @@ public class Player : Input {
         float x = UnityEngine.Input.GetAxisRaw("Horizontal");
         float y = UnityEngine.Input.GetAxisRaw("Vertical");
         m_Direction = new Vector2(x, y);
+    }
+
+    public void GetDuck() {
+        m_Duck = UnityEngine.Input.GetAxisRaw("Vertical") == -1f;
     }
 
     public void GetJump() {

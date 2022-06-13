@@ -79,8 +79,9 @@ public class Controller : MonoBehaviour {
     protected void Move(float deltaTime) {
         if (m_Knockedback) { return; }
         if (m_State.Dashing) { return; }
+        if (m_State.WallJumping) { return; }
 
-        if (m_State.InWater) {
+        if (m_State.Swimming) {
             SwimMove(deltaTime);
             return;
         }
@@ -112,8 +113,13 @@ public class Controller : MonoBehaviour {
     protected void SwimMove(float deltaTime) {
 
         Vector2 targetVelocity = (Vector3)m_Input.SwimDirection.normalized * m_State.SwimSpeed;
-        Vector2 deltaVelocity = (targetVelocity - m_Body.velocity) * m_State.SwimAcceleration * deltaTime;
+        Vector2 deltaVelocity = (targetVelocity - m_Body.velocity).normalized * m_State.SwimAcceleration * deltaTime;
         m_Body.velocity += deltaVelocity;
+
+        if (m_Body.velocity.magnitude > m_State.SwimSpeed) {
+            m_Body.velocity = m_State.SwimSpeed * m_Body.velocity.normalized;
+        }
+
         // Resistance
         if (targetVelocity == Vector2.zero) {
             m_Body.velocity *= m_State.SwimResistance;
@@ -125,6 +131,12 @@ public class Controller : MonoBehaviour {
         if (targetVelocity.x == 0f && Mathf.Abs(m_Body.velocity.x) < GameRules.MovementPrecision) {
             m_Body.velocity = new Vector2(0f, m_Body.velocity.y);
         }
+
+        m_State.SetMoving(m_Input.SwimDirection.magnitude);
+        if (m_Input.MoveDirection != 0f) {
+            m_State.SetDirection(m_Input.MoveDirection);
+        }
+
     }
 
     protected void ClimbMove(float deltaTime) {
@@ -133,11 +145,11 @@ public class Controller : MonoBehaviour {
         float direction = Mathf.Sign(target - m_Body.velocity.y);
         Vector2 deltaVelocity = new Vector2(0f, direction * m_State.Acceleration * deltaTime);
 
-        if (difference < m_State.Acceleration * deltaTime) {
-            m_Body.velocity = new Vector2(m_Body.velocity.x, target);
+        if (difference < 1.25f * m_State.Acceleration * deltaTime) {
+            m_Body.velocity = new Vector2(0f, target);
         } 
         else {
-            m_Body.velocity += deltaVelocity;
+            m_Body.velocity = deltaVelocity;
         }
 
         m_State.SetMoving(m_Input.ClimbDirection);
@@ -156,6 +168,10 @@ public class Controller : MonoBehaviour {
         if (m_Knockedback) { return; }
         if (m_State.Dashing) { return; }
 
+        if (m_State.WallJumping) {
+            m_State.EndWallJump(m_Input.Float);
+        }
+
         if (m_State.Climbing) {
             WallJump();
             return;
@@ -172,6 +188,11 @@ public class Controller : MonoBehaviour {
     private void Float() {
         if (m_State.Dashing) { return; }
 
+        if (m_State.Swimming) {
+            m_Body.gravityScale = 0.85f;
+            return;
+        }
+
         if (m_State.Climbing) {
             m_Body.gravityScale = 0f;
             return;
@@ -186,6 +207,8 @@ public class Controller : MonoBehaviour {
     private void WallJump() {
         if (m_Input.Jump) {
             m_Body.velocity = m_State.WallJumpForce * (new Vector2(-m_State.Direction, 1f)).normalized;
+            m_State.SetDirection( m_State.Direction * -1f);
+            m_State.StartWallJump();
         }
     }
 
@@ -236,7 +259,12 @@ public class Controller : MonoBehaviour {
     #endregion
 
     protected void Duck() {
-        if (m_Input.Duck) {
+        if (m_Input.Duck && m_State.CanDuck) {
+            m_State.StartDuck();
+        }
+
+        if (m_State.Ducking)  {
+            m_State.EndDuck(m_Input.Duck);
             gameObject.layer = LayerMask.NameToLayer("Ducking");
         }
         else {
@@ -276,11 +304,12 @@ public class Controller : MonoBehaviour {
 
         if (GetComponent<Player>() != null) {
             transform.position = GetComponent<Player>().checkpoint.transform.position;
+            State.Init(transform, m_Body);
         }
         else {
             Destroy(gameObject);
         }
-        
+
     }
 
     void OnDrawGizmos() {

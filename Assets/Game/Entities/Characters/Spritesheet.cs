@@ -27,36 +27,42 @@ public class Spritesheet : MonoBehaviour {
     [SerializeField] private int m_MovementFrames;
     [SerializeField] private int m_RisingFrames;
     [SerializeField] private int m_FallingFrames;
-    [SerializeField] private int m_DeathFrames;
     [SerializeField] private int m_DoubleJumpFrames;
     [SerializeField] private int m_WallClimbIdleFrames;
     [SerializeField] private int m_WallClimbMovingFrames;
     [SerializeField] private int m_WallClimbRisingFrames;
     [SerializeField] private int m_WallClimbFallingFrames;
     [SerializeField] private int m_DashFrames;
+    [SerializeField] private int m_SwimFrames;
 
     // Effects.
     [Space(2), Header("Frames")]
     [SerializeField] private VisualEffect m_DoubleJumpEffect;
     [SerializeField] private VisualEffect m_DashEffect;
+    [SerializeField] private VisualEffect m_SplashEffect;
+    [SerializeField] private VisualEffect m_StepEffect;
+    [SerializeField] private VisualEffect m_ClimbingStepEffect;
+    [SerializeField] private VisualEffect m_LandedEffect;
+    [SerializeField] private VisualEffect m_WallJumpEffect;
 
     // Animations
     [HideInInspector] private Sprite[] m_IdleAnimation;
     [HideInInspector] private Sprite[] m_MovementAnimation;
     [HideInInspector] private Sprite[] m_RisingAnimation;
     [HideInInspector] private Sprite[] m_FallingAnimation;
-    [HideInInspector] private Sprite[] m_DeathAnimation;
     [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
     [HideInInspector] private Sprite[] m_WallClimbIdleAnimation;
     [HideInInspector] private Sprite[] m_WallClimbMovingAnimation;
     [HideInInspector] private Sprite[] m_WallJumpRisingAnimation;
     [HideInInspector] private Sprite[] m_WallJumpFallingAnimation;
     [HideInInspector] private Sprite[] m_DashAnimation;
+    [HideInInspector] private Sprite[] m_SwimAnimation;
 
     // Animation Data
     [HideInInspector] protected Sprite[] m_CurrentAnimation;
     [HideInInspector] private Sprite[] m_PreviousAnimation;
     [SerializeField, ReadOnly] private int m_CurrentFrame;
+    [SerializeField, ReadOnly] private int m_PreviousFrame;
     [SerializeField, ReadOnly] private float m_Ticks;
     [SerializeField, ReadOnly] protected float m_FrameRate;
 
@@ -66,10 +72,20 @@ public class Spritesheet : MonoBehaviour {
     private bool MovingOnGround => m_Controller.State.CanJump && m_Controller.State.Moving;
     private bool RisingJump => !m_Controller.State.CanJump && m_Controller.State.Rising;
     private bool FallingJump => !m_Controller.State.CanJump && !m_Controller.State.Rising;
+    private bool Climbing => m_Controller.State.Climbing;
+    private bool ClimbMoving => m_Controller.State.Moving;
+    private bool WallJumpRising => m_Controller.State.WallJumping && m_Controller.State.Rising;
+    private bool WallJumpFalling => m_Controller.State.WallJumping && !m_Controller.State.Rising;
+    private bool Swimming => m_Controller.State.Swimming;
     
     // Effect Conditions.
+    private bool JustLanded => m_Controller.State.CanJump && !(m_PreviousAnimation == m_MovementAnimation || m_PreviousAnimation == m_IdleAnimation);
+    private bool JustWallJumped => WallJumpRising && !(m_PreviousAnimation == m_WallJumpRisingAnimation);
     private bool JustDashed => Dashing && !(m_PreviousAnimation == m_DashAnimation);
     private bool JustDoubleJumped => DoubleJumped && !(m_PreviousAnimation == m_DoubleJumpAnimation);
+    private bool JustGotInWater => Swimming && !(m_PreviousAnimation == m_SwimAnimation);
+    private bool Step => MovingOnGround && !(m_CurrentFrame == 0 && m_PreviousFrame != 0);
+    private bool ClimbingStep => Climbing && !(m_CurrentFrame == 0 && m_PreviousFrame != 0);
 
     #endregion
     
@@ -127,7 +143,6 @@ public class Spritesheet : MonoBehaviour {
         startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
         startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);
         startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);
-        startIndex = SliceSheet(startIndex, m_DeathFrames, ref m_DeathAnimation);
         return startIndex;
     }
 
@@ -138,6 +153,7 @@ public class Spritesheet : MonoBehaviour {
         startIndex = SliceSheet(startIndex, m_WallClimbRisingFrames, ref m_WallJumpRisingAnimation);
         startIndex = SliceSheet(startIndex, m_WallClimbFallingFrames, ref m_WallJumpFallingAnimation);
         startIndex = SliceSheet(startIndex, m_DashFrames, ref m_DashAnimation);
+        startIndex = SliceSheet(startIndex, m_SwimFrames, ref m_SwimAnimation);
         return startIndex;
     }
 
@@ -150,6 +166,8 @@ public class Spritesheet : MonoBehaviour {
         m_CurrentAnimation = GetAnimation();
         GetEffect();
 
+        m_PreviousFrame = m_CurrentFrame;
+
         m_Ticks = m_PreviousAnimation == m_CurrentAnimation ? m_Ticks + deltaTime : 0f;
         m_CurrentFrame = (int)Mathf.Floor(m_Ticks * m_FrameRate) % m_CurrentAnimation.Length;
 
@@ -160,8 +178,23 @@ public class Spritesheet : MonoBehaviour {
     // Gets the current animation info.
     public virtual Sprite[] GetAnimation() {
         m_FrameRate = GameRules.FrameRate;
-
-        if (Dashing) {
+        
+        if (Swimming && m_SwimAnimation != null && m_SwimAnimation.Length > 0) {
+            return m_SwimAnimation;
+        }
+        else if (Climbing) {
+            if (ClimbMoving) {
+                return m_WallClimbMovingAnimation;
+            }
+            return m_WallClimbIdleAnimation;
+        }
+        else if (WallJumpRising) {
+            return m_WallJumpRisingAnimation;
+        }
+        else if (WallJumpFalling) {
+            return m_WallJumpFallingAnimation;
+        }
+        else if (Dashing) {
             return m_DashAnimation;
         }
         else if (DoubleJumped) {
@@ -180,20 +213,49 @@ public class Spritesheet : MonoBehaviour {
     }
 
     private void GetEffect() {
-        if (JustDoubleJumped) {
+        if (JustLanded && m_LandedEffect != null) {
+            m_LandedEffect.Play();
+        }
+        if (JustWallJumped && m_WallJumpEffect != null) {
+            m_WallJumpEffect.Play();
+        }
+        if (JustDoubleJumped && m_DoubleJumpEffect != null) {
             m_DoubleJumpEffect.Play();
         }
-        if (JustDashed) {
+        if (JustDashed && m_DashEffect != null) {
             m_DashEffect.Play();
+        }
+        if (JustGotInWater && m_SplashEffect != null) {
+            m_SplashEffect.Play();
+        }
+        if (Step && m_StepEffect != null) {
+            m_StepEffect.Play();
+        }
+        if (ClimbingStep && m_ClimbingStepEffect != null) {
+            m_ClimbingStepEffect.Play();
         }
     }
 
     protected virtual void Rotate() {
 
-        if (m_Controller.State.Dashing) {
+        if (m_Controller.State.Dashing || m_Controller.State.Swimming) {
             // Vector2 direction = new Vector2(m_Controller.State.Direction, 0f);
-            float angle = Vector2.SignedAngle(Vector2.right, m_Controller.Body.velocity);
-            transform.eulerAngles = angle * (m_Controller.State.Direction * Vector3.forward);
+            Vector2 v = m_Controller.Body.velocity;
+            if (m_Controller.State.Swimming) {
+                v = m_Controller.GetComponent<Input>().SwimDirection;
+            }
+
+
+            v.x = Mathf.Abs(v.x);
+            float angle = Vector2.SignedAngle(Vector2.right, v);
+            Vector3 euler = angle * Vector3.forward;
+            
+            if (m_Controller.State.Direction < 0f) {
+                euler.y = 180f;
+            }
+
+            transform.eulerAngles = euler;
+
             return;
         }
 

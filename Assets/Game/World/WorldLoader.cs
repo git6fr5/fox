@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LDtkUnity;
+using UnityEngine.Tilemaps;
+using UnityEngine.U2D;
 
 /* --- Definitions --- */
 using LDtkLevel = LDtkUnity.Level;
@@ -19,8 +21,17 @@ public class WorldLoader : LevelLoader {
     public List<Level> loadedLevels = new List<Level>();
     public List<Level> deloadLevels = new List<Level>();
 
+    [SerializeField] private Tilemap m_Ground;
+
     protected override void Start() {
         base.Start();
+
+        m_Ground = new GameObject("Map", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
+        m_Ground.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BorderRenderingLayer;
+        m_Ground.transform.SetParent(transform);
+        m_Ground.transform.localPosition = Vector3.zero;
+        m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");
+
         CollectLevels();
         LoadLevels();
         StartCoroutine(IESetPlayer());
@@ -36,7 +47,7 @@ public class WorldLoader : LevelLoader {
         for (int i = 0; i < m_JSON.Levels.Length; i++) {
             Level level = new GameObject(m_JSON.Levels[i].Identifier, typeof(Level)).GetComponent<Level>();
             level.transform.SetParent(transform);
-            level.Init(i, m_JSON);
+            level.Init(i, m_JSON, m_Ground);
 
             List<LDtkTileData> controlData = LoadLayer(m_JSON.Levels[i], ControlLayer);
             List<Vector2Int> controlPositions = new List<Vector2Int>();

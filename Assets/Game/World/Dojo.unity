@@ -123,6 +123,25 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &132931086 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1637921120595692946, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+  m_PrefabInstance: {fileID: 6085593654337827382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &132931088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132931086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec27b74b2f10074693f18b9e8f81dfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_VectorID: {x: 0, y: 0}
+  m_GridPosition: {x: 0, y: 0}
 --- !u!1001 &214879144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -257,6 +276,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956439, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7993330747268793074, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -505,7 +528,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 334274060}
     m_Modifications:
+    - target: {fileID: 186354472634862435, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 628308044445357970, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 973099768896645879, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -536,6 +567,10 @@ PrefabInstance:
     - target: {fileID: 3245893714633272386, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_State.m_Speed
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3252492072745837352, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3280585584806589369, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: levelName
@@ -703,4 +738,5 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
+    - {fileID: 9177062856412848749, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}

@@ -45,6 +45,9 @@ public class GameRules : MonoBehaviour {
     [SerializeField] private LayerMask groundCollisionLayer;
     public static LayerMask GroundCollisionLayer => Instance.groundCollisionLayer;
     
+    [SerializeField] private LayerMask wallCollisionLayer;
+    public static LayerMask WallCollisionLayer => Instance.wallCollisionLayer;
+
     [SerializeField] private LayerMask waterCollisionLayer;
     public static LayerMask WaterCollisionLayer => Instance.waterCollisionLayer;
     

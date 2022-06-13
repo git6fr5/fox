@@ -52,7 +52,7 @@ public class State {
     [SerializeField] private float m_Floatiness;
     public float Floatiness => m_Floatiness;
     [SerializeField, ReadOnly] private bool m_OnGround;
-    public bool CanJump => m_OnGround; // AirborneFlag == Airborne.Grounded;
+    public bool CanJump => m_OnGround && !m_InWater; // AirborneFlag == Airborne.Grounded;
     public bool Rising => m_Body.velocity.y > 0f;
     
     // Double Jump.
@@ -60,7 +60,7 @@ public class State {
     public float DoubleJumpForce => m_DoubleJumpForce;
     [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
     public bool DoubleJumpReset => m_DoubleJumpReset;
-    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround;
+    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround && !m_InWater;
     
     // Dash.
     [SerializeField, ReadOnly] private bool m_DashReset;
@@ -81,10 +81,12 @@ public class State {
     public bool CanClimb => m_FacingWall;
     [SerializeField] private float m_WallJumpForce;
     public float WallJumpForce => m_WallJumpForce;
+    [SerializeField] private bool m_WallJumping;
+    public bool WallJumping => m_WallJumping;
 
     // Swimming
     [SerializeField] private bool m_InWater;
-    public bool InWater => m_InWater;
+    public bool Swimming => m_InWater;
     [SerializeField] private float m_SwimSpeed = 12f;
     public float SwimSpeed => m_SwimSpeed;
     [SerializeField] private float m_SwimAcceleration = 50f;
@@ -93,8 +95,11 @@ public class State {
     public float SwimResistance => m_SwimResistance;
 
     // Ducking.
-    // [SerializeField, ReadOnly] protected bool m_Ducked;
-    // [SerializeField, ReadOnly] protected bool m_NotDucking;
+    [SerializeField, ReadOnly] protected bool m_Ducking;
+    public bool Ducking => m_Ducking;
+    [SerializeField, ReadOnly] protected bool m_Ducked;
+    public bool CanDuck => m_OnGround;
+    [SerializeField, ReadOnly] protected bool m_NotDucking;
 
     // public bool IsHot => m_State.Projectile != null && !m_State.Projectile.CanFire;
 
@@ -141,7 +146,7 @@ public class State {
     }
 
     private void ResetDash() {
-        if (CanJump && !m_DashReset) {
+        if (CanJump && !m_DashReset && !m_InWater) {
             m_DashReset = true;
         }
     }
@@ -166,6 +171,47 @@ public class State {
         }
     }
 
+    public void StartWallJump() {
+        m_Climbing = false;
+        m_WallJumping = true;
+    }
+
+    public void EndWallJump(bool continueJump) {
+        if (!continueJump) {
+            m_WallJumping = false;
+        }
+        else if (m_OnGround || m_InWater) {
+            m_WallJumping = false;
+        }
+
+        // Wall to Wall jump.
+        if (m_WallJumping && m_FacingWall) {
+            m_Climbing = true;
+            m_WallJumping = false;
+        }
+    }
+
+    public void StartDuck() {
+        m_Ducking = true;
+        m_Ducked = false;
+    }
+
+    public void EndDuck(bool continueDuck) {
+        if (!continueDuck) {
+            m_Ducking = false;
+            return;
+        }
+
+        if (m_Ducking && !m_Ducked) {
+            m_Ducked = !m_OnGround && !Rising;
+        }
+
+        if (m_Ducked && m_OnGround) {
+            m_Ducking = false;
+        } 
+
+    }
+
     private static bool CheckForGround(Transform transform, float width, float height) {
         for (int i = -1; i <= 1; i++) {
             Vector3 offset = Vector3.down * height + i * Vector3.left * width / 1.5f;
@@ -180,7 +226,7 @@ public class State {
     private static bool CheckForWall(Transform transform, float direction, float width, float height) {
         for (int i = -1; i <= 1; i++) {
             Vector3 offset = i * height / 1.5f * Vector3.up + direction * width * Vector3.right;
-            Collider2D temp = Physics2D.OverlapCircle(transform.position + offset, GameRules.MovementPrecision, GameRules.GroundCollisionLayer);
+            Collider2D temp = Physics2D.OverlapCircle(transform.position + offset, GameRules.MovementPrecision, GameRules.WallCollisionLayer);
             if (temp != null) {
                 return true;
             }
