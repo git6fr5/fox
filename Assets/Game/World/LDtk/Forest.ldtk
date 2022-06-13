@@ -2582,7 +2582,7 @@
 					"autoLayerTiles": [],
 					"seed": 7070943,
 					"overrideTilesetUid": null,
-					"gridTiles": [{ "px": [304,208], "src": [0,0], "f": 0, "t": 0, "d": [370] }],
+					"gridTiles": [{ "px": [416,208], "src": [0,0], "f": 0, "t": 0, "d": [377] }],
 					"entityInstances": []
 				},
 				{
@@ -2607,7 +2607,7 @@
 					"autoLayerTiles": [],
 					"seed": 4506033,
 					"overrideTilesetUid": null,
-					"gridTiles": [],
+					"gridTiles": [{ "px": [208,208], "src": [0,96], "f": 0, "t": 18, "d": [364] }],
 					"entityInstances": []
 				},
 				{
@@ -2843,7 +2843,7 @@
 					"autoLayerTiles": [],
 					"seed": 1893149,
 					"overrideTilesetUid": null,
-					"gridTiles": [{ "px": [208,144], "src": [32,48], "f": 0, "t": 11, "d": [256] }],
+					"gridTiles": [{ "px": [208,208], "src": [32,96], "f": 0, "t": 20, "d": [364] }],
 					"entityInstances": []
 				},
 				{
@@ -3754,7 +3754,7 @@
 					"autoLayerTiles": [],
 					"seed": 984615,
 					"overrideTilesetUid": null,
-					"gridTiles": [],
+					"gridTiles": [{ "px": [208,208], "src": [16,96], "f": 0, "t": 19, "d": [364] }],
 					"entityInstances": []
 				},
 				{
@@ -3979,7 +3979,7 @@
 					"autoLayerTiles": [],
 					"seed": 2970593,
 					"overrideTilesetUid": null,
-					"gridTiles": [],
+					"gridTiles": [{ "px": [224,176], "src": [32,48], "f": 0, "t": 11, "d": [311] }],
 					"entityInstances": []
 				},
 				{

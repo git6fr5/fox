@@ -16,8 +16,12 @@ public class GameRules : MonoBehaviour {
     public static GameRules Instance;
 
     // Player.
-    [SerializeField] private Player mainPlayer;
+    [SerializeField] public Player mainPlayer;
     public static Player MainPlayer => Instance.mainPlayer;
+    
+    // Coin.
+    [SerializeField] public  Coin m_Coin;
+    public static Coin MainCoin => Instance.m_Coin;
 
     // Movement.
     [SerializeField] private float movementPrecision = 0.05f;
@@ -41,9 +45,14 @@ public class GameRules : MonoBehaviour {
     [SerializeField] private LayerMask groundCollisionLayer;
     public static LayerMask GroundCollisionLayer => Instance.groundCollisionLayer;
     
+    [SerializeField] private LayerMask waterCollisionLayer;
+    public static LayerMask WaterCollisionLayer => Instance.waterCollisionLayer;
+    
     [SerializeField] private LayerMask climbCollisionLayer;
     public static LayerMask ClimbCollisionLayer => Instance.climbCollisionLayer;
     
+    [SerializeField] private LayerMask interactableCollisionLayer;
+    public static LayerMask InteractableCollisionLayer => Instance.interactableCollisionLayer;
 
     #endregion
 

@@ -75,8 +75,6 @@ public class WorldLoader : LevelLoader {
 
     private void LoadLevels() {
 
-        print("Loading Levels");
-
         Player player = GameRules.MainPlayer;
         loadLevels = new List<Level>();
         deloadLevels = new List<Level>();

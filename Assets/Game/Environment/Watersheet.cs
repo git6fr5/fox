@@ -32,6 +32,7 @@ public class Watersheet : Tile {
     public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
         tileData.sprite = Variations[m_IndexDict[position] % Variations.Length];
         tileData.color = new Color(1f, 1f, 1f, 0.5f);
+        tileData.colliderType = Tile.ColliderType.Grid;
     }
 
     #if UNITY_EDITOR
