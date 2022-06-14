@@ -24,6 +24,9 @@ public class Coin : MonoBehaviour {
     [SerializeField] private int[] m_Denominations;
     [SerializeField] private Sprite[] m_Sprites;
 
+    public AudioClip pickUpSound;
+    public AudioClip clinkSound;
+
     #endregion
 
     /* --- Unity --- */
@@ -36,13 +39,14 @@ public class Coin : MonoBehaviour {
             state.AddGold(m_Value);
             // Play sound
             // Play deattached effect
+            SoundController.PlaySound(pickUpSound, transform.position);
             Destroy(gameObject);
         }
 
-        // if (collision.collider.gameObject.layer == GameRules.GroundCollisionLayer) {
-        //     // Play sound
-        //     // Play effect
-        // }
+        if (collision.collider.gameObject.layer == GameRules.GroundCollisionLayer) {
+            SoundController.PlaySound(clinkSound, transform.position, 0.1f);
+             // Play effect
+        }
     }
     
     #endregion

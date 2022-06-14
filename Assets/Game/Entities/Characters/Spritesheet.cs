@@ -45,6 +45,14 @@ public class Spritesheet : MonoBehaviour {
     [SerializeField] private VisualEffect m_LandedEffect;
     [SerializeField] private VisualEffect m_WallJumpEffect;
 
+    [Space(2), Header("Sounds")]
+    public AudioClip stepSound;
+    public AudioClip jumpSound;
+    public AudioClip dashSound;
+    public AudioClip doubleJumpSound;
+    public AudioClip jumpInWaterSound;
+    public AudioClip landSound;
+
     // Animations
     [HideInInspector] private Sprite[] m_IdleAnimation;
     [HideInInspector] private Sprite[] m_MovementAnimation;
@@ -81,11 +89,15 @@ public class Spritesheet : MonoBehaviour {
     // Effect Conditions.
     private bool JustLanded => m_Controller.State.CanJump && !(m_PreviousAnimation == m_MovementAnimation || m_PreviousAnimation == m_IdleAnimation);
     private bool JustWallJumped => WallJumpRising && !(m_PreviousAnimation == m_WallJumpRisingAnimation);
-    private bool JustDashed => Dashing && !(m_PreviousAnimation == m_DashAnimation);
-    private bool JustDoubleJumped => DoubleJumped && !(m_PreviousAnimation == m_DoubleJumpAnimation);
+    private bool JustDashed => (m_CurrentAnimation == m_DashAnimation) && !(m_PreviousAnimation == m_DashAnimation);
+    private bool JustJumped => (m_CurrentAnimation == m_RisingAnimation) && (m_PreviousAnimation == m_MovementAnimation || m_PreviousAnimation == m_IdleAnimation);
+    private bool JustDoubleJumped => (m_CurrentAnimation == m_DoubleJumpAnimation) && !(m_PreviousAnimation == m_DoubleJumpAnimation);
     private bool JustGotInWater => Swimming && !(m_PreviousAnimation == m_SwimAnimation);
-    private bool Step => MovingOnGround && !(m_CurrentFrame == 0 && m_PreviousFrame != 0);
-    private bool ClimbingStep => Climbing && !(m_CurrentFrame == 0 && m_PreviousFrame != 0);
+    private bool Step => (m_CurrentAnimation == m_MovementAnimation) && (StepCounter && m_PreviousFrame != m_CurrentFrame);
+   
+    private bool StepCounter => (m_CurrentFrame == 0 || (m_MovementAnimation.Length > 4 ? m_CurrentFrame == (int)(m_MovementAnimation.Length / 2) : false));
+    
+    private bool ClimbingStep => Climbing && (m_CurrentFrame == 0 && m_PreviousFrame != 0);
 
     #endregion
     
@@ -102,6 +114,7 @@ public class Spritesheet : MonoBehaviour {
             Animate(deltaTime);
         }
         Rotate();
+        Hurt();
     }
 
     #endregion
@@ -165,6 +178,7 @@ public class Spritesheet : MonoBehaviour {
     private void Animate(float deltaTime) {
         m_CurrentAnimation = GetAnimation();
         GetEffect();
+        GetSound();
 
         m_PreviousFrame = m_CurrentFrame;
 
@@ -236,6 +250,35 @@ public class Spritesheet : MonoBehaviour {
         }
     }
 
+    private void GetSound() {
+
+        if ((ClimbingStep || Step) && stepSound != null) {
+            SoundController.PlaySound(stepSound, transform.position, 0.1f);
+        }
+
+        if (JustJumped && jumpSound != null) {
+            SoundController.PlaySound(jumpSound, transform.position);
+        }
+
+        if (JustDoubleJumped && doubleJumpSound != null) {
+            SoundController.PlaySound(doubleJumpSound, transform.position);
+        }
+
+        if (JustDashed && dashSound != null) {
+            print("just dashed");
+            SoundController.PlaySound(dashSound, transform.position);
+        }
+
+        if (JustGotInWater && jumpInWaterSound != null) {
+            SoundController.PlaySound(jumpInWaterSound, transform.position);
+        }
+
+        if (JustLanded && landSound != null) {
+            SoundController.PlaySound(landSound, transform.position);
+        }
+
+    }
+
     protected virtual void Rotate() {
 
         if (m_Controller.State.Dashing || m_Controller.State.Swimming) {
@@ -276,6 +319,15 @@ public class Spritesheet : MonoBehaviour {
         afterImage.color = Color.white * transparency;
         afterImage.sortingLayerName = spriteRenderer.sortingLayerName;
         Destroy(afterImage.gameObject, delay);
+    }
+
+    private void Hurt() {
+        if (m_Controller.Knockedback) {
+            m_SpriteRenderer.color = Color.red;
+        }
+        else {
+            m_SpriteRenderer.color = Color.white;
+        }
     }
 
     #endregion

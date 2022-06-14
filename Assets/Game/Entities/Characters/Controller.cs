@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour {
     
     // Knockback.
     [SerializeField, ReadOnly] protected float m_KnockbackTicks;
-    public bool m_Knockedback => m_KnockbackTicks > 0f;
+    public bool Knockedback => m_KnockbackTicks > 0f;
 
     #endregion
 
@@ -41,7 +41,7 @@ public class Controller : MonoBehaviour {
     }
 
     private void Run() {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
     
         Jump();
         Float();
@@ -50,6 +50,10 @@ public class Controller : MonoBehaviour {
         
         Duck();
         Attack();
+
+        if (m_State.Drown) {
+            Kill();
+        }
     }
 
     // Runs once every fixed interval.
@@ -77,7 +81,7 @@ public class Controller : MonoBehaviour {
     #region Movement
 
     protected void Move(float deltaTime) {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
         if (m_State.Dashing) { return; }
         if (m_State.WallJumping) { return; }
 
@@ -165,7 +169,7 @@ public class Controller : MonoBehaviour {
     #region Jumping
 
     protected virtual void Jump() {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
         if (m_State.Dashing) { return; }
 
         if (m_State.WallJumping) {
@@ -213,7 +217,7 @@ public class Controller : MonoBehaviour {
     }
 
     private void DoubleJump() {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
         if (m_State.Dashing) { return; }
 
         if (m_Input.Jump && m_State.CanDoubleJump) {
@@ -223,7 +227,7 @@ public class Controller : MonoBehaviour {
     }
 
     private void Dash() {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
 
         if (m_State.CanDash && m_Input.Dash) {
             m_State.StartDash();
@@ -264,8 +268,8 @@ public class Controller : MonoBehaviour {
         }
 
         if (m_State.Ducking)  {
-            m_State.EndDuck(m_Input.Duck);
             gameObject.layer = LayerMask.NameToLayer("Ducking");
+            m_State.EndDuck(m_Input.Duck);
         }
         else {
             gameObject.layer = LayerMask.NameToLayer("Characters");
@@ -279,7 +283,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void Hurt(int damage) {
-        if (m_Knockedback) { return; }
+        if (Knockedback) { return; }
 
         m_State.TakeDamage(damage);
         if (m_State.Health <= 0) {
@@ -289,7 +293,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void Knockback(Vector2 velocity, float duration) {
-        m_Body.velocity = velocity;
+        m_Body.velocity = velocity / 2f;
         m_KnockbackTicks = duration;
     }
 

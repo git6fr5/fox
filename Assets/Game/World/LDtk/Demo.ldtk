@@ -145,13 +145,13 @@
 	], "entities": [], "tilesets": [
 		{
 			"__cWid": 3,
-			"__cHei": 9,
+			"__cHei": 15,
 			"identifier": "Entities",
 			"uid": 2,
 			"relPath": "../References/Entities.png",
 			"embedAtlas": null,
 			"pxWid": 48,
-			"pxHei": 144,
+			"pxHei": 240,
 			"tileGridSize": 16,
 			"spacing": 0,
 			"padding": 0,
@@ -161,8 +161,8 @@
 			"customData": [],
 			"savedSelections": [],
 			"cachedPixelData": {
-				"opaqueTiles": "000000000000000000000000000",
-				"averageColors": "400f4f8f47f5800f8f8f87f5600f6f8f67f5600f6f8f67f5600f6f8f67f5600f6f8f67f59d8a9d899d8a200f27f56f972f9700000000"
+				"opaqueTiles": "000000000000000000000000000000000000000000000",
+				"averageColors": "400f4f8f47f5800f8f8f87f5600f6f8f67f5600f6f8f67f5600f6f8f67f5600f6f8f67f59d8a9d899d8a200f27f56f972f97000000007d8a7d897d8a7c8a000000000000000000006f986e986e986fa76fa76ea7000000000000"
 			}
 		},
 		{

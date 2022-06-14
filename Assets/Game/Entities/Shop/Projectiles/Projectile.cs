@@ -62,6 +62,11 @@ public class Projectile : MonoBehaviour {
             ProcessCollision(lever);
         }
 
+        Goldbox goldbox = collider.GetComponent<Goldbox>();
+        if (goldbox != null) {
+            ProcessCollision(goldbox);
+        }
+
         if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
             m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
             m_IsHot = false;
@@ -77,6 +82,9 @@ public class Projectile : MonoBehaviour {
         if (m_Targets.Contains(controller.gameObject.tag)) {
             controller.Hurt(m_Damage);
             controller.Knockback(m_Body.velocity , 0.075f);
+
+            SoundController.PlaySound(impactSound, transform.position);
+
             Destroy(gameObject);
         }
     }
@@ -88,7 +96,19 @@ public class Projectile : MonoBehaviour {
             lever.Activate();
             m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
             m_IsHot = false;
+            SoundController.PlaySound(kronkSound, transform.position);
+
         }
+    }
+
+    private void ProcessCollision(Goldbox goldbox) {
+        int min = 30;
+        int max = Mathf.Max(min, GameRules.MainPlayer.GetComponent<Controller>().State.Gold);
+        GameRules.MainCoin.Drop(Random.Range(min, max), goldbox.transform.position);
+
+        SoundController.PlaySound(hitgoldboxSound, transform.position);
+
+        Destroy(goldbox.gameObject);
     }
 
     public bool WillThisBeReadyToFireIn(float ticks) {
@@ -100,7 +120,7 @@ public class Projectile : MonoBehaviour {
     /* --- Initialization --- */
     #region Initialization
 
-    public void Fire(Vector3 direction, Vector2 referenceVelocity, List<string> targets) {
+    public virtual void Fire(Vector3 direction, Vector2 referenceVelocity, List<string> targets) {
         if (CanFire) {
             Projectile projectile = Instantiate(gameObject, transform.position, Quaternion.identity, null).GetComponent<Projectile>();
             projectile.Init(direction, referenceVelocity, targets);
@@ -133,8 +153,18 @@ public class Projectile : MonoBehaviour {
         gameObject.layer = LayerMask.NameToLayer("Projectile");;
         m_Targets = targets;
 
+        transform.eulerAngles = Vector2.SignedAngle(Vector2.right, m_Body.velocity) * Vector3.forward;
+
+        SoundController.PlaySound(initSound, transform.position);
+
         Destroy(gameObject, m_Lifetime);
     }
+
+    public AudioClip impactSound;
+    public AudioClip initSound;
+    public AudioClip hitgoldboxSound;
+    public AudioClip kronkSound;
+
     
     #endregion
 

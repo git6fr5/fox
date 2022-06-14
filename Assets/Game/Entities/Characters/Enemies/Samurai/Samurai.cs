@@ -18,7 +18,7 @@ public class Samurai : Enemy {
             float distance = (player.transform.position - transform.position).x;
 
             if (Mathf.Abs(distance) > m_AttackRange) {
-                m_Direction = playerDirection * Vector2.right;
+                m_Direction = (player.transform.position - transform.position).normalized;
             }
             else if (m_Controller.State.Direction != playerDirection) {
                 m_Direction = playerDirection * Vector2.right;
@@ -30,7 +30,7 @@ public class Samurai : Enemy {
         }
 
         m_WaitingAtPosition.CheckFinished();
-        if (m_WaitingAtPosition.Active) {
+        if (m_WaitingAtPosition.Active || m_Path == null) {
             m_Direction = new Vector2(0f, 0f);
             return;
         }
@@ -67,15 +67,15 @@ public class Samurai : Enemy {
     }
 
     public override void  GetJump() {
-        m_Jump = false;
+        // m_Jump = false;
         m_Float = true;
-        if (Active && m_AggroTimer.CheckFinished(false) && m_JumpTimer.CheckFinished()) {
-            float y = (player.transform.position - transform.position).y;
-            if (y > 1f) {
-                m_Jump = true;
-                m_JumpTimer.Start();
-            }
-        }
+        // if (Active && m_AggroTimer.CheckFinished(false) && m_JumpTimer.CheckFinished()) {
+        //     float y = (player.transform.position - transform.position).y;
+        //     if (y > 1f) {
+        //         m_Jump = true;
+        //         m_JumpTimer.Start();
+        //     }
+        // }
 
     }
 

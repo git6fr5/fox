@@ -80,10 +80,18 @@ public class Player : Input {
 
     public void SetLevel(Level level) {
         m_Level = level;
+        
     }
 
     public void SetCheck(Checkpoint checkpoint) {
         m_Checkpoint = checkpoint;
+        GetComponent<Controller>().State.StoreGold();
+        GetComponent<Controller>().State.Heal();
+
+        SoundController.PlaySound(checkSound, checkpoint.transform.position);
+
     }
+
+    public AudioClip checkSound;
 
 }

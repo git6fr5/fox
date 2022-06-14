@@ -143,6 +143,8 @@ MonoBehaviour:
   - {fileID: 1437396639, guid: e288c6ed5527b7944b3e6dcab4ebef44, type: 3}
   - {fileID: -1343199724, guid: e288c6ed5527b7944b3e6dcab4ebef44, type: 3}
   - {fileID: 336103257, guid: e288c6ed5527b7944b3e6dcab4ebef44, type: 3}
+  pickUpSound: {fileID: 8300000, guid: 2bc16f78f46542440b9bf7a7958e5303, type: 3}
+  clinkSound: {fileID: 8300000, guid: f4bfb1f555e225142a30a95cabfb2a3d, type: 3}
 --- !u!1 &8063266827141585649
 GameObject:
   m_ObjectHideFlags: 0

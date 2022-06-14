@@ -14,7 +14,7 @@ public class SwitchSpike : Spike {
     }
 
     public void InitOff() {
-        Init();
+        base.Init();
         Flip();
     }
 

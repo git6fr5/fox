@@ -66,8 +66,12 @@ public class Spike : MonoBehaviour {
         Vector3 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector3.up;
         m_Target += (m_Active ? -1f : 1f) * direction;
         m_Active = !m_Active;
-        m_SpriteRenderer.enabled = m_Active;
+        m_SpriteRenderer.enabled = true;
         m_Hitbox.enabled = m_Active;
+
+        // SoundController.PlaySound(flipSound, transform.position, 0.1f);
     }
+
+    public AudioClip flipSound;
 
 }

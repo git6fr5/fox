@@ -22,6 +22,8 @@ public class State {
     // Coins.
     [SerializeField] private int m_Gold;
     public int Gold => m_Gold;
+    [SerializeField] private int m_SecureGold;
+    public int SecureGold => m_SecureGold;
 
     // Settings.
     [SerializeField] private float m_Height;
@@ -60,11 +62,11 @@ public class State {
     public float DoubleJumpForce => m_DoubleJumpForce;
     [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
     public bool DoubleJumpReset => m_DoubleJumpReset;
-    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround && !m_InWater;
+    public bool CanDoubleJump => m_DoubleJumpReset && !m_OnGround && !m_InWater && DoubleJumpScroll;
     
     // Dash.
     [SerializeField, ReadOnly] private bool m_DashReset;
-    public bool CanDash => m_DashReset && !m_Dashing;
+    public bool CanDash => m_DashReset && !m_Dashing && DashScroll;
     [SerializeField, ReadOnly] private bool m_Dashing;
     public bool Dashing => m_Dashing;
     [SerializeField] private float m_DashSpeed;
@@ -78,7 +80,7 @@ public class State {
     [SerializeField, ReadOnly] private bool m_Climbing;
     public bool Climbing => m_Climbing;
     [SerializeField, ReadOnly] private bool m_FacingWall;
-    public bool CanClimb => m_FacingWall;
+    public bool CanClimb => m_FacingWall && ClimbScroll;
     [SerializeField] private float m_WallJumpForce;
     public float WallJumpForce => m_WallJumpForce;
     [SerializeField] private bool m_WallJumping;
@@ -86,7 +88,8 @@ public class State {
 
     // Swimming
     [SerializeField] private bool m_InWater;
-    public bool Swimming => m_InWater;
+    public bool Drown => m_InWater && !SwimScroll;
+    public bool Swimming => m_InWater && SwimScroll;
     [SerializeField] private float m_SwimSpeed = 12f;
     public float SwimSpeed => m_SwimSpeed;
     [SerializeField] private float m_SwimAcceleration = 50f;
@@ -102,6 +105,11 @@ public class State {
     [SerializeField, ReadOnly] protected bool m_NotDucking;
 
     // public bool IsHot => m_State.Projectile != null && !m_State.Projectile.CanFire;
+
+    public bool DashScroll = true;
+    public bool DoubleJumpScroll = true;
+    public bool SwimScroll = true;
+    public bool ClimbScroll = true;
 
     // Targets.
     [SerializeField] protected List<string> m_Targets;
@@ -242,6 +250,10 @@ public class State {
         return false;
     }
 
+    public void Heal() {
+        m_Health = m_MaxHealth;
+    }
+
     public void TakeDamage(int damage) {
         m_Health -= damage;
     }
@@ -256,6 +268,11 @@ public class State {
             return true;
         }
         return false;
+    }
+
+    public void StoreGold() {
+        m_SecureGold += m_Gold;
+        m_Gold = 0;
     }
 
     public void DebugCollisionChecks(Vector3 position) {

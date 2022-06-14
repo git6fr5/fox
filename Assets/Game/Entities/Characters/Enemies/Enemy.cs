@@ -162,15 +162,18 @@ public class Enemy : Input {
         
     }
 
+    public float forwardDist = 0.5f;
+    public float precision = 3;
+
     private bool PassiveSearch(float deltaTime) {
 
         bool foundPlayer = false;
-        for (int i = 0; i < m_Precision; i++) {
+        for (int i = 0; i < precision; i++) {
 
             // Set up the ray.
-            Vector3 start = transform.position + m_Controller.State.Direction * Vector3.right * 0.5f;
+            Vector3 start = transform.position + m_Controller.State.Direction * Vector3.right * forwardDist;
             Vector3 baseDirection = Vector3.right * m_Controller.State.Direction;
-            Vector3 direction = Quaternion.Euler(0f, 0f, -m_Angle + i * (2f * m_Angle / m_Precision)) * baseDirection;
+            Vector3 direction = Quaternion.Euler(0f, 0f, -m_Angle + i * (2f * m_Angle / precision)) * baseDirection;
             float distance = m_PassiveRange;
 
             // Cast the ray.
@@ -228,7 +231,7 @@ public class Enemy : Input {
         // Set up the ray.
         Vector3 start = transform.position;
         Vector3 direction = (m_Player.transform.position - start).normalized;
-        start += direction * 1f;
+        start += direction * 2 * forwardDist;
         float distance = m_ActiveRange;
 
         // Cast the ray.
