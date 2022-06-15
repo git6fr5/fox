@@ -203,6 +203,10 @@ PrefabInstance:
       propertyPath: ambience
       value: 
       objectReference: {fileID: 8300000, guid: 8074ed9de88d29a48904bceb54c237a8, type: 3}
+    - target: {fileID: 7542652068294705250, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 025f57e25aee053438085ed712f0edfa, type: 3}
     - target: {fileID: 7977860029644956433, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -277,7 +281,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7993330747268793074, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}

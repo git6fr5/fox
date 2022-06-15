@@ -32,7 +32,7 @@ public class Controller : MonoBehaviour {
 
     void Awake() {
         if (GetComponent<Player>() != null) {
-            StaticPlayer.Set(m_State);
+            StaticPlayer.Get(m_State);
         }
     }
 

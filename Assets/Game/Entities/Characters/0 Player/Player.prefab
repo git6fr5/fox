@@ -296,8 +296,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.0625}
-  m_Size: {x: 0.75, y: 1.5}
+  m_Offset: {x: 0, y: -0.25998747}
+  m_Size: {x: 0.75, y: 1.105025}
   m_Direction: 0
 --- !u!212 &8984214373028524412
 SpriteRenderer:
@@ -365,8 +365,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Input: {fileID: 8984214373028524408}
   m_State:
-    m_MaxHealth: 8
-    m_Health: 8
+    m_MaxHealth: 6
+    m_Health: 6
     m_Gold: 0
     m_SecureGold: 0
     m_Height: 0.85

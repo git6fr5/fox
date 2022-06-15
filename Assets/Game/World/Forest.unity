@@ -251,18 +251,6 @@ PrefabInstance:
       propertyPath: ambience
       value: 
       objectReference: {fileID: 8300000, guid: c9322b3511d05c343bcfd185dec66c22, type: 3}
-    - target: {fileID: 7542652068294705250, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
-      propertyPath: m_Color.a
-      value: 0.5176471
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542652068294705250, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7542652068294705250, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956433, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_Name
       value: Main Camera

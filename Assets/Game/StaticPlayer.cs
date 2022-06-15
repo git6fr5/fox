@@ -17,6 +17,10 @@ public class StaticPlayer {
     public static int Gold = 0;
     public static int SecureGold = 0;
 
+    // public void Awake() {
+    //     DontDestroyOnLoad(gameObject);
+    // }
+
     public static void Get(State playerState) {
         playerState.DashScroll = Dash;
         playerState.DoubleJumpScroll = DoubleJump; 
