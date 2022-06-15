@@ -839,6 +839,10 @@ PrefabInstance:
       propertyPath: m_Sprites.Array.data[0]
       value: 
       objectReference: {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+    - target: {fileID: 3605394812941977679, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3720056466172232762, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_ActiveSprite
       value: 
@@ -867,6 +871,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1333718592, guid: 2b13365a2606b5a478a551585b30a77f, type: 3}
+    - target: {fileID: 5267747939264740599, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5434089735386344889, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IdleFrames
       value: 1
@@ -1046,6 +1054,10 @@ PrefabInstance:
     - target: {fileID: 7761161902556480882, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8598379308369776500, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8660220096511086831, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_SortingLayer

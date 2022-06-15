@@ -178,6 +178,11 @@ public class Controller : MonoBehaviour {
         if (Knockedback) { return; }
         if (m_State.Dashing) { return; }
 
+        // if (m_Input.Jump && m_State.Swimming) {
+        //     m_Body.velocity = Vector2.up * m_State.JumpForce;
+        //     return;
+        // }
+
         if (m_State.WallJumping) {
             m_State.EndWallJump(m_Input.Float);
         }
@@ -234,6 +239,16 @@ public class Controller : MonoBehaviour {
 
     private void Dash() {
         if (Knockedback) { return; }
+
+        if (m_State.Swimming && (m_Input.Jump || m_Input.Dash)) {
+            m_State.StartDash();
+            m_Body.velocity = Vector2.zero;
+            m_Body.gravityScale = 0f;
+            Vector2 direction = m_Input.GetDashDirection(m_State.Direction);
+            float duration = m_State.DashDuration;
+            StartCoroutine(IEDash(duration, direction));
+            return;
+        }
 
         if (m_State.CanDash && m_Input.Dash) {
             m_State.StartDash();

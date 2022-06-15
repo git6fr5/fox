@@ -8,6 +8,10 @@ TagManager:
   - Switch
   - Coin
   - Respawn Anchor
+  - dash scroll
+  - double jump scroll
+  - swim scroll
+  - climb scroll
   layers:
   - Default
   - TransparentFX

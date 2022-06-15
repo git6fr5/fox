@@ -154,7 +154,11 @@ public class State {
     }
 
     private void ResetDash() {
-        if (CanJump && !m_DashReset && !m_InWater) {
+        if (Dashing) {
+            return;
+        }
+
+        if ((CanJump || m_InWater) && !m_DashReset) {
             m_DashReset = true;
         }
     }

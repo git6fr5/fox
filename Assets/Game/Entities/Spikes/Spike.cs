@@ -30,7 +30,7 @@ public class Spike : MonoBehaviour {
         //     transform.position = m_Target;
         //     return;
         // }
-        transform.position += (m_Target - transform.position) * deltaTime * 1f / 0.15f;
+        transform.position += (m_Target - transform.position) * deltaTime * 1f / 0.25f;
     }
 
     public virtual void Init() {
@@ -60,7 +60,17 @@ public class Spike : MonoBehaviour {
 
         Vector2 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector2.up;
         controller.Knockback(17.5f * direction.normalized, 0.075f);
+
+        m_Hitbox.enabled = false;
+        StartCoroutine(IEHitbox());
     }
+
+    private IEnumerator IEHitbox() {
+        yield return new WaitForSeconds(1f);
+        m_Hitbox.enabled = m_Active;
+    }
+
+    
 
     public void Flip() {
         Vector3 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector3.up;

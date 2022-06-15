@@ -107,14 +107,36 @@ public class Level : MonoBehaviour {
     #region Generation
     
     public void GenerateEntities(List<LDtkTileData> entityData, List<Entity> entityList) {
+        bool firstTime = m_Entities.Count == 0;
+        
         for (int i = 0; i < entityData.Count; i++) {
             Entity entityBase = Environment.GetEntityByVectorID(entityData[i].vectorID, entityList);
             if (entityBase != null) {
-                Entity newEntity = Instantiate(entityBase.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
-                Vector3 entityPosition = GridToWorldPosition(entityData[i].gridPosition);
-                newEntity.Init(entityData[i].gridPosition, entityPosition);
-                m_Entities.Add(newEntity);
+
+                if (!firstTime && entityBase.gameObject.tag == "Respawn Anchor") {
+                    // skip
+                }
+                else if (entityBase.gameObject.tag == "dash scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DashScroll) {
+                    // skip
+                }
+                else if (entityBase.gameObject.tag == "double jump scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DoubleJumpScroll) {
+                    // skip
+                }
+                else if (entityBase.gameObject.tag == "climb scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.ClimbScroll) {
+                    // skip
+                }
+                else if (entityBase.gameObject.tag == "swim scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.SwimScroll) {
+                    // skip
+                }
+                else {
+                    Entity newEntity = Instantiate(entityBase.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
+                    Vector3 entityPosition = GridToWorldPosition(entityData[i].gridPosition);
+                    newEntity.Init(entityData[i].gridPosition, entityPosition);
+                    m_Entities.Add(newEntity);
+                }
+                
             }
+            
         }
     }
 
@@ -126,6 +148,15 @@ public class Level : MonoBehaviour {
                 }
             }
         }
+        
+        List<Entity> entities = m_Entities;
+        m_Entities = new List<Entity>();
+        for (int i = 0; i < entities.Count; i++) {
+            if (entities[i] != null) {
+                m_Entities.Add(entities[i]);
+            }
+        }
+
     }
 
     public void GenerateTiles(List<LDtkTileData> tileData, Tilesheet tile) {

@@ -75,6 +75,7 @@ public class Enemy : Input {
 
     void Start() {
         m_Controller = GetComponent<Controller>();
+        transform.position += Vector3.up * 0.5f;
     }
     
     public override void Update() {
