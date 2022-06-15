@@ -36,13 +36,13 @@ public class SoundController : MonoBehaviour {
         musicPlayer.loop = true;
 
         audioPlayers = new List<AudioSource>();
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             audioPlayers.Add(new GameObject("audio player " + i.ToString(), typeof(AudioSource)).GetComponent<AudioSource>());
             audioPlayers[i].transform.SetParent(Camera.main.transform);
             audioPlayers[i].transform.position = Vector3.zero;
             
         }
+        
     }
 
     public static void PlaySound(AudioClip audioClip, Vector2 position, float vol = 0.45f) {

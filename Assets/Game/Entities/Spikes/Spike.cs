@@ -50,7 +50,7 @@ public class Spike : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collider) {
         Controller temp = collider.GetComponent<Controller>();
-        if (temp != null) {
+        if (temp != null && temp.GetComponent<Player>() != null) {
             ProcessCollision(temp);
         }
     }
@@ -69,9 +69,10 @@ public class Spike : MonoBehaviour {
         m_SpriteRenderer.enabled = true;
         m_Hitbox.enabled = m_Active;
 
-        // SoundController.PlaySound(flipSound, transform.position, 0.1f);
+        SoundController.PlaySound(m_Active ? flipSound : flipOffSound, transform.position, 0.05f);
     }
 
     public AudioClip flipSound;
+    public AudioClip flipOffSound;
 
 }

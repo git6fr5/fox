@@ -10,7 +10,7 @@ using LDtkLevel = LDtkUnity.Level;
 
 public class WorldLoader : LevelLoader {
 
-    public static float BoundLimit = 300f;
+    public static float BoundLimit = 100f;
 
     public string startingLevelName = "The_Beginning";
 
@@ -33,8 +33,7 @@ public class WorldLoader : LevelLoader {
         m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");
 
         CollectLevels();
-        LoadLevels();
-        StartCoroutine(IESetPlayer());
+        SetPlayer();
         LoadLevels();
         StartCoroutine(IELoadLevels());
     }
@@ -66,8 +65,7 @@ public class WorldLoader : LevelLoader {
 
     }
 
-    private IEnumerator IESetPlayer() {
-        yield return new WaitForSeconds(0.05f);
+    private void SetPlayer() {
 
         if (WorldTransition.LevelName != "") {
             startingLevelName = WorldTransition.LevelName;
@@ -77,10 +75,14 @@ public class WorldLoader : LevelLoader {
             if (startingLevelName == m_Levels[i].LevelName && m_Levels[i].ControlPositions != null && m_Levels[i].ControlPositions.Count > 0) {
                 GameRules.MainPlayer.transform.position = m_Levels[i].GridToWorldPosition(m_Levels[i].ControlPositions[0]);
                 GameRules.MainPlayer.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                
+                OpenLevel(m_Levels[i]);
+                loadedLevels.Add(m_Levels[i]);
+                
                 break;
             }
         }
-        yield return null;
+
     }
 
     private IEnumerator IELoadLevels() {
@@ -101,7 +103,8 @@ public class WorldLoader : LevelLoader {
             for (int j = 0; j < level.ControlPositions.Count; j++) {
                 // newBanana.transform.position = newLevel.GridToWorldPosition(newLevel.controlPosition + new Vector2Int(0, -1));
                 Vector3 position = level.GridToWorldPosition(level.ControlPositions[j] + new Vector2Int(0, -1));
-                Debug.DrawLine(player.transform.position, position, Color.red, 0.25f);
+                float dist = (position - player.transform.position).magnitude;
+                Debug.DrawLine(player.transform.position, position, new Color(Mathf.Min(BoundLimit, dist) / BoundLimit, 0f, 1f - Mathf.Min(BoundLimit, dist) / BoundLimit), 0.25f);
                 if (!loadLevels.Contains(level) && (position - player.transform.position).sqrMagnitude < BoundLimit * BoundLimit) {
                     loadLevels.Add(level);
                 }

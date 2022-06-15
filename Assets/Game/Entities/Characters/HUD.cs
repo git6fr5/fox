@@ -126,7 +126,7 @@ public class HUD : MonoBehaviour {
         renderer.transform.SetParent(transform);
 
         float x = (i - ((float)m_MaxHearts - 1f) / 2f) * 0.45f;
-        renderer.transform.localPosition = new Vector3(x, -1f, 0f);
+        renderer.transform.localPosition = new Vector3(x, 1.25f, 0f);
         renderer.sortingLayerName = GameRules.UIRenderingLayer;
         m_Healthbar.Add(renderer);
     }

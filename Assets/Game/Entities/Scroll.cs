@@ -12,6 +12,33 @@ public class Scroll : MonoBehaviour {
 
     public VisualEffect effect;
 
+    public Transform arms;
+    private Vector3 origin;
+    private float ticks;
+
+    void Start() {
+        origin = transform.position;
+        arms.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.25f);
+    }
+
+    void Update() {
+        Spin();
+        Bob();
+    }
+
+    void Bob() {
+
+        transform.position = origin + 0.25f * Vector3.up * Mathf.Sin(ticks);
+        ticks += 0.01f;
+    }
+
+    void Spin() {
+
+        arms.localPosition = Vector3.right * 0.15f * Mathf.Cos(ticks) + Vector3.up * 0.15f * Mathf.Sin(ticks);
+        arms.eulerAngles -= Vector3.forward * 1f;
+
+    }
+
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.GetComponent<Player>()) {
             Activate(collider.GetComponent<Controller>().State);
@@ -27,8 +54,12 @@ public class Scroll : MonoBehaviour {
         playerState.SwimScroll = Swim;
         playerState.ClimbScroll = Climb;
 
+        SoundController.PlaySound(sound, transform.position);
+
         Destroy(gameObject);
 
     }
+
+    public AudioClip sound;
 
 }

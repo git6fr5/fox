@@ -30,7 +30,6 @@ public class GameRules : MonoBehaviour {
     public static float GravityScale => Instance.gravityScale;
     
     // Ticks.
-    [SerializeField] private float timeScale = 1f;
     public static float Ticks;
     [SerializeField] private float m_FrameRate = 1f;
     public static float FrameRate => Instance.m_FrameRate;
@@ -64,10 +63,6 @@ public class GameRules : MonoBehaviour {
 
     void Start(){
         Init();
-    }
-
-    private void Update() {
-        Time.timeScale = timeScale;
     }
 
     private void FixedUpdate() {

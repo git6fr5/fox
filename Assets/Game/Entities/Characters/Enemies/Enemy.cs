@@ -131,7 +131,6 @@ public class Enemy : Input {
         }
 
         public void Start() {
-            print("starting");
             active = true;
             ticks = 0f;
         }

@@ -286,11 +286,24 @@ public class Controller : MonoBehaviour {
         if (Knockedback) { return; }
 
         m_State.TakeDamage(damage);
+
+
+        if (GetComponent<Player>() != null) {
+            SoundController.PlaySound(hurtSound, transform.position, 0.5f);
+            Screen.CameraShake(0.5f, 0.15f);
+        }
+        else {
+            SoundController.PlaySound(hurtSound, transform.position, 0.3f);
+            Screen.CameraShake(0.25f, 0.075f);
+        }
+
         if (m_State.Health <= 0) {
             Kill();
         }
 
     }
+
+    public AudioClip hurtSound;
 
     public void Knockback(Vector2 velocity, float duration) {
         m_Body.velocity = velocity / 2f;
@@ -307,10 +320,14 @@ public class Controller : MonoBehaviour {
         GameRules.MainCoin.Drop(m_State.Gold, transform.position);
 
         if (GetComponent<Player>() != null) {
+            Screen.CameraShake(1f, 0.25f);
+            SoundController.PlaySound(hurtSound, transform.position, 0.65f);
             transform.position = GetComponent<Player>().checkpoint.transform.position;
             State.Init(transform, m_Body);
         }
         else {
+            SoundController.PlaySound(hurtSound, transform.position, 0.45f);
+            Screen.CameraShake(0.5f, 0.15f);
             Destroy(gameObject);
         }
 

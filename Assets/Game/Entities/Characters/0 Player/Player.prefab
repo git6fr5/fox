@@ -279,7 +279,7 @@ Rigidbody2D:
   m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: ae57b3339d157274c967b84f3a8e63a1, type: 2}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
@@ -406,6 +406,7 @@ MonoBehaviour:
     - Enemy
     - Switch
   m_KnockbackTicks: 0
+  hurtSound: {fileID: 8300000, guid: e0d77af818145e94e8ccb2d58669e1b1, type: 3}
 --- !u!114 &8984214373028524408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,7 +515,7 @@ MonoBehaviour:
   dashSound: {fileID: 8300000, guid: 6f035fd596316ac45a990e182196a9a3, type: 3}
   doubleJumpSound: {fileID: 8300000, guid: 10ff8ce0e510df84db3091009c31893a, type: 3}
   jumpInWaterSound: {fileID: 0}
-  landSound: {fileID: 8300000, guid: 316d07c48a0fb6d43a38a640ae079933, type: 3}
+  landSound: {fileID: 8300000, guid: e1ebfbedef19ea84e9d816442f51f936, type: 3}
   m_CurrentFrame: 0
   m_PreviousFrame: 0
   m_Ticks: 0

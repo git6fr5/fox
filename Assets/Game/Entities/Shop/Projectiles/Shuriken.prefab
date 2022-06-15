@@ -149,6 +149,10 @@ MonoBehaviour:
   m_Cooldown: 0.5
   m_Targets: []
   m_IsHot: 0
+  impactSound: {fileID: 0}
+  initSound: {fileID: 0}
+  hitgoldboxSound: {fileID: 0}
+  kronkSound: {fileID: 0}
 --- !u!114 &4367757433332406384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,7 +212,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: -51
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}

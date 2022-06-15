@@ -241,6 +241,7 @@ MonoBehaviour:
     m_Targets:
     - Player
   m_KnockbackTicks: 0
+  hurtSound: {fileID: 8300000, guid: b5fa29f6fc7ad494a9b89f0759d3d8d9, type: 3}
 --- !u!212 &2959331491982751699
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -375,9 +376,9 @@ MonoBehaviour:
   m_PathDuration: 0
   m_Ticks: 0
   m_Angle: 30
-  m_PassiveRange: 5
-  m_ActiveRange: 12.5
-  m_AttackRange: 7.5
+  m_PassiveRange: 14
+  m_ActiveRange: 22.5
+  m_AttackRange: 16
   m_Active: 0
   m_Mask:
     serializedVersion: 2
@@ -626,7 +627,7 @@ SpriteRenderer:
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  m_Sprite: {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -677,7 +678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 0}
   m_Sprites:
-  - {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  - {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
   m_Ticks: 0
   m_Loop: 1
   m_Pause: 0
@@ -722,7 +723,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: -52
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -927,6 +928,7 @@ MonoBehaviour:
     m_Targets:
     - Player
   m_KnockbackTicks: 0
+  hurtSound: {fileID: 8300000, guid: 2280ba6a6c510684cb6c0d0de6a3be8c, type: 3}
 --- !u!212 &2419693026296815036
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1061,8 +1063,8 @@ MonoBehaviour:
   m_PathDuration: 0
   m_Ticks: 0
   m_Angle: 30
-  m_PassiveRange: 5
-  m_ActiveRange: 12.5
+  m_PassiveRange: 12
+  m_ActiveRange: 17.5
   m_AttackRange: 7.5
   m_Active: 0
   m_Mask:
@@ -1362,6 +1364,7 @@ MonoBehaviour:
     m_Targets:
     - Player
   m_KnockbackTicks: 0
+  hurtSound: {fileID: 8300000, guid: b5fa29f6fc7ad494a9b89f0759d3d8d9, type: 3}
 --- !u!212 &7453650994892282038
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1930,7 +1933,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: -52
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -2146,7 +2149,7 @@ SpriteRenderer:
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  m_Sprite: {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2197,7 +2200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 0}
   m_Sprites:
-  - {fileID: 1820770356, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
+  - {fileID: 1185841540, guid: e38a5ca46c120e245b291439d6630ece, type: 3}
   m_Ticks: 0
   m_Loop: 1
   m_Pause: 0
@@ -2242,7 +2245,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: -52
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -2528,7 +2531,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 134861003
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: -52
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -2843,6 +2846,7 @@ MonoBehaviour:
     m_Targets:
     - Player
   m_KnockbackTicks: 0
+  hurtSound: {fileID: 8300000, guid: 2280ba6a6c510684cb6c0d0de6a3be8c, type: 3}
 --- !u!212 &343250936143673787
 SpriteRenderer:
   m_ObjectHideFlags: 0
