@@ -1182,7 +1182,7 @@ GameObject:
   - component: {fileID: 5800118898002442226}
   m_Layer: 0
   m_Name: Respawn Anchor
-  m_TagString: Untagged
+  m_TagString: Respawn Anchor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

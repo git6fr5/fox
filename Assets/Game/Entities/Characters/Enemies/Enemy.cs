@@ -58,7 +58,6 @@ public class Enemy : Input {
 
     public static int m_Precision = 3;
 
-    [SerializeField] private float m_Angle = 30f;
     [SerializeField] private float m_PassiveRange = 5f;
     [SerializeField] private float m_ActiveRange = 12.5f;
     [SerializeField] protected float m_AttackRange = 7.5f;
@@ -167,29 +166,13 @@ public class Enemy : Input {
     private bool PassiveSearch(float deltaTime) {
 
         bool foundPlayer = false;
-        for (int i = 0; i < precision; i++) {
-
-            // Set up the ray.
-            Vector3 start = transform.position + m_Controller.State.Direction * Vector3.right * forwardDist;
-            Vector3 baseDirection = Vector3.right * m_Controller.State.Direction;
-            Vector3 direction = Quaternion.Euler(0f, 0f, -m_Angle + i * (2f * m_Angle / precision)) * baseDirection;
-            float distance = m_PassiveRange;
-
-            // Cast the ray.
-            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, m_Mask);
-            if (hit.collider != null && hit.collider.gameObject != m_Controller.gameObject) {
-                // print("Hitting Something " + hit.collider.name);
-                distance = (transform.position - (Vector3)hit.point).magnitude;
-                Player player = hit.collider.GetComponent<Player>();
-                if (player != null) {
-                    m_Player = player;
-                    foundPlayer = true;
-                }
+        Collider2D[] _colliders = Physics2D.OverlapCircleAll(transform.position, m_PassiveRange + 2f * GameRules.MovementPrecision, m_Mask);
+        for (int i = 0; i < _colliders.Length; i++) {
+            Player player = _colliders[i].GetComponent<Player>();
+            if (player != null) {
+                m_Player = player;
+                foundPlayer = ActiveSearch(deltaTime);
             }
-
-            m_LightRays.Add(distance * direction);
-            Debug.DrawLine(start, start + distance * direction, Color.yellow, deltaTime);
-            
         }
 
         if (foundPlayer) {

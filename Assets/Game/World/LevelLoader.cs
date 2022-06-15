@@ -89,12 +89,12 @@ public class LevelLoader : MonoBehaviour {
         if (ldtkLevel != null) {
             // Load the data.
             List<LDtkTileData> entityData = LoadLayer(ldtkLevel, EntityLayer);
-            List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
+            // List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
             List<LDtkTileData> waterData = LoadLayer(ldtkLevel, WaterLayer);
             List<LDtkTileData> controlData = LoadLayer(ldtkLevel, ControlLayer);
             // Load the level.
+            // level.GenerateTiles(groundData, m_Environment.Tile);
             level.GenerateEntities(entityData, m_Environment.Entities);
-            level.GenerateTiles(groundData, m_Environment.Tile);
             level.GenerateWater(waterData, m_Environment.Water);
             level.SetControls(controlData, m_Environment);
             // level.SetBackground(m_Environment.Background);

@@ -10,7 +10,7 @@ using LDtkLevel = LDtkUnity.Level;
 
 public class WorldLoader : LevelLoader {
 
-    public static float BoundLimit = 100f;
+    public static float BoundLimit = 70f;
 
     public string startingLevelName = "The_Beginning";
 
@@ -23,8 +23,12 @@ public class WorldLoader : LevelLoader {
 
     [SerializeField] private Tilemap m_Ground;
 
+    public static WorldLoader instance;
+
     protected override void Start() {
         base.Start();
+
+        instance = this;
 
         m_Ground = new GameObject("Map", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
         m_Ground.GetComponent<TilemapRenderer>().sortingLayerName = GameRules.BorderRenderingLayer;
@@ -33,6 +37,7 @@ public class WorldLoader : LevelLoader {
         m_Ground.gameObject.layer = LayerMask.NameToLayer("Ground");
 
         CollectLevels();
+        LoadAllTiles();
         SetPlayer();
         LoadLevels();
         StartCoroutine(IELoadLevels());
@@ -92,7 +97,11 @@ public class WorldLoader : LevelLoader {
         }
     }
 
-    private void LoadLevels() {
+    public static void Reload() {
+        instance.LoadLevels();
+    }
+
+    public void LoadLevels() {
 
         Player player = GameRules.MainPlayer;
         loadLevels = new List<Level>();
@@ -104,7 +113,9 @@ public class WorldLoader : LevelLoader {
                 // newBanana.transform.position = newLevel.GridToWorldPosition(newLevel.controlPosition + new Vector2Int(0, -1));
                 Vector3 position = level.GridToWorldPosition(level.ControlPositions[j] + new Vector2Int(0, -1));
                 float dist = (position - player.transform.position).magnitude;
-                Debug.DrawLine(player.transform.position, position, new Color(Mathf.Min(BoundLimit, dist) / BoundLimit, 0f, 1f - Mathf.Min(BoundLimit, dist) / BoundLimit), 0.25f);
+                if (dist < BoundLimit) {
+                    Debug.DrawLine(player.transform.position, position, new Color(Mathf.Min(BoundLimit, dist) / BoundLimit, 0f, 1f - Mathf.Min(BoundLimit, dist) / BoundLimit), 0.25f);
+                }
                 if (!loadLevels.Contains(level) && (position - player.transform.position).sqrMagnitude < BoundLimit * BoundLimit) {
                     loadLevels.Add(level);
                 }
@@ -129,6 +140,17 @@ public class WorldLoader : LevelLoader {
             loadedLevels.Remove(deloadLevels[i]);
         }
 
+    }
+
+    public void LoadAllTiles() {
+        for (int i = 0; i < m_Levels.Length; i++) {
+
+            LDtkLevel ldtkLevel = m_Levels[i].LDtkLevel; // GetLevel(level.LevelName);
+            List<LDtkTileData> groundData = LoadLayer(ldtkLevel, GroundLayer);
+            m_Levels[i].GenerateTiles(groundData, m_Environment.Tile);
+
+        }
+        m_Ground.RefreshAllTiles();
     }
 
 }

@@ -252,11 +252,11 @@ public class Spritesheet : MonoBehaviour {
 
     private void GetSound() {
 
-        if ((ClimbingStep || Step) && stepSound != null) {
+        if (!Dashing && (ClimbingStep || Step) && stepSound != null) {
             SoundController.PlaySound(stepSound, transform.position, 0.1f);
         }
 
-        if (JustJumped && jumpSound != null) {
+        if (!Dashing && JustJumped && jumpSound != null) {
             SoundController.PlaySound(jumpSound, transform.position);
         }
 
@@ -273,7 +273,7 @@ public class Spritesheet : MonoBehaviour {
             SoundController.PlaySound(jumpInWaterSound, transform.position);
         }
 
-        if (JustLanded && landSound != null) {
+        if (!Dashing && JustLanded && landSound != null) {
             SoundController.PlaySound(landSound, transform.position);
         }
 

@@ -324,6 +324,7 @@ public class Controller : MonoBehaviour {
             SoundController.PlaySound(hurtSound, transform.position, 0.65f);
             transform.position = GetComponent<Player>().checkpoint.transform.position;
             State.Init(transform, m_Body);
+            WorldLoader.Reload();
         }
         else {
             SoundController.PlaySound(hurtSound, transform.position, 0.45f);

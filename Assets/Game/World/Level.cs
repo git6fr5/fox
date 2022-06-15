@@ -121,7 +121,7 @@ public class Level : MonoBehaviour {
     public void DestroyEntities() {
         if (m_Entities != null && m_Entities.Count > 0) {
             for (int i = 0; i < m_Entities.Count; i++) {
-                if (m_Entities[i] != null) {
+                if (m_Entities[i] != null && m_Entities[i].gameObject.tag != "Respawn Anchor") {
                     Destroy(m_Entities[i].gameObject);
                 }
             }
@@ -133,11 +133,11 @@ public class Level : MonoBehaviour {
             Vector3Int tilePosition = GridToTilePosition(tileData[i].gridPosition);
             m_Ground.SetTile(tilePosition, tile);
         }
-        m_Ground.RefreshAllTiles();
+        // m_Ground.RefreshAllTiles();
     }
 
     public void ClearMap() {
-        m_Ground.ClearAllTiles();
+        m_Water.ClearAllTiles();
     }
 
     public void GenerateWater(List<LDtkTileData> waterData, Watersheet tile) {
