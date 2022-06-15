@@ -1151,7 +1151,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 17884565e6575b4469e541528ddc33fb, type: 2}
     - target: {fileID: 7222949394894200829, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: levelName
-      value: Level_16
+      value: Level_24
       objectReference: {fileID: 0}
     - target: {fileID: 7595990033671366535, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprites.Array.size

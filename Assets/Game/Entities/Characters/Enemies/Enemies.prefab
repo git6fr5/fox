@@ -375,7 +375,6 @@ MonoBehaviour:
   m_PathIndex: 0
   m_PathDuration: 0
   m_Ticks: 0
-  m_Angle: 30
   m_PassiveRange: 14
   m_ActiveRange: 22.5
   m_AttackRange: 16
@@ -1062,7 +1061,6 @@ MonoBehaviour:
   m_PathIndex: 0
   m_PathDuration: 0
   m_Ticks: 0
-  m_Angle: 30
   m_PassiveRange: 12
   m_ActiveRange: 17.5
   m_AttackRange: 7.5
@@ -1250,7 +1248,7 @@ GameObject:
   - component: {fileID: 2420140267956786613}
   m_Layer: 0
   m_Name: Cavalry
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1501,7 +1499,6 @@ MonoBehaviour:
   m_PathIndex: 0
   m_PathDuration: 0
   m_Ticks: 0
-  m_Angle: 90
   m_PassiveRange: 12
   m_ActiveRange: 15
   m_AttackRange: 10
@@ -2983,7 +2980,6 @@ MonoBehaviour:
   m_PathIndex: 0
   m_PathDuration: 0
   m_Ticks: 0
-  m_Angle: 30
   m_PassiveRange: 5
   m_ActiveRange: 12.5
   m_AttackRange: 7.5

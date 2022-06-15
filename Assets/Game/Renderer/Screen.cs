@@ -111,7 +111,7 @@ public class Screen : MonoBehaviour {
         Vector3 target = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y + 2f, transform.position.z);
         Vector3 dv = (target - transform.position);
 
-        if (dv.magnitude < 0.5f) {
+        if (dv.magnitude < 0.25f) {
             // transform.position = target;
         }
         else {

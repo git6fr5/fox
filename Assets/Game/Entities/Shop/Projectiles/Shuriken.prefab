@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Cost: 10
   m_Torque: 0
   m_Ticks: 0
-  m_Cooldown: 0.5
+  m_Cooldown: 0.3
   m_Targets: []
   m_IsHot: 0
   impactSound: {fileID: 0}

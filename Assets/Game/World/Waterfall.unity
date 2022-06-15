@@ -269,11 +269,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956441, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_RefResolutionX
-      value: 736
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956441, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_RefResolutionY
-      value: 512
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 7993330747268793074, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_IsActive
@@ -1035,10 +1035,6 @@ PrefabInstance:
       propertyPath: m_SpriteShape
       value: 
       objectReference: {fileID: 11400000, guid: 17884565e6575b4469e541528ddc33fb, type: 2}
-    - target: {fileID: 7222949394894200829, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
-      propertyPath: levelName
-      value: Level_19
-      objectReference: {fileID: 0}
     - target: {fileID: 7664568233406506730, guid: 2574b6311e320394e8ba6876cc98dee3, type: 3}
       propertyPath: m_Sprite
       value: 

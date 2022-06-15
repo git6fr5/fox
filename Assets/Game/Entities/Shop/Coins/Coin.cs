@@ -96,6 +96,7 @@ public class Coin : MonoBehaviour {
 
         gameObject.SetActive(true);
         Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
+        transform.position += (Vector3)direction * 0.5f;
         direction.y *= Mathf.Sign(direction.y);
         m_Body.velocity = direction * UnityEngine.Random.Range(5f, 15f);
 

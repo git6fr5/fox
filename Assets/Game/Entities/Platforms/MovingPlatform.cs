@@ -9,6 +9,9 @@ public class MovingPlatform : Platform {
     [HideInInspector] protected Vector3[] m_Path = null;
     [SerializeField, ReadOnly] protected int m_PathIndex;
     [SerializeField, ReadOnly] protected List<Controller> m_Container = new List<Controller>();
+
+    [SerializeField, ReadOnly] protected List<Goldbox> goldboxes = new List<Goldbox>();
+
     [SerializeField] protected float m_Speed = 3f;
 
     public override void Init(int index, List<LDtkTileData> controlData) {
@@ -68,6 +71,11 @@ public class MovingPlatform : Platform {
         if (controller != null && !m_Container.Contains(controller)) {
             m_Container.Add(controller);
         }
+
+        Goldbox goldbox = collision.gameObject.GetComponent<Goldbox>();
+        if (goldbox != null && !goldboxes.Contains(goldbox)) {
+            goldboxes.Add(goldbox);
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision) {
@@ -75,6 +83,7 @@ public class MovingPlatform : Platform {
         if (controller != null && m_Container.Contains(controller)) {
             m_Container.Remove(controller);
         }
+
     }
 
     #endregion
@@ -108,6 +117,11 @@ public class MovingPlatform : Platform {
         for (int i = 0; i < m_Container.Count; i++) {
             m_Container[i].transform.position += velocity * deltaTime;
         }
+
+        for (int i = 0; i < goldboxes.Count; i++) {
+            goldboxes[i].transform.position += velocity * deltaTime;
+        }
+
 
     }
     
