@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Game/Game.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
+    path: Assets/Game/Menu/Menu.unity
+    guid: 626f7855ffc9e0549afb683f65b0c1ca
+  - enabled: 1
     path: Assets/Game/World/Dojo.unity
     guid: e0fe85a4e47cbd443a7502e6d1e6f80f
   - enabled: 1

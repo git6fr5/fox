@@ -90,7 +90,7 @@ public class HUD : MonoBehaviour {
 
         float alpha = m_HealthbarTicks < m_HealthbarShowDuration ? 1f : 1f - ((m_HealthbarTicks - m_HealthbarShowDuration) / m_HealthbarFadeDuration);
         for (int i = 0; i < m_Healthbar.Count; i++) {
-            m_Healthbar[i].color = new Color(1f, 1f, 1f, alpha / 2f);
+            m_Healthbar[i].color = new Color(1f, 1f, 1f, alpha / 1.5f);
         }
     }
 
@@ -140,17 +140,21 @@ public class HUD : MonoBehaviour {
     private void UpdateCooldown() {
         if (m_State.Projectile.CanFire) {
             m_Cooldown.gameObject.SetActive(false);
+            m_CooldownFill.SetActive(false);
             return;
         }
 
+        m_CooldownFill.SetActive(true);
         m_Cooldown.gameObject.SetActive(true);
         float ratio = m_State.Projectile.Ticks / m_State.Projectile.Cooldown;
-        float offset = 1f - (m_State.Projectile.Ticks / m_State.Projectile.Cooldown);
+        float offset = 1f - ratio;
         // m_Cooldown.material.SetFloat("_RatioX", ratio);
-        m_Cooldown.transform.localScale = new Vector3(ratio, 1f, 1f);
-        m_Cooldown.transform.localPosition = new Vector3(-offset / 2f, 0.75f, 1f);
-        m_Cooldown.color = new Color(1f, 1f, 1f, 0.5f);
+        m_Cooldown.transform.localScale = new Vector3(offset, offset, 1f);
+        // m_Cooldown.transform.localPosition = new Vector3(-offset / 2f, 0.75f, 1f);
+        m_Cooldown.color = new Color(1f, 1f, 1f, 0.66f);
     }
+
+    public GameObject m_CooldownFill;
 
     #endregion
 

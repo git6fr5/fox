@@ -37,8 +37,8 @@ public class GoldStoredUI : MonoBehaviour
         Gold = gold;
         SecureGold = secureGold;
 
-        string _ = "Gold: " + Gold;
-        _ += "\nSecure Gold: " + SecureGold;
+        string _ = " Gold: " + Gold;
+        _ += "\n Secure Gold: " + SecureGold;
 
         text.text = _;
 

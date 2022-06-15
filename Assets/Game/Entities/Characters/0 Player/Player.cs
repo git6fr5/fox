@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.VFX;
 
 ///<summary>
 ///
@@ -89,9 +89,13 @@ public class Player : Input {
         GetComponent<Controller>().State.Heal();
 
         SoundController.PlaySound(checkSound, checkpoint.transform.position);
+        if (setEffect != null) {
+            setEffect.Play();
+        }
 
     }
 
+    public VisualEffect setEffect;
     public AudioClip checkSound;
 
 }

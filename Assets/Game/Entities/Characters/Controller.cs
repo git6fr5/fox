@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 /// <summary>
 /// Controls the actions of a character.
@@ -308,6 +309,10 @@ public class Controller : MonoBehaviour {
 
         m_State.TakeDamage(damage);
 
+        if (hurtVfx != null) {
+            hurtVfx.Play();
+        }
+
 
         if (GetComponent<Player>() != null) {
             SoundController.PlaySound(hurtSound, transform.position, 0.5f);
@@ -324,6 +329,7 @@ public class Controller : MonoBehaviour {
 
     }
 
+    public VisualEffect hurtVfx;
     public AudioClip hurtSound;
 
     public void Knockback(Vector2 velocity, float duration) {

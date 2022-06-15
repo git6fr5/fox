@@ -48,7 +48,7 @@ public class Screen : MonoBehaviour {
         Init();
     }
 
-    void Update() {
+    void LateUpdate() {
         transform.position = m_Origin;
         Follow();
         if (m_Shake) {
@@ -108,9 +108,9 @@ public class Screen : MonoBehaviour {
     private void Follow() {
         if (GameRules.MainPlayer == null) { return; }
 
-        Vector3 target = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y + 2f, transform.position.z);
+        Vector3 target = new Vector3(GameRules.MainPlayer.transform.position.x, GameRules.MainPlayer.transform.position.y + 1f, transform.position.z);
         Vector3 dv = (target - transform.position);
-
+        
         if (dv.magnitude < 0.25f) {
             // transform.position = target;
         }

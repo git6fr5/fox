@@ -227,7 +227,7 @@ public class Spritesheet : MonoBehaviour {
     }
 
     private void GetEffect() {
-        if (JustLanded && m_LandedEffect != null) {
+        if (!Dashing && JustLanded && m_LandedEffect != null) {
             m_LandedEffect.Play();
         }
         if (JustWallJumped && m_WallJumpEffect != null) {
@@ -239,13 +239,13 @@ public class Spritesheet : MonoBehaviour {
         if (JustDashed && m_DashEffect != null) {
             m_DashEffect.Play();
         }
-        if (JustGotInWater && m_SplashEffect != null) {
+        if (!Dashing && JustGotInWater && m_SplashEffect != null) {
             m_SplashEffect.Play();
         }
-        if (Step && m_StepEffect != null) {
+        if (!Dashing && Step && m_StepEffect != null) {
             m_StepEffect.Play();
         }
-        if (ClimbingStep && m_ClimbingStepEffect != null) {
+        if (!Dashing && ClimbingStep && m_ClimbingStepEffect != null) {
             m_ClimbingStepEffect.Play();
         }
     }
@@ -302,12 +302,18 @@ public class Spritesheet : MonoBehaviour {
             return;
         }
 
-        if (m_Controller.State.Direction < 0) {
+        if (m_Controller.State.Direction < 0f && transform.eulerAngles != 180f * Vector3.up) {
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
             transform.eulerAngles = 180f * Vector3.up;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+
         }
-        else {
+        else if (m_Controller.State.Direction > 0f && transform.eulerAngles != Vector3.zero) {
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
             transform.eulerAngles = Vector3.zero;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         }
+
     }
     
     public static void AfterImage(SpriteRenderer spriteRenderer, Transform transform, float delay, float transparency) {
@@ -327,7 +333,13 @@ public class Spritesheet : MonoBehaviour {
         }
         else {
             m_SpriteRenderer.color = Color.white;
+            float ratio = (float)m_Controller.State.Health / (float)m_Controller.State.MaxHealth;
+            if (ratio <= 0.5f) {
+                m_SpriteRenderer.color = new Color(1f, 0.25f + ratio, 0.25f + ratio, 0.45f + ratio);
+            }
         }
+
+        
     }
 
     #endregion

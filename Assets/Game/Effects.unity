@@ -299,7 +299,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815425794}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 064738a7d9993b747a650ebbce38b0cf, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: 561838b98186ae04a8d143597ffe2878, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -356,19 +356,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0
+      value: 0.04459203
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.16635859
+      value: 0.010869565
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9984399
+      value: 0.91081595
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956438, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.66543436
+      value: 0.9782609
       objectReference: {fileID: 0}
     - target: {fileID: 7977860029644956439, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_RootOrder
