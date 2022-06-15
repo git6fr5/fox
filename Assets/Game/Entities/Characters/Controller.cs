@@ -30,6 +30,12 @@ public class Controller : MonoBehaviour {
     /* --- Unity --- */
     #region Unity 
 
+    void Awake() {
+        if (GetComponent<Player>() != null) {
+            StaticPlayer.Set(m_State);
+        }
+    }
+
     private void Start() {
         Init();
     }

@@ -275,6 +275,11 @@ public class State {
         m_Gold = 0;
     }
 
+    public void SetGold(int gold, int secureGold) {
+        m_Gold = gold;
+        m_SecureGold = secureGold;
+    }
+
     public void DebugCollisionChecks(Vector3 position) {
         for (int i = -1; i <= 1; i++) {
             Vector3 offset = Vector3.down * m_Height + i * Vector3.left * m_Width / 1.5f;

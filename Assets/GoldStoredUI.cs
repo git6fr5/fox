@@ -14,7 +14,7 @@ public class GoldStoredUI : MonoBehaviour
 
     public float showDuration;
 
-    void Update() {
+    void LateUpdate() {
 
         int gold = GameRules.MainPlayer.GetComponent<Controller>().State.Gold;
         int secureGold = GameRules.MainPlayer.GetComponent<Controller>().State.SecureGold;
@@ -46,6 +46,8 @@ public class GoldStoredUI : MonoBehaviour
 
         image.gameObject.SetActive(true);
         text.gameObject.SetActive(true);
+
+        StaticPlayer.Set(GameRules.MainPlayer.GetComponent<Controller>().State);
 
     }
 

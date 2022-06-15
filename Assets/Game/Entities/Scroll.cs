@@ -49,13 +49,15 @@ public class Scroll : MonoBehaviour {
 
         if (effect != null) { effect.Play(); }
 
-        playerState.DashScroll = Dash;
-        playerState.DoubleJumpScroll = DoubleJump;
-        playerState.SwimScroll = Swim;
-        playerState.ClimbScroll = Climb;
+        playerState.DashScroll = Dash ? true : playerState.DashScroll;
+        playerState.DoubleJumpScroll = DoubleJump ? true : playerState.DoubleJumpScroll;
+        playerState.SwimScroll = Swim ? true : playerState.SwimScroll;
+        playerState.ClimbScroll = Climb ? true : playerState.ClimbScroll;
 
         SoundController.PlaySound(sound, transform.position);
 
+        StaticPlayer.Set(playerState);
+        
         Destroy(gameObject);
 
     }
