@@ -17,6 +17,7 @@ public class WorldLoader : LevelLoader {
     public static Vector2Int LoadPointID = new Vector2Int(0, 0);
 
     public Level[] m_Levels;
+    public Level[] Levels => m_Levels;
     public List<Level> loadLevels = new List<Level>();
     public List<Level> loadedLevels = new List<Level>();
     public List<Level> deloadLevels = new List<Level>();

@@ -219,10 +219,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 14402473198035801, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: m_Name
+      value: gold storage
+      objectReference: {fileID: 0}
     - target: {fileID: 1796398290847411384, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4783182381332992226, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5168020969949923735, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: worldLoader
+      value: 
+      objectReference: {fileID: 334274063}
     - target: {fileID: 7542652068294705250, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: m_Sprite
       value: 

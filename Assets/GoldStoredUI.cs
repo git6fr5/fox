@@ -23,11 +23,24 @@ public class GoldStoredUI : MonoBehaviour
             Show(gold, secureGold);
         }
 
+        ForceShow();
+
+    }
+
+    bool forceShow;
+    public Minimap minimap;
+
+    void ForceShow() {
+        forceShow = minimap.tilemap.gameObject.activeSelf;
+        if (forceShow) {
+            image.gameObject.SetActive(true);
+            text.gameObject.SetActive(true);
+        }
     }
 
     void FixedUpdate() {
         showDuration -= Time.fixedDeltaTime;
-        if (showDuration <= 0f) {
+        if (showDuration <= 0f && !forceShow) {
             Hide();
             showDuration = 0f;
         }

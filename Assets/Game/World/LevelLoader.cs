@@ -50,6 +50,7 @@ public class LevelLoader : MonoBehaviour {
     // Components.
     [SerializeField] protected LDtkComponentProject m_LDtkData;
     [HideInInspector] protected Environment m_Environment;
+    public Environment Environment => m_Environment;
     [HideInInspector] protected LdtkJson m_JSON;
 
     #endregion
@@ -85,7 +86,7 @@ public class LevelLoader : MonoBehaviour {
         return null;
     }
 
-    protected void LoadLevel(Level level, LDtkLevel ldtkLevel) {
+    public void LoadLevel(Level level, LDtkLevel ldtkLevel) {
         if (ldtkLevel != null) {
             // Load the data.
             List<LDtkTileData> entityData = LoadLayer(ldtkLevel, EntityLayer);
@@ -112,7 +113,7 @@ public class LevelLoader : MonoBehaviour {
     /* --- Layer Loading --- */
     #region Layer
     
-    protected List<LDtkTileData> LoadLayer(LDtkUnity.Level ldtkLevel, string layerName) {
+    public List<LDtkTileData> LoadLayer(LDtkUnity.Level ldtkLevel, string layerName) {
         List<LDtkTileData> layerData = new List<LDtkTileData>();
         LDtkLayer layer = GetLayer(ldtkLevel, layerName);
         if (layer == null) { return layerData; }

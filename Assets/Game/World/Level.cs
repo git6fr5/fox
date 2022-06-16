@@ -116,28 +116,39 @@ public class Level : MonoBehaviour {
                 if (!firstTime && entityBase.gameObject.tag == "Respawn Anchor") {
                     // skip
                 }
-                else if (entityBase.gameObject.tag == "dash scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DashScroll) {
-                    // skip
-                }
-                else if (entityBase.gameObject.tag == "double jump scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DoubleJumpScroll) {
-                    // skip
-                }
-                else if (entityBase.gameObject.tag == "climb scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.ClimbScroll) {
-                    // skip
-                }
-                else if (entityBase.gameObject.tag == "swim scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.SwimScroll) {
-                    // skip
-                }
                 else {
                     Entity newEntity = Instantiate(entityBase.gameObject, Vector3.zero, Quaternion.identity, transform).GetComponent<Entity>();
                     Vector3 entityPosition = GridToWorldPosition(entityData[i].gridPosition);
                     newEntity.Init(entityData[i].gridPosition, entityPosition);
                     m_Entities.Add(newEntity);
+
+                    if (entityBase.gameObject.tag == "dash scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DashScroll) {
+                        RemoveScroll(newEntity.transform);
+                    }
+                    else if (entityBase.gameObject.tag == "double jump scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.DoubleJumpScroll) {
+                        RemoveScroll(newEntity.transform);
+                    }
+                    else if (entityBase.gameObject.tag == "climb scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.ClimbScroll) {
+                        RemoveScroll(newEntity.transform);
+                    }
+                    else if (entityBase.gameObject.tag == "swim scroll" && GameRules.MainPlayer.GetComponent<Controller>().State.SwimScroll) {
+                        RemoveScroll(newEntity.transform);
+                    }
+
                 }
                 
             }
             
         }
+
+        void RemoveScroll(Transform entityTransform) {
+            foreach (Transform child in entityTransform) {
+                if (child.GetComponent<Scroll>()) {
+                    Destroy(child.gameObject);
+                }
+            }
+        }
+
     }
 
     public void DestroyEntities() {

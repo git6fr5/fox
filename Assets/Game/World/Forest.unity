@@ -243,6 +243,10 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5168020969949923735, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: worldLoader
+      value: 
+      objectReference: {fileID: 334274063}
     - target: {fileID: 6634106553217922797, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
       propertyPath: music
       value: 
@@ -315,13 +319,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7977860029644956441, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
-      propertyPath: m_RefResolutionX
-      value: 320
-      objectReference: {fileID: 0}
-    - target: {fileID: 7977860029644956441, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
-      propertyPath: m_RefResolutionY
-      value: 180
+    - target: {fileID: 8756499750523650573, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab5051a044de67c479ea11c75db6fee2, type: 3}

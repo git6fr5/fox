@@ -152,6 +152,11 @@ public class HUD : MonoBehaviour {
         m_Cooldown.transform.localScale = new Vector3(offset, offset, 1f);
         // m_Cooldown.transform.localPosition = new Vector3(-offset / 2f, 0.75f, 1f);
         m_Cooldown.color = new Color(1f, 1f, 1f, 0.66f);
+        
+        
+        // m_Cooldown.transform.eulerAngles = Vector3.forward * 90f * offset;
+        // m_CooldownFill.transform.eulerAngles = Vector3.forward * 90f * offset;
+
     }
 
     public GameObject m_CooldownFill;

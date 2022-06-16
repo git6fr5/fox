@@ -12,6 +12,8 @@ TagManager:
   - double jump scroll
   - swim scroll
   - climb scroll
+  - Shopkeeper
+  - Goldbox
   layers:
   - Default
   - TransparentFX
