@@ -47,6 +47,11 @@ public class State {
     public bool Moving => m_Moving;
 
     // Jump.
+    [SerializeField] private float m_JumpHeight;
+    [SerializeField] private float m_JumpRisingTime;
+    [SerializeField] private float m_HangTime;
+    [SerializeField] private float m_JumpFallingTime;
+
     [SerializeField] private float m_JumpForce;
     public float JumpForce => m_JumpForce;
     [SerializeField] private float m_Weight;
@@ -119,7 +124,36 @@ public class State {
         m_Health = m_MaxHealth;
         m_Body = body;
         m_Transform = transform;
+
+        m_JumpHeight;
+        m_JumpRisingTime;
+        m_HangTime;
+        m_JumpFallingTime;
+
+        m_JumpForce = 
+        m_Weight
+        m_Floatiness
+
     }
+
+    private struct JumpParams {
+        private float m_Force;
+        private float m_Weight;
+        private float m_Floatiness;
+
+        private JumpParams(float height, float risingTime, float fallingTime, float hangTime) {
+            // f = ma, assume m = 1, f = a
+            // f = a = dv / dt
+            // f (t - 0) = v - u, assume u = 0
+            // at = v = h / t
+            // a t^2 = h
+            // f = a = h / (t ^ 2)
+            m_Force = 
+            
+        }
+
+    }
+
 
     public void FixedUpdate(float deltaTime) {
         if (m_Projectile != null) {
