@@ -23,10 +23,10 @@ TagManager:
   - UI
   - Ground
   - Platform
-  - Projectile
-  - Ducking
-  - Switch
-  - Interact
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -54,16 +54,10 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Decor
-    uniqueID: 3063766063
-    locked: 0
-  - name: Characters
+  - name: Midground
     uniqueID: 4272817811
     locked: 0
-  - name: Projectiles
-    uniqueID: 134861003
-    locked: 0
-  - name: Border
+  - name: Foreground
     uniqueID: 618029683
     locked: 0
   - name: UI
