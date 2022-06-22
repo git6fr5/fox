@@ -14,30 +14,37 @@ namespace Monet {
     [RequireComponent(typeof(SpriteShapeController))]
     public class Platform : MonoBehaviour {
 
-        [SerializeField] protected int m_Length;
-        [HideInInspector] private SpriteShapeController m_SpriteShape;
-        [HideInInspector] private BoxCollider2D m_Hitbox;
+        [HideInInspector] protected BoxCollider2D m_Hitbox;
+        [HideInInspector] protected SpriteShapeRenderer m_SpriteShapeRenderer;
+        [HideInInspector] protected SpriteShapeController m_SpriteShapeController;
 
-        public void Init(int length) {
-            m_Length = length;
-            CreateSpline();
-            CreateHitbox();
+        [HideInInspector] protected Vector3 m_Origin;
+        [HideInInspector] protected Vector3[] m_Path = null;
+        [SerializeField, ReadOnly] protected int m_PathIndex;
+        [SerializeField, ReadOnly] protected List<Transform> m_CollisionContainer = new List<Transform>();
+        [SerializeField, ReadOnly] protected bool m_PressedDown;
+
+        public void Init(int length, Vector3[] path) {
+            m_Origin = transform.position;
+            m_Path = path;
+            m_SpriteShapeController = GetComponent<SpriteShapeController>();
+            m_SpriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
+            m_Hitbox = GetComponent<BoxCollider2D>();
+            Obstacle.EditSpline(m_SpriteShapeController.spline, length);
+            Obstacle.EditHitbox(m_Hitbox, length, 1f /16f);
             gameObject.layer = LayerMask.NameToLayer("Platform");
         }
 
-        private void CreateSpline() {
-            m_SpriteShape = GetComponent<SpriteShapeController>();
-            m_SpriteShape.spline.Clear();
-            m_SpriteShape.spline.InsertPointAt(0, new Vector3(-0.5f, 0f, 0f));
-            m_SpriteShape.spline.InsertPointAt(1, m_Length * Vector3.right + new Vector3(-0.5f, 0f, 0f));
-            m_SpriteShape.spline.SetTangentMode(0, ShapeTangentMode.Continuous);
-            m_SpriteShape.spline.SetTangentMode(1, ShapeTangentMode.Continuous);
+        private void Update() {
+            Obstacle.PressedDown(transform.position, m_CollisionContainer, ref m_PressedDown);
         }
 
-        private void CreateHitbox() {
-            m_Hitbox = GetComponent<BoxCollider2D>();
-            m_Hitbox.size = new Vector2(m_Length, 1f / 16f);
-            m_Hitbox.offset = new Vector2((float)(m_Length - 1f) / 2f, 0.5f - 1f / 32f);
+        private void OnCollisionEnter2D(Collision2D collision) {
+            Obstacle.OnCollision(collision, ref m_CollisionContainer, true);
+        }
+
+        private void OnCollisionExit2D(Collision2D collision) {
+            Obstacle.OnCollision(collision, ref m_CollisionContainer, false);
         }
 
     }

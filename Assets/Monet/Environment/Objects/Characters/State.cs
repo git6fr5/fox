@@ -39,6 +39,21 @@ namespace Monet {
         [SerializeField, ReadOnly] private float m_Sink;
         public float Sink => m_Sink;
 
+        // Double Jump
+        [SerializeField] private float m_DoubleJumpHeight;
+        [SerializeField] private float m_DoubleJumpRisingTime;
+        [SerializeField, ReadOnly] private float m_DoubleJumpSpeed;
+        public float DoubleJumpSpeed => m_DoubleJumpSpeed;
+        [SerializeField, ReadOnly] private float m_DoubleJumpWeight;
+        public float DoubleJumpWeight => m_DoubleJumpWeight;
+
+        // Dash.
+        [SerializeField] private float m_DashDistance;
+        [SerializeField] private float m_DashTime;
+        public float DashTime => m_DashTime;
+        [SerializeField, ReadOnly] private float m_DashSpeed;
+        public float DashSpeed => m_DashSpeed;
+
         // Respawn Anchor.
         [SerializeField, ReadOnly] private RespawnStation m_RespawnStation;
 
@@ -48,6 +63,15 @@ namespace Monet {
 
         public void OnUpdate() {
             PhysicsSettings.CalculateJump(m_JumpHeight, m_RisingTime, m_FallingTime, ref m_JumpSpeed, ref m_Weight, ref m_Sink);
+            PhysicsSettings.CalculateJump(m_DoubleJumpHeight, m_DoubleJumpRisingTime, ref m_DoubleJumpSpeed, ref m_DoubleJumpWeight);
+            PhysicsSettings.CalculateDash(m_DashDistance, m_DashTime, ref m_DashSpeed);
+        }
+
+        public void Hurt(int value) {
+            m_Health -= value;
+            if (m_Health <= 0) {
+                m_Health = 0;
+            }
         }
 
         public void Heal(int value = -1) {

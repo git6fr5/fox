@@ -33,6 +33,9 @@ namespace Monet {
         public bool OnGround => m_OnGround;
         [SerializeField, ReadOnly] private bool m_Rising = false;
         public bool Rising => m_Rising;
+        [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
+        public bool DoubleJumpReset => m_DoubleJumpReset;
+
 
         /* --- Initialization --- */
         #region Initialization
@@ -47,28 +50,52 @@ namespace Monet {
         /* --- Process --- */
         #region Unity 
 
-        public void OnUpdate(Rigidbody2D body, CircleCollider2D collisionFrame, Input input, State state) {        
-            // Checks.
-            PhysicsCheck.OnGround(body.position + collisionFrame.offset, collisionFrame.radius, ref m_OnGround);
-            PhysicsCheck.Coyote(ref m_CoyoteTicks, m_CoyoteBuffer, m_OnGround, Time.deltaTime);
-            PhysicsCheck.AntiGravityApex(ref m_AntiGravityTicks, m_AntiGravityBuffer, m_OnGround, m_Rising, Time.deltaTime);
-            PhysicsCheck.Rising(body.velocity, ref m_Rising);
-            
+        public void OnUpdate(Rigidbody2D body, Input input, State state) {        
             // Actions.
-            PhysicsAction.Gravity(body, input.HoldJump, state.Weight, state.Sink, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
-            PhysicsAction.Jump(body, input, input.Jump, state.JumpSpeed, m_OnGround, m_CoyoteTicks);
+            if (m_KnockbackTicks > 0f) { return; }
+            PhysicsAction.Jump(body, input, input.Jump, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
+            PhysicsAction.DoubleJump(body, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
+            
         }
 
         // Runs once every fixed interval.
-        public void OnFixedUpdate(Rigidbody2D body, Input input, State state, float deltaTime) {
+        public void OnFixedUpdate(Rigidbody2D body, CircleCollider2D collisionFrame, Input input, State state, float deltaTime) {
             // Checks.
+            PhysicsCheck.OnGround(body.position + collisionFrame.offset, collisionFrame.radius, ref m_OnGround);
+            PhysicsCheck.Rising(body.velocity, ref m_Rising);
+            PhysicsCheck.Reset(ref m_DoubleJumpReset, m_OnGround);
+            Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, Time.deltaTime);
+            Timer.CountdownTicks(ref m_CoyoteTicks, m_OnGround, m_CoyoteBuffer, Time.deltaTime);
+            Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
+            
             // Actions.
-            if (m_OnGround) {
-                PhysicsAction.Move(body, input.MoveDirection, state.Speed, state.Acceleration, deltaTime);
+            if (m_KnockbackTicks > 0f) { return; }
+            float acceleration = Controller.GetAcceleration(state, m_OnGround);
+            PhysicsAction.Move(body, input.MoveDirection, state.Speed, acceleration, deltaTime);
+
+            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset);
+            PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
+
+        }
+
+        public void Knockback(Rigidbody2D body, Vector2 velocity, float duration) {
+            body.velocity = velocity;
+            body.gravityScale = 1f;
+            m_KnockbackTicks = duration;
+        }
+
+        public static float GetAcceleration(State state, bool onGround) {
+            if (!onGround) {
+                return state.AirAcceleration;
             }
-            else {
-                PhysicsAction.Move(body, input.MoveDirection, state.AirSpeed, state.AirAcceleration, deltaTime);
+            return state.Acceleration;
+        }
+
+        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset) {
+            if (!doubleJumpReset && rising) {
+                return state.DoubleJumpWeight;
             }
+            return state.Weight;
         }
 
         #endregion

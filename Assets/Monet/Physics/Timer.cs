@@ -1,57 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Monet;
 
+namespace Monet {
 
-[System.Serializable]
-public class Timer {
+    public class Timer {
 
-    /* --- Variables --- */
-    #region Variables
-    
-    public bool Running => m_Ticks > 0f;
-    public bool Complete => IsComplete();
-
-    [SerializeField, ReadOnly] private bool m_Loop;
-    [SerializeField, ReadOnly] private float m_Duration = 1f;
-    [SerializeField, ReadOnly] private float m_Ticks = -1f;
-    
-    #endregion
-
-    public Timer(float duration, bool loop = false) {
-        m_Duration = duration;
-        m_Loop = loop;
-        m_Ticks = 0f;
-    }
-
-    public void Start() {
-        m_Ticks = 0f;
-    }
-
-    public void Update(float deltaTime) {
-        m_Ticks += deltaTime;
-    }
-
-    public void Stop() {
-        m_Ticks = -1f;
-    }
-
-    public bool IsComplete() {
-        if (!Running) {
-            return false; 
-        }
-
-        if (m_Ticks >= m_Duration) {
-            if (m_Loop) { 
-                m_Ticks -= m_Duration; 
+        public static void UpdateTicks(ref float ticks, bool condition, float buffer, float dt) {
+            if (condition) {
+                ticks += dt;
+                if (ticks >= buffer) {
+                    ticks = buffer;
+                }
             }
             else {
-                Stop();
+                ticks -= dt;
+                if (ticks < 0f) {
+                    ticks = 0f;
+                }
             }
-            return true;
         }
-        return false;
+
+        public static void CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
+            if (condition) {
+                ticks = buffer;
+            }
+            else {
+                ticks -= dt;
+                if (ticks < 0f) {
+                    ticks = 0f;
+                }
+            }
+        }
 
     }
 
 }
+
+

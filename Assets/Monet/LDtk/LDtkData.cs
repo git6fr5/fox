@@ -11,6 +11,8 @@ namespace Monet {
     /// A useful data structure for reading and matching LDtk data to game data.
     ///<summary>
     public class LDtkTileData {
+
+        public static Vector2Int ControlStopID = new Vector2Int(0, 2);
         
         private Vector2Int m_VectorID;
         public Vector2Int VectorID => m_VectorID;

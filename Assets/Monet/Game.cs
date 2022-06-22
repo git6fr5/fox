@@ -14,6 +14,8 @@ namespace Monet {
         // Singleton.
         public static Game Instance;
 
+        [SerializeField] private float m_TimeScale;
+
          // Player.
         [SerializeField] private Player m_Player;
         public static Player MainPlayer => Instance.m_Player;
@@ -44,6 +46,10 @@ namespace Monet {
             m_Environment.Init();
             m_LevelLoader.Init();
             m_LevelLoader.Open(m_OpeningLevel, m_Player.transform);
+        }
+
+        void Update() {
+            Time.timeScale = m_TimeScale;
         }
 
     }

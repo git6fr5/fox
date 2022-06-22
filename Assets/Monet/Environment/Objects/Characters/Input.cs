@@ -49,13 +49,11 @@ namespace Monet {
 
         // Controls
         [SerializeField, ReadOnly] protected Vector2 m_Direction;
-        public float MoveDirection => m_Direction.x;
+        public float MoveDirection => m_Direction.x != 0f ? Mathf.Sign(m_Direction.x) : 0f;
 
         [SerializeField, ReadOnly] protected bool m_Jump;
         public bool Jump => m_Jump;
-        [SerializeField] protected float m_JumpBufferDuration;
-        [SerializeField, ReadOnly] protected float m_JumpBufferTicks;
-
+        
         [SerializeField, ReadOnly] protected bool m_HoldJump;
         public bool HoldJump => m_HoldJump;
 
@@ -63,9 +61,8 @@ namespace Monet {
 
         }
 
-        public void ResetJump() {
+        public virtual void ResetJump() {
             m_Jump = false;
-            m_JumpBufferTicks = 0f;
         }
 
     }

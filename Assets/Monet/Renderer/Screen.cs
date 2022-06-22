@@ -96,17 +96,11 @@ namespace Monet {
         }
 
         public static Vector3 Snap(Vector2 targetPosition, Transform cameraTransform, float snapSpeed, ref bool continueSnap, float bounds = 0f) {
-            Vector2 displacement = targetPosition - (Vector2)cameraTransform.position;
+            Vector3 actualTarget = (Vector3)targetPosition + Vector3.forward * cameraTransform.position.z;
+            Obstacle.Move(cameraTransform, actualTarget, snapSpeed, Time.deltaTime, null);
             
-            if (displacement.magnitude > bounds) {
-                Vector2 deltaPosition = displacement.normalized * snapSpeed * Time.deltaTime;
-                if (displacement.magnitude < deltaPosition.magnitude) {
-                    cameraTransform.position = new Vector3(targetPosition.x, targetPosition.y, cameraTransform.position.z);
-                    continueSnap = false;
-                }
-                else {
-                    cameraTransform.position += (Vector3)deltaPosition;
-                }
+            if (cameraTransform.position == actualTarget) {
+                continueSnap = false;
             }
             return cameraTransform.position;
         }

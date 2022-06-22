@@ -31,10 +31,24 @@ namespace Monet {
 
         }
 
-        public static void Jump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, float coyote) {
+        public static void Jump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, ref float coyote) {
             if (jump && (onGround || coyote > 0f)) {
-                body.velocity = Vector2.up * jumpSpeed;
+                body.position += Vector2.up * Game.Physics.MovementPrecision;
+                if (onGround || body.velocity.y < 0f) {
+                    body.velocity = Vector2.up * jumpSpeed;
+                }
+                else {
+                    body.velocity += Vector2.up * jumpSpeed;
+                }
+                coyote = 0f;
                 input.ResetJump(); // This line and requiring the whole input to be passed is ugly.
+            }
+        }
+
+        public static void DoubleJump(Rigidbody2D body, bool jump, float jumpSpeed, bool onGround, float coyote, ref bool reset) {
+            if (jump && reset && !onGround && coyote <= 0f) {
+                body.velocity = Vector2.up * jumpSpeed;
+                reset = false;
             }
         }
 

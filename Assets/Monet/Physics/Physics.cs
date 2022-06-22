@@ -33,6 +33,10 @@ namespace Monet {
         [SerializeField] private float m_MovementPrecision = 0.05f;
         public float MovementPrecision => m_MovementPrecision;
 
+        // Collision.
+        [SerializeField] private float m_CollisionPrecision = 0.045f;
+        public float CollisionPrecision => m_CollisionPrecision;
+
         // Gravity
         [SerializeField] private float m_GravityScale = 1f;
         public float GravityScale => m_GravityScale;
@@ -42,11 +46,20 @@ namespace Monet {
         public CollisionLayer CollisionLayers => m_CollisionLayers;
 
         // Calculations.
+        public static void CalculateJump(float height, float risingTime, ref float speed, ref float weight) {
+            speed = 2f * height / risingTime;
+            weight = 2f * height / (risingTime * risingTime) / Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale);
+        }
+
         public static void CalculateJump(float height, float risingTime, float fallingTime, ref float speed, ref float weight, ref float floatiness) {
             speed = 2f * height / risingTime;
             weight = 2f * height / (risingTime * risingTime) / Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale);
             floatiness = (fallingTime * fallingTime) * weight * Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale) / (2f * height);
             floatiness = 1f / floatiness;
+        }
+
+        public static void CalculateDash(float distance, float time, ref float speed) {
+            speed = distance / time;
         }
 
     }

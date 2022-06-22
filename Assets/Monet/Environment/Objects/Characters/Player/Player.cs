@@ -11,6 +11,9 @@ namespace Monet {
     ///<summary>
     public class Player : Input {
 
+        [SerializeField] protected float m_JumpBufferDuration;
+        [SerializeField, ReadOnly] protected float m_JumpBufferTicks;
+
         [SerializeField] private Minimap m_Minimap;
         public Minimap CurrentMinimap => m_Minimap;
         [SerializeField] private bool m_MinimapToggle;
@@ -25,6 +28,11 @@ namespace Monet {
                 m_Minimap.gameObject.SetActive(!m_Minimap.gameObject.activeSelf);
             }
 
+        }
+
+        public override void ResetJump() {
+            base.ResetJump();
+            m_JumpBufferTicks = 0f;
         }
 
     }

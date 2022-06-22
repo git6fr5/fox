@@ -63,6 +63,13 @@ namespace Monet {
 
         }
 
+        public void Draw(Vector3 center, float radius) {            
+            for (int i = -1; i <= 1; i++) {
+                Vector3 offset = Vector3.down * radius + i * Vector3.left * radius / 1.5f;
+                Gizmos.DrawWireSphere(center + offset, 0.05f);
+            }
+        }
+
     }
 
 }
