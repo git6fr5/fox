@@ -23,7 +23,7 @@ namespace Monet {
 
         public static Vector3[] GetPath(Vector3 position, int index, List<LDtkTileData> controlData, int length = 0) {
 
-            Vector2 temp = Quaternion.Euler(0f, 0f, 90f * controlData[index].VectorID.x) * Vector2.right;
+            Vector2 temp = Quaternion.Euler(0f, 0f, -90f * controlData[index].VectorID.x) * Vector2.up;
             Vector2Int direction = new Vector2Int((int)Mathf.Round(temp.x), (int)Mathf.Round(temp.y));
             direction.y *= -1;
 

@@ -33,23 +33,38 @@ namespace Monet {
         [SerializeField] private int m_MovementFrames;
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
+        [SerializeField] private int m_DoubleJumpFrames;
+        [SerializeField] private int m_DashFrames;
+
+        // Sounds.
+        [SerializeField] private AudioClip m_StepSound;
+        [SerializeField] private AudioClip m_JumpSound;
+        [SerializeField] private AudioClip m_LandSound;
+        [SerializeField] private AudioClip m_DoubleJumpSound;
+        [SerializeField] private AudioClip m_DashSound;
 
         // Animations
         [HideInInspector] private Sprite[] m_IdleAnimation;
         [HideInInspector] private Sprite[] m_MovementAnimation;
         [HideInInspector] private Sprite[] m_RisingAnimation;
         [HideInInspector] private Sprite[] m_FallingAnimation;
+        [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
+        [HideInInspector] private Sprite[] m_DashAnimation;
 
         // Animation Conditions.
         private bool Moving => m_Character.CharacterInput.MoveDirection != 0f;
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
+        private bool DoubleJumping => m_Character.CharacterInput.HoldJump && !m_Character.CharacterController.DoubleJumpReset;
+        private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset;
 
         // Effect Conditions.
         private bool Step => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
         private bool Jump => m_CurrentAnimation == m_RisingAnimation && m_PreviousAnimation != m_RisingAnimation;
         private bool Land => m_PreviousAnimation == m_FallingAnimation && m_CurrentAnimation != m_FallingAnimation;
+        private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
+        private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
         
         /* --- Initialization --- */
         #region Initialization
@@ -74,7 +89,9 @@ namespace Monet {
             startIndex = SliceSheet(startIndex, m_IdleFrames, ref m_IdleAnimation);
             startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
             startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);        
-            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);        
+            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);     
+            startIndex = SliceSheet(startIndex, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);        
+            startIndex = SliceSheet(startIndex, m_DashFrames, ref m_DashAnimation);        
             return startIndex;
         }
 
@@ -115,6 +132,12 @@ namespace Monet {
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
+            if (Dashing) {
+                return m_DashAnimation;
+            }
+            else if (DoubleJumping) {
+                return m_DoubleJumpAnimation;
+            }
             if (Rising) {
                 return m_RisingAnimation;
             }
@@ -130,7 +153,20 @@ namespace Monet {
         private void GetEffect() {
             if (Step) { // && stepEFX != null
                 // Effect.Play etc.
-                // Where effect is both the vfx and sfx.
+                // Where effect is both the vfx and sfx.\
+                SoundManager.PlaySound(m_StepSound);
+            }
+            if (Jump) {
+                SoundManager.PlaySound(m_JumpSound);
+            }
+            else if (Land) {
+                SoundManager.PlaySound(m_LandSound);
+            }
+            if (DoubleJump) {
+                SoundManager.PlaySound(m_DoubleJumpSound);
+            }
+            if (Dash) {
+                SoundManager.PlaySound(m_DashSound);
             }
 
         }

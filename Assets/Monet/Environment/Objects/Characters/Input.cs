@@ -14,6 +14,32 @@ namespace Monet {
         public static float UserHorizontalInput => UnityEngine.Input.GetAxisRaw("Horizontal");
         public static float UserVerticalInput => UnityEngine.Input.GetAxisRaw("Vertical");
 
+        // Controls
+        [SerializeField, ReadOnly] protected Vector2 m_Direction;
+        public float MoveDirection => m_Direction.x != 0f ? Mathf.Sign(m_Direction.x) : 0f;
+
+        [SerializeField, ReadOnly] protected bool m_Jump;
+        public bool Jump => m_Jump;
+        
+        [SerializeField, ReadOnly] protected bool m_HoldJump;
+        public bool HoldJump => m_HoldJump;
+
+        [SerializeField, ReadOnly] protected bool m_Attack;
+        public bool Attack => m_Attack;
+
+        [SerializeField, ReadOnly] protected Vector2 m_AttackDirection;
+        public Vector2 AttackDirection => m_AttackDirection;
+
+        [SerializeField, ReadOnly] protected bool m_Dash;
+        public bool Dash => m_Dash;
+
+        [SerializeField, ReadOnly] protected Vector2 m_DashDirection;
+        public Vector2 DashDirection => m_DashDirection;
+
+        public virtual void OnUpdate() {
+
+        }
+
         public static bool KeyDown(UnityEngine.KeyCode keyCode) {
             return UnityEngine.Input.GetKeyDown(keyCode);
         }
@@ -47,22 +73,12 @@ namespace Monet {
             return held;
         }
 
-        // Controls
-        [SerializeField, ReadOnly] protected Vector2 m_Direction;
-        public float MoveDirection => m_Direction.x != 0f ? Mathf.Sign(m_Direction.x) : 0f;
-
-        [SerializeField, ReadOnly] protected bool m_Jump;
-        public bool Jump => m_Jump;
-        
-        [SerializeField, ReadOnly] protected bool m_HoldJump;
-        public bool HoldJump => m_HoldJump;
-
-        public virtual void OnUpdate() {
-
-        }
-
         public virtual void ResetJump() {
             m_Jump = false;
+        }
+
+        public virtual void ResetDash() {
+            m_Dash = false;
         }
 
     }

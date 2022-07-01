@@ -7,7 +7,8 @@ namespace Monet {
 
     public class Timer {
 
-        public static void UpdateTicks(ref float ticks, bool condition, float buffer, float dt) {
+        public static bool UpdateTicks(ref float ticks, bool condition, float buffer, float dt) {
+            bool wasnotzero = ticks != 0f;
             if (condition) {
                 ticks += dt;
                 if (ticks >= buffer) {
@@ -20,9 +21,12 @@ namespace Monet {
                     ticks = 0f;
                 }
             }
+            bool isnowzero = ticks == 0f;
+            return wasnotzero && isnowzero;
         }
 
-        public static void CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
+        public static bool CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
+            bool wasnotzero = ticks != 0f;
             if (condition) {
                 ticks = buffer;
             }
@@ -32,6 +36,8 @@ namespace Monet {
                     ticks = 0f;
                 }
             }
+            bool isnowzero = ticks == 0f;
+            return wasnotzero && isnowzero;
         }
 
     }

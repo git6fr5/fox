@@ -157,7 +157,7 @@ namespace Monet {
             if (player != null) {
                 LDtkLoader.Open(this);
                 Screen.Instance.Snap(WorldCenter);
-                Screen.Instance.Shape(new Vector2Int(m_Height, m_Width));
+                Screen.Instance.Shape(new Vector2Int(m_Width, m_Height));
                 player.CurrentMinimap.Load(this);
             }
         }

@@ -12,7 +12,7 @@ namespace Monet {
     ///<summary>
     public class LDtkTileData {
 
-        public static Vector2Int ControlStopID = new Vector2Int(0, 2);
+        public static Vector2Int ControlStopID = new Vector2Int(1, 0);
         
         private Vector2Int m_VectorID;
         public Vector2Int VectorID => m_VectorID;

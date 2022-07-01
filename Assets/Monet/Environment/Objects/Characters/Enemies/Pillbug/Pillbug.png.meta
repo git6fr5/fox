@@ -239,8 +239,8 @@ TextureImporter:
       name: Pillbug_4
       rect:
         serializedVersion: 2
-        x: 32
-        y: 16
+        x: 0
+        y: 0
         width: 16
         height: 16
       alignment: 0
@@ -260,48 +260,6 @@ TextureImporter:
       name: Pillbug_5
       rect:
         serializedVersion: 2
-        x: 48
-        y: 16
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 172672db00d3a1641b937ffe8d31db65
-      internalID: 312594128
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pillbug_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a5f0fc5cd8f8c5b488f84886627e49b9
-      internalID: -1220846215
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pillbug_7
-      rect:
-        serializedVersion: 2
         x: 16
         y: 0
         width: 16
@@ -313,8 +271,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58fee94518ea29e439c649268cf13fa4
-      internalID: -487862401
+      spriteID: 172672db00d3a1641b937ffe8d31db65
+      internalID: 312594128
       vertices: []
       indices: 
       edges: []
@@ -334,10 +292,8 @@ TextureImporter:
       Pillbug_4: 496236355
       Pillbug_1: -136494521
       Pillbug_3: 1553831776
-      Pillbug_6: -1220846215
       Pillbug_0: -1473848928
       Pillbug_2: -64708631
-      Pillbug_7: -487862401
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

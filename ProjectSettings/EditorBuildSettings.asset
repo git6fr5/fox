@@ -6,18 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Game/Game.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Game/Menu/Menu.unity
-    guid: 626f7855ffc9e0549afb683f65b0c1ca
-  - enabled: 1
-    path: Assets/Game/World/Dojo.unity
-    guid: e0fe85a4e47cbd443a7502e6d1e6f80f
-  - enabled: 1
-    path: Assets/Game/World/Forest.unity
-    guid: f28e3323fae5e4940b82f4f116c62d7c
-  - enabled: 1
-    path: Assets/Game/World/Waterfall.unity
-    guid: 53bb671dcb8df454b9fc2c39d26a74f2
+    path: Assets/Monet/Demo.unity
+    guid: bbffe13830665ef43925683032f1c2ce
   m_configObjects: {}

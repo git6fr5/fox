@@ -5,15 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - Switch
-  - Coin
-  - Respawn Anchor
-  - dash scroll
-  - double jump scroll
-  - swim scroll
-  - climb scroll
-  - Shopkeeper
-  - Goldbox
   layers:
   - Default
   - TransparentFX
@@ -23,7 +14,7 @@ TagManager:
   - UI
   - Ground
   - Platform
-  - 
+  - Projectiles
   - 
   - 
   - 

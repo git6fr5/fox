@@ -101,7 +101,7 @@ row 1:
 pillbug - walks back and forth
 fuzzy - walks around a platform
 fly - buzzes around a point
-peashooter - stays still but shoots at you
+peashooter - stays still but shoots at you if you're within its radius
 
 row 2:
 small human enemy
@@ -119,19 +119,18 @@ elevator platform
 crumbling platform
 bouncy platform
 sinking platform
-alternating platform A (put the control cycle to control)
-alternating platform B (put the control cycle to control - perfectly mirrors alt platform A if on the same cycle)
+dissappearing platform A (dissappears and reappears on a timer)
+dissapearing platform B (dissappears and reasppears in the opposite timing to dissapearing platform A)
 
 row 2 & 3
 spikes
 basic star - resets actions
-timed star - ???
 pivot cw - put in between a platform to make that platform rotate around this
-pivot ccw - same as above
+pivot ccw - same as above but rotates counterclock wise
 
 rows 4 -
 timed traps (shoots something on a timerl)
-triggered traps (if you walk into its path)
+triggered traps (if you walk into its line of sight)
 
 
 people try to open up to them emotionally and unless its a main character they're ridiculed for feeling things

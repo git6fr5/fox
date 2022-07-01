@@ -23,8 +23,13 @@ namespace Monet {
             }
         }
 
-        public static void Reset(ref bool reset, bool condition) {
-            reset = condition ? true : reset;
+        public static void Reset(ref bool reset, bool unlocked, bool condition) {
+            if (!unlocked) { 
+                reset = false; 
+            }
+            else {
+                reset = condition ? true : reset;
+            }
         }
 
         public static void Rising(Vector2 velocity, ref bool rising) {

@@ -11,7 +11,12 @@ namespace Monet {
     ///<summary>
     public class PhysicsAction {
 
-        public static void Move(Rigidbody2D body, float direction, float speed, float acceleration, float deltaTime) {
+        public static void Move(Rigidbody2D body, float direction, float speed, float acceleration, bool finishKnockback, float deltaTime) {
+
+            // Hard decelleration at the end of knockback.
+            if (finishKnockback) {
+                body.velocity *= 0.25f;
+            }
 
             // Cache the target and current velocities.
             float targetSpeed = direction * speed;
@@ -45,15 +50,30 @@ namespace Monet {
             }
         }
 
-        public static void DoubleJump(Rigidbody2D body, bool jump, float jumpSpeed, bool onGround, float coyote, ref bool reset) {
+        public static void DoubleJump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, float coyote, ref bool reset) {
             if (jump && reset && !onGround && coyote <= 0f) {
                 body.velocity = Vector2.up * jumpSpeed;
                 reset = false;
+                input.ResetJump(); // This line and requiring the whole input to be passed is ugly.
             }
         }
 
-        public static void Gravity(Rigidbody2D body, bool hold, float weight, float sink, bool rising, float antiGravTicks, float antiGravFactor) {
+        public static void Dash(Rigidbody2D body, Input input, bool dash, Vector2 direction, float dashSpeed, ref float ticks, float duration,ref bool reset) {
+            if (dash && reset) {
+                body.gravityScale = 0f;
+                body.velocity = direction.normalized * dashSpeed;
+                reset = false;
+                ticks = duration;
+                input.ResetDash(); // This line and requiring the whole input to be passed is ugly.
+            }
+        }
+
+        public static void Gravity(Rigidbody2D body, bool hold, float weight, float sink, bool onGround, bool rising, float antiGravTicks, float antiGravFactor) {
             body.gravityScale = Game.Physics.GravityScale;
+            if (onGround) {
+                return;
+            }
+
             if (hold && rising) {
                 body.gravityScale *= weight;
             }

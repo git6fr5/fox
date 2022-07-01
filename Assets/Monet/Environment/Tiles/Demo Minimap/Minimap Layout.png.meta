@@ -193,6 +193,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Minimap Layout_2
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 30
+        width: 2
+        height: 2
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e325a6b2e9f121043adc2126a78fb898
+      internalID: -31361979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -205,6 +226,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Minimap Layout_1: 25496770
+      Minimap Layout_2: -31361979
       Minimap Layout_0: 237793723
   spritePackingTag: 
   pSDRemoveMatte: 0

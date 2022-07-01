@@ -20,6 +20,10 @@ namespace Monet {
         public LayerMask Water => m_Water;
         [SerializeField] private LayerMask m_Platform;
         public LayerMask Platform => m_Platform;
+        [SerializeField] private LayerMask m_Characters;
+        public LayerMask Characters => m_Characters;
+        [SerializeField] private LayerMask m_Projectiles;
+        public LayerMask Projectiles => m_Projectiles;
 
     }
 

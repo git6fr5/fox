@@ -13,6 +13,10 @@ namespace Monet {
     [System.Serializable]
     public class Controller {
 
+        // Projectile.
+        [SerializeField] protected Projectile m_Projectile;
+        [SerializeField] private List<string> m_Targets = new List<string>();
+
         // Knockback.
         [SerializeField, ReadOnly] protected float m_KnockbackTicks;
         public bool Knockedback => m_KnockbackTicks > 0f;
@@ -33,8 +37,16 @@ namespace Monet {
         public bool OnGround => m_OnGround;
         [SerializeField, ReadOnly] private bool m_Rising = false;
         public bool Rising => m_Rising;
+
+        // Special.
+        [SerializeField] private bool m_UnlockedDoubleJump;
+        // public bool UnlockedDoubleJump => m_UnlockedDoubleJump;
         [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
         public bool DoubleJumpReset => m_DoubleJumpReset;
+        [SerializeField] private bool m_UnlockedDash;
+        // public bool UnlockedDash => m_UnlockedDash;
+        [SerializeField, ReadOnly] private bool m_DashReset;
+        public bool DashReset => m_DashReset;
 
 
         /* --- Initialization --- */
@@ -54,8 +66,11 @@ namespace Monet {
             // Actions.
             if (m_KnockbackTicks > 0f) { return; }
             PhysicsAction.Jump(body, input, input.Jump, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
-            PhysicsAction.DoubleJump(body, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
-            
+            PhysicsAction.DoubleJump(body, input, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
+            PhysicsAction.Dash(body, input, input.Dash, input.DashDirection, state.DashSpeed, ref m_KnockbackTicks, state.DashDuration, ref m_DashReset);
+            if (m_Projectile != null) {
+                m_Projectile.Fire(input.Attack, input.AttackDirection, m_Targets);
+            }
         }
 
         // Runs once every fixed interval.
@@ -63,18 +78,22 @@ namespace Monet {
             // Checks.
             PhysicsCheck.OnGround(body.position + collisionFrame.offset, collisionFrame.radius, ref m_OnGround);
             PhysicsCheck.Rising(body.velocity, ref m_Rising);
-            PhysicsCheck.Reset(ref m_DoubleJumpReset, m_OnGround);
-            Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, Time.deltaTime);
-            Timer.CountdownTicks(ref m_CoyoteTicks, m_OnGround, m_CoyoteBuffer, Time.deltaTime);
-            Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
+            PhysicsCheck.Reset(ref m_DoubleJumpReset, m_UnlockedDoubleJump, m_OnGround);
+            PhysicsCheck.Reset(ref m_DashReset, m_UnlockedDash, m_OnGround);
+            Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, deltaTime);
+            Timer.CountdownTicks(ref m_CoyoteTicks, m_OnGround, m_CoyoteBuffer, deltaTime);
+            bool finishKnockback = Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
+            if (m_Projectile != null) {
+                m_Projectile.OnUpdate(deltaTime);
+            }
             
             // Actions.
             if (m_KnockbackTicks > 0f) { return; }
             float acceleration = Controller.GetAcceleration(state, m_OnGround);
-            PhysicsAction.Move(body, input.MoveDirection, state.Speed, acceleration, deltaTime);
+            PhysicsAction.Move(body, input.MoveDirection, state.Speed, acceleration, finishKnockback, deltaTime);
 
-            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset);
-            PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
+            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump);
+            PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
 
         }
 
@@ -91,8 +110,8 @@ namespace Monet {
             return state.Acceleration;
         }
 
-        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset) {
-            if (!doubleJumpReset && rising) {
+        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset, bool doubleJumpUnlocked) {
+            if (!doubleJumpReset && doubleJumpUnlocked && rising) {
                 return state.DoubleJumpWeight;
             }
             return state.Weight;
