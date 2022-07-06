@@ -52,6 +52,14 @@ namespace Monet {
             Time.timeScale = m_TimeScale;
         }
 
+        public static bool Validate<T>(T[] array) {
+            return array != null && array.Length > 0;
+        }
+
+        public static bool Validate<T>(List<T> list) {
+            return list != null && list.Count > 0;
+        }
+
     }
     
 }

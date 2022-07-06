@@ -16,6 +16,7 @@ namespace Monet {
         // Projectile.
         [SerializeField] protected Projectile m_Projectile;
         [SerializeField] private List<string> m_Targets = new List<string>();
+        public List<string> Targets => m_Targets;
 
         // Knockback.
         [SerializeField, ReadOnly] protected float m_KnockbackTicks;

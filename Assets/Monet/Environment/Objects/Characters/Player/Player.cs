@@ -59,7 +59,8 @@ namespace Monet {
             m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_DashDirection);
 
             m_Attack = KeyDownBuffer(m_AttackKey, ref m_AttackBufferTicks, m_AttackBufferDuration, Time.deltaTime);
-            m_AttackDirection = GetDirection(Input.UserHorizontalInput, 0f, m_AttackDirection);
+            m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_AttackDirection);
+            // m_AttackDirection = GetDirection(Input.UserHorizontalInput, 0f, m_AttackDirection);
             
             m_MinimapToggle = KeyDown(m_MinimapKey);
             if (m_MinimapToggle) {

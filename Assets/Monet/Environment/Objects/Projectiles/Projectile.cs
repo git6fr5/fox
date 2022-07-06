@@ -36,8 +36,8 @@ namespace Monet {
         [SerializeField] private float m_Torque = 0f;
         
         // Fire rate.
-        [SerializeField, ReadOnly] private float m_Ticks = 0f;
-        [SerializeField] private float m_Cooldown = 0.5f;
+        [SerializeField, ReadOnly] protected float m_Ticks = 0f;
+        [SerializeField] protected float m_Cooldown = 0.5f;
         public bool CanFire => m_Ticks == 0f;
         public float Cooldown => m_Cooldown;
         public float Ticks => m_Ticks;
@@ -59,19 +59,25 @@ namespace Monet {
         }
 
         void OnTriggerEnter2D(Collider2D collider) {
-            Character temp = collider.GetComponent<Character>();
-            if (temp != null) {
-                ProcessCollision(temp);
-            }
-
+            ProcessCollision(collider);
+        }
+        
+        protected virtual void ProcessCollision(Collider2D collider) {
             if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
                 m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
                 enabled = false;
             }
+
+            Character character = collider.GetComponent<Character>();
+            CharacterCollision(character);
+
         }
-        
-        private void ProcessCollision(Character character) {
-            if (m_Targets.Contains(character.gameObject.tag)) {
+
+        protected void CharacterCollision(Character character) {
+            if (character == null) {
+                return;
+            }
+            else if (m_Targets.Contains(character.gameObject.tag)) {
                 character.Damage(m_Damage, m_Body.velocity, m_KnockbackForce);
                 SoundManager.PlaySound(m_ImpactSound);
                 Destroy(gameObject);
@@ -106,7 +112,9 @@ namespace Monet {
             // Activate.
             gameObject.layer = LayerMask.NameToLayer("Projectiles");
             gameObject.SetActive(true);
-            Destroy(gameObject, m_Lifetime);
+            if (m_Lifetime > 0f) {
+                Destroy(gameObject, m_Lifetime);
+            }
             SoundManager.PlaySound(m_InitializeSound);
             // Physics.Shoot(m_Body, direction, m_Speed, m_Torque);
             

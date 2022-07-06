@@ -56,7 +56,7 @@ namespace Monet {
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
-        private bool DoubleJumping => m_Character.CharacterInput.HoldJump && !m_Character.CharacterController.DoubleJumpReset;
+        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset;
         private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset;
 
         // Effect Conditions.
@@ -132,19 +132,19 @@ namespace Monet {
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
-            if (Dashing) {
+            if (Dashing && Game.Validate<Sprite>(m_DashAnimation)) {
                 return m_DashAnimation;
             }
-            else if (DoubleJumping) {
+            else if (DoubleJumping && Game.Validate<Sprite>(m_DoubleJumpAnimation)) {
                 return m_DoubleJumpAnimation;
             }
-            if (Rising) {
+            if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
                 return m_RisingAnimation;
             }
-            else if (Falling) {
+            else if (Falling && Game.Validate<Sprite>(m_FallingAnimation)) {
                 return m_FallingAnimation;
             }
-            else if (Moving) {
+            else if (Moving && Game.Validate<Sprite>(m_MovementAnimation)) {
                 return m_MovementAnimation;
             }
             return m_IdleAnimation;
