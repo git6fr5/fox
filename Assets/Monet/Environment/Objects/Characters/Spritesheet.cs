@@ -33,6 +33,7 @@ namespace Monet {
         [SerializeField] private int m_MovementFrames;
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
+        [SerializeField] private int m_AttackFrames;
         [SerializeField] private int m_DoubleJumpFrames;
         [SerializeField] private int m_DashFrames;
 
@@ -48,6 +49,7 @@ namespace Monet {
         [HideInInspector] private Sprite[] m_MovementAnimation;
         [HideInInspector] private Sprite[] m_RisingAnimation;
         [HideInInspector] private Sprite[] m_FallingAnimation;
+        [HideInInspector] private Sprite[] m_AttackAnimation;
         [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
         [HideInInspector] private Sprite[] m_DashAnimation;
 
@@ -89,7 +91,8 @@ namespace Monet {
             startIndex = SliceSheet(startIndex, m_IdleFrames, ref m_IdleAnimation);
             startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
             startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);        
-            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);     
+            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);   
+            startIndex = SliceSheet(startIndex, m_AttackFrames, ref m_AttackAnimation);     
             startIndex = SliceSheet(startIndex, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);        
             startIndex = SliceSheet(startIndex, m_DashFrames, ref m_DashAnimation);        
             return startIndex;

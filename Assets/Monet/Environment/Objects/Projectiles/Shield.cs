@@ -45,10 +45,10 @@ namespace Monet {
         }
 
         void FixedUpdate() {
-            if (m_Body.simulated == false ) {
+            if (m_Body.simulated == false) {
                 return;
             }
-            
+
             Timer.CountdownTicks(ref m_Ticks, false, m_Cooldown, Time.fixedDeltaTime);
             if (m_Ticks > m_Cooldown - Time.fixedDeltaTime * 4f) {
                 return;
@@ -57,23 +57,24 @@ namespace Monet {
             float deltaTime = Time.fixedDeltaTime;
             float distance = (m_Parent.position - transform.position).magnitude;
 
-            if (distance < 1f) {
+            if (distance < 0.65f) {
                 
                 m_Body.velocity = Vector2.zero;
                 m_Body.simulated = false;
                 transform.SetParent(m_Parent);
                 transform.localPosition = Vector3.zero;
-                m_Hitbox.isTrigger = true;
-                m_Hitbox.enabled = false;
-
+                
                 Timer.CountdownTicks(ref m_Ticks, true, 0f, 0f);
 
                 return;
-            }
+            }   
 
             if (m_Ticks > 0f) {
                 return;
             }
+
+            m_Hitbox.isTrigger = true;
+            m_Hitbox.enabled = true;
 
             Vector2 direction = (m_Parent.position - transform.position).normalized;
             m_Body.velocity = 2f * m_Speed * direction;
