@@ -66,7 +66,7 @@ namespace Monet {
         }
 
         private Entity Duplicate(Transform parent) {
-            Entity entity = Instantiate(gameObject, Vector3.zero, Quaternion.identity, parent).GetComponent<Entity>();
+            Entity entity = Instantiate(gameObject, Vector3.zero, transform.localRotation, parent).GetComponent<Entity>();
             if (Singular) {
                 Destroy(gameObject);
             }

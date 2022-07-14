@@ -17,6 +17,10 @@ namespace Monet {
         public int MaxHealth => m_MaxHealth;
         [SerializeField] private int m_Health;
         public int Health => m_Health;
+        [SerializeField, ReadOnly] private bool m_Immune;
+        public bool Immune => m_Immune;
+        private static float ImmuneBuffer = 0.25f;
+        [SerializeField, ReadOnly] private float m_ImmuneTicks;
 
         // Speed.
         [SerializeField] protected float m_Speed;
@@ -67,11 +71,19 @@ namespace Monet {
             PhysicsSettings.CalculateDash(m_DashDistance, m_DashDuration, ref m_DashSpeed);
         }
 
+        public void OnFixedUpdate(float deltaTime) {
+            Timer.CountdownTicks(ref m_ImmuneTicks, !m_Immune, ImmuneBuffer, deltaTime);
+            if (m_Immune && m_ImmuneTicks == 0f) {
+                m_Immune = false;
+            }
+        }
+
         public void Hurt(int value) {
             m_Health -= value;
             if (m_Health <= 0) {
                 m_Health = 0;
             }
+            m_Immune = true;
         }
 
         public void Heal(int value = -1) {

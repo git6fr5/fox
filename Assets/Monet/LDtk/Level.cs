@@ -132,6 +132,13 @@ namespace Monet {
             m_Entities.RemoveAll(entity => entity == null);
         }
 
+        public void GenerateMap(List<LDtkTileData> tileData, GroundTile groundTile, WaterTile waterTile) {
+            List<LDtkTileData> groundData = tileData.FindAll(tile => tile.VectorID == new Vector2Int(0, 0));
+            List<LDtkTileData> waterData = tileData.FindAll(tile => tile.VectorID == new Vector2Int(1, 0));
+            GenerateGround(groundData, groundTile);
+            GenerateWater(waterData, waterTile);
+        }
+
         public void GenerateGround(List<LDtkTileData> tileData, GroundTile tile) {
             for (int i = 0; i < tileData.Count; i++) {
                 Vector3Int tilePosition = Level.GridToTilePosition(tileData[i].GridPosition, GridOrigin);
@@ -142,7 +149,6 @@ namespace Monet {
         public void GenerateWater(List<LDtkTileData> tileData, WaterTile tile) {
             for (int i = 0; i < tileData.Count; i++) {
                 Vector3Int tilePosition = Level.GridToTilePosition(tileData[i].GridPosition, GridOrigin);
-                WaterTile.SetVariation(tilePosition, WaterTile.Columns * tileData[i].VectorID.y + tileData[i].VectorID.x);
                 WaterMap.SetTile(tilePosition, tile);
             }
         }

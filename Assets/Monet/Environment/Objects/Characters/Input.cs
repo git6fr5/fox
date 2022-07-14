@@ -11,9 +11,6 @@ namespace Monet {
     ///<summary>
     public class Input : MonoBehaviour {
 
-        public static float UserHorizontalInput => UnityEngine.Input.GetAxisRaw("Horizontal");
-        public static float UserVerticalInput => UnityEngine.Input.GetAxisRaw("Vertical");
-
         // Controls
         [SerializeField, ReadOnly] protected Vector2 m_Direction;
         public float MoveDirection => m_Direction.x != 0f ? Mathf.Sign(m_Direction.x) : 0f;
@@ -38,6 +35,23 @@ namespace Monet {
 
         public virtual void OnUpdate() {
 
+        }
+
+        public static float UserHorizontalInput => UnityEngine.Input.GetAxisRaw("Horizontal");
+        public static float UserVerticalInput => UnityEngine.Input.GetAxisRaw("Vertical");
+
+        public static float AxisBuffer(float currAxis, float cachedAxis, ref float bufferTicks, float bufferDuration, float dt) {
+            if (currAxis == cachedAxis) {
+                bufferTicks = bufferDuration;
+            }
+            else {
+                bufferTicks -= dt;
+                if (bufferTicks < 0f) {
+                    bufferTicks = 0f;
+                    return currAxis;
+                }
+            }
+            return cachedAxis;
         }
 
         public static bool KeyDown(UnityEngine.KeyCode keyCode) {
@@ -71,6 +85,10 @@ namespace Monet {
                 held = false;
             }
             return held;
+        }
+
+        public virtual void ResetAttack() {
+            m_Attack = false;
         }
 
         public virtual void ResetJump() {

@@ -52,15 +52,25 @@ namespace Monet {
             m_Sparkles.Add(spriteRenderer);
         }
 
-        private void OnDestroy() {
-            m_Sparkles.RemoveAll(thing => thing == null);
+        public void Play() {
+            gameObject.SetActive(true);
+        }
 
+        public void Stop() {
+            gameObject.SetActive(false);
+            Reset();
+        }
+
+        public void Reset() {
+            m_Sparkles.RemoveAll(thing => thing == null);
             for (int i = 0; i < m_Sparkles.Count; i++) {
                 Destroy(m_Sparkles[i].gameObject);
             }
-
             m_Sparkles.RemoveAll(thing => thing == null);
+        }
 
+        private void OnDestroy() {
+            Reset();
         }
 
     }

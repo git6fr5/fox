@@ -25,6 +25,14 @@ namespace Monet {
             return wasnotzero && isnowzero;
         }
 
+        public static bool CycleTicks(ref float ticks, float buffer, float dt) {
+            ticks += dt;
+            if (ticks > 2f * buffer) {
+                ticks -= 2f * buffer;
+            }
+            return ticks > buffer;
+        }
+
         public static bool CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
             bool wasnotzero = ticks != 0f;
             if (condition) {

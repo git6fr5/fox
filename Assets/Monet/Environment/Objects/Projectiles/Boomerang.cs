@@ -135,10 +135,10 @@ namespace Monet {
         [SerializeField] private float m_MagnetDelay;
         [SerializeField, ReadOnly] private float m_MagnetTicks = 0f;
 
-        public override void Fire(bool fire, Vector2 direction, List<string> targets) {
+        public override void Fire(Input input, bool fire, Vector2 direction, List<string> targets) {
             m_Magnet = transform.parent;
             Timer.CountdownTicks(ref m_MagnetTicks, true, m_MagnetDelay, 0f);
-            base.Fire(fire, direction, targets);
+            base.Fire(input, fire, direction, targets);
         }
 
         void FixedUpdate() {

@@ -13,7 +13,9 @@ namespace Monet {
 
         [SerializeField] protected float m_Speed = 3f;
         
-        private void Update() {
+        protected override void Update() {
+            m_Origin = transform.position;
+            base.Update();
             Target();
         }
 

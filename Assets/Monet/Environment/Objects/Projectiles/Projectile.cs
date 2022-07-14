@@ -28,12 +28,12 @@ namespace Monet {
         public string Description => m_Description;
 
         // Settings.
-        [SerializeField] private int m_Damage = 1;
+        [SerializeField] protected int m_Damage = 1;
         [SerializeField] protected float m_Speed = 10f;
-        [SerializeField] private float m_KnockbackForce = 5f;
-        [SerializeField] private float m_Lifetime = 10f;
+        [SerializeField] protected float m_KnockbackForce = 5f;
+        [SerializeField] protected float m_Lifetime = 10f;
         // [SerializeField] private int m_Cost = 10;
-        [SerializeField] private float m_Torque = 0f;
+        [SerializeField] protected float m_Torque = 0f;
         
         // Fire rate.
         [SerializeField, ReadOnly] protected float m_Ticks = 0f;
@@ -43,11 +43,11 @@ namespace Monet {
         public float Ticks => m_Ticks;
 
         // Targets.
-        [SerializeField, ReadOnly] private List<string> m_Targets;
+        [SerializeField, ReadOnly] protected List<string> m_Targets;
 
         // Sounds.
-        [SerializeField] private AudioClip m_ImpactSound;
-        [SerializeField] private AudioClip m_InitializeSound;
+        [SerializeField] protected AudioClip m_ImpactSound;
+        [SerializeField] protected AudioClip m_InitializeSound;
         
         #endregion
 
@@ -58,22 +58,39 @@ namespace Monet {
             Timer.CountdownTicks(ref m_Ticks, false, m_Cooldown, deltaTime);
         }
 
-        void OnTriggerEnter2D(Collider2D collider) {
-            ProcessCollision(collider);
+        void OnCollisionEnter2D(Collision2D collision) {
+            ProcessCollision(collision.collider);
         }
-        
-        protected virtual void ProcessCollision(Collider2D collider) {
-            if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
-                m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
-                enabled = false;
+
+        void Update() {
+            if (!m_Body.simulated) {
+                return;
             }
 
-            Character character = collider.GetComponent<Character>();
-            CharacterCollision(character);
+            Collider2D[] colliders = UnityEngine.Physics2D.OverlapCircleAll(transform.position, m_Hitbox.radius, Game.Physics.CollisionLayers.Characters);
+            for (int i = 0; i < colliders.Length; i++) {
+                Character character = colliders[i].GetComponent<Character>();
+                CharacterCollision(character);
+            }
+        }
+        
+        protected void ProcessCollision(Collider2D collider) {
+            if (collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+                GroundCollision();
+            }
+
+            // Character character = collider.GetComponent<Character>();
+            // CharacterCollision(character);
 
         }
 
-        protected void CharacterCollision(Character character) {
+        protected virtual void GroundCollision() {
+            SoundManager.PlaySound(m_ImpactSound);
+            m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
+            enabled = false;
+        }
+
+        protected virtual void CharacterCollision(Character character) {
             if (character == null) {
                 return;
             }
@@ -89,11 +106,12 @@ namespace Monet {
         /* --- Initialization --- */
         #region Initialization
 
-        public virtual void Fire(bool fire, Vector2 direction, List<string> targets) {
+        public virtual void Fire(Input input, bool fire, Vector2 direction, List<string> targets) {
             if (fire && CanFire) {
                 Projectile projectile = Instantiate(gameObject, transform.position, Quaternion.identity, null).GetComponent<Projectile>();
                 projectile.Init(direction, targets);
                 Timer.CountdownTicks(ref m_Ticks, true, m_Cooldown, 0f);
+                input.ResetAttack();
             }
         }
 

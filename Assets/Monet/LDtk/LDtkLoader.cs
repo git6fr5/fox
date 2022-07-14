@@ -42,11 +42,8 @@ namespace Monet {
             GroundTileEditor.CreateMapping();
             for (int i = 0; i < levels.Count; i++) {
                 LDtkUnity.Level ldtkLevel = levels[i].LDtkLevel;
-                List<LDtkTileData> waterData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Water);
-                List<LDtkTileData> groundData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Ground);
-                levels[i].GenerateGround(groundData, Game.Environment.Ground);
-                levels[i].GenerateWater(waterData, Game.Environment.Water);
-
+                List<LDtkTileData> tileData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Ground);
+                levels[i].GenerateMap(tileData, Game.Environment.Ground, Game.Environment.Water);
             }
             Level.WaterMap.RefreshAllTiles();
             Level.GroundMap.RefreshAllTiles();

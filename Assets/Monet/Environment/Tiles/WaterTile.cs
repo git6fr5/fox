@@ -11,31 +11,32 @@ using Monet;
 using UnityEditor;
 #endif
 
+// Definitions.
+using Neighbours = Monet.GroundTile.Neighbours;
+
 namespace Monet {
 
     [Serializable]
     public class WaterTile : Tile {
 
-        public static int Columns = 2;
-
-        public Sprite[] Variations;
-        private static Dictionary<Vector3Int, int> m_IndexDict = new Dictionary<Vector3Int, int>();
-
-        public static void SetVariation(Vector3Int position, int index) {
-            if (!m_IndexDict.ContainsKey(position)) {
-                m_IndexDict.Add(position, index);
-            }
-            else {
-                m_IndexDict[position] = index;
-            }
-        }
+        [SerializeField] public Sprite[] m_Sprites;
 
         public override void RefreshTile(Vector3Int position, ITilemap tilemap) {
             base.RefreshTile(position, tilemap);
         }
 
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
-            tileData.sprite = Variations[m_IndexDict[position] % Variations.Length];
+            Neighbours neighbours = new Neighbours(position, tilemap);
+            if (GroundTileEditor.WaterMapping != null && GroundTileEditor.WaterMapping.ContainsKey(neighbours.BinaryValue)) {
+                tileData.sprite = m_Sprites[GroundTileEditor.WaterMapping[neighbours.BinaryValue]];
+            }
+            else if (m_Sprites != null && m_Sprites.Length > 0) {
+                tileData.sprite = m_Sprites[0];
+            }
+            else {
+                tileData.sprite = null;
+            }
+            
             tileData.color = new Color(1f, 1f, 1f, 0.75f);
             tileData.colliderType = Tile.ColliderType.Grid;
         }

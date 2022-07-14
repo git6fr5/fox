@@ -34,6 +34,7 @@ namespace Monet {
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
         [SerializeField] private int m_AttackFrames;
+        [SerializeField] private int m_ChargeAttackFrames;
         [SerializeField] private int m_DoubleJumpFrames;
         [SerializeField] private int m_DashFrames;
 
@@ -49,12 +50,18 @@ namespace Monet {
         [HideInInspector] private Sprite[] m_MovementAnimation;
         [HideInInspector] private Sprite[] m_RisingAnimation;
         [HideInInspector] private Sprite[] m_FallingAnimation;
+        [HideInInspector] private Sprite[] m_ChargeAttackAnimation;
         [HideInInspector] private Sprite[] m_AttackAnimation;
         [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
         [HideInInspector] private Sprite[] m_DashAnimation;
 
         // Animation Conditions.
-        private bool Moving => m_Character.CharacterInput.MoveDirection != 0f;
+        private bool Knockedback => m_Character.CharacterController.Knockedback;
+        private bool Immune => m_Character.CharacterState.Immune;
+        private float ImmuneCycleTicks;
+        private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
+        private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
+        private bool Moving => !ChargingAttack && m_Character.CharacterInput.MoveDirection != 0f;
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
@@ -67,6 +74,12 @@ namespace Monet {
         private bool Land => m_PreviousAnimation == m_FallingAnimation && m_CurrentAnimation != m_FallingAnimation;
         private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
         private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
+
+        // Attacks.
+        private bool m_Attack;
+        private bool m_PrevAttack;
+        private bool m_StartedAttack;
+        private bool m_FinishedAttack;
         
         /* --- Initialization --- */
         #region Initialization
@@ -91,7 +104,8 @@ namespace Monet {
             startIndex = SliceSheet(startIndex, m_IdleFrames, ref m_IdleAnimation);
             startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
             startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);        
-            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);   
+            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation); 
+            startIndex = SliceSheet(startIndex, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);     
             startIndex = SliceSheet(startIndex, m_AttackFrames, ref m_AttackAnimation);     
             startIndex = SliceSheet(startIndex, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);        
             startIndex = SliceSheet(startIndex, m_DashFrames, ref m_DashAnimation);        
@@ -135,7 +149,20 @@ namespace Monet {
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
-            if (Dashing && Game.Validate<Sprite>(m_DashAnimation)) {
+
+            m_Attack = m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
+            m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
+            
+            m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);
+            m_PrevAttack = m_Attack;
+
+            if (m_StartedAttack && Game.Validate<Sprite>(m_AttackAnimation)) {
+                return m_AttackAnimation;
+            }
+            else if (ChargingAttack && Game.Validate<Sprite>(m_ChargeAttackAnimation)) {
+                return m_ChargeAttackAnimation;
+            }
+            else if (Dashing && Game.Validate<Sprite>(m_DashAnimation)) {
                 return m_DashAnimation;
             }
             else if (DoubleJumping && Game.Validate<Sprite>(m_DoubleJumpAnimation)) {
@@ -154,6 +181,11 @@ namespace Monet {
         }
 
         private void GetEffect() {
+            m_SpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+            if (Immune) {
+                bool on = Timer.CycleTicks(ref ImmuneCycleTicks, 0.075f, Time.deltaTime);
+                m_SpriteRenderer.color = on ? new Color(1f, 1f, 1f, 1f) : new Color(1f, 0f, 0f, 1f);
+            }
             if (Step) { // && stepEFX != null
                 // Effect.Play etc.
                 // Where effect is both the vfx and sfx.\

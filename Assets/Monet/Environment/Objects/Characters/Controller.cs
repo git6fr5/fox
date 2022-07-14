@@ -14,7 +14,8 @@ namespace Monet {
     public class Controller {
 
         // Projectile.
-        [SerializeField] protected Projectile m_Projectile;
+        [SerializeField] protected Projectile m_Weapon;
+        public Projectile MainWeapon => m_Weapon;
         [SerializeField] private List<string> m_Targets = new List<string>();
         public List<string> Targets => m_Targets;
 
@@ -69,8 +70,8 @@ namespace Monet {
             PhysicsAction.Jump(body, input, input.Jump, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
             PhysicsAction.DoubleJump(body, input, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
             PhysicsAction.Dash(body, input, input.Dash, input.DashDirection, state.DashSpeed, ref m_KnockbackTicks, state.DashDuration, ref m_DashReset);
-            if (m_Projectile != null) {
-                m_Projectile.Fire(input.Attack, input.AttackDirection, m_Targets);
+            if (m_Weapon != null) {
+                m_Weapon.Fire(input, input.Attack, input.AttackDirection, m_Targets);
             }
         }
 
@@ -84,14 +85,15 @@ namespace Monet {
             Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, deltaTime);
             Timer.CountdownTicks(ref m_CoyoteTicks, m_OnGround, m_CoyoteBuffer, deltaTime);
             bool finishKnockback = Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
-            if (m_Projectile != null) {
-                m_Projectile.OnUpdate(deltaTime);
+            if (m_Weapon != null) {
+                m_Weapon.OnUpdate(deltaTime);
             }
             
             // Actions.
             if (m_KnockbackTicks > 0f) { return; }
             float acceleration = Controller.GetAcceleration(state, m_OnGround);
-            PhysicsAction.Move(body, input.MoveDirection, state.Speed, acceleration, finishKnockback, deltaTime);
+            float speed = Controller.GetSpeed(state, input.Attack);
+            PhysicsAction.Move(body, input.MoveDirection, speed, acceleration, finishKnockback, deltaTime);
 
             float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump);
             PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
@@ -100,8 +102,15 @@ namespace Monet {
 
         public void Knockback(Rigidbody2D body, Vector2 velocity, float duration) {
             body.velocity = velocity;
-            body.gravityScale = 1f;
+            body.gravityScale = 0f;
             m_KnockbackTicks = duration;
+        }
+
+        public static float GetSpeed(State state, bool attack) {
+            if (attack) {
+                return 0f;
+            }
+            return state.Speed;
         }
 
         public static float GetAcceleration(State state, bool onGround) {

@@ -24,8 +24,8 @@ namespace Monet {
         private static List<AudioSource> SFXPlayers;
 
         void Start() {
-            CreatePlayer(m_MSC, "Music Player", 0.25f);
-            CreatePlayer(m_Ambience, "Ambience", 0.3f);
+            CreatePlayer(m_MSC, "Music Player", m_MusicVolume);
+            CreatePlayer(m_Ambience, "Ambience", m_AmbientVolume);
             CreateSoundEffectPlayers();
         }
 
@@ -53,7 +53,7 @@ namespace Monet {
         }
 
         public static void PlaySound(AudioClip audioClip, float volume = 0.45f) {
-            if (audioClip == null) { return; }
+            if (audioClip == null || SFXPlayers == null) { return; }
 
             for (int i = 0; i < SFXPlayers.Count; i++) {
                 if (!SFXPlayers[i].isPlaying) {

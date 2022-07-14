@@ -24,6 +24,10 @@ namespace Monet {
         [SerializeField, ReadOnly] protected List<Transform> m_CollisionContainer = new List<Transform>();
         [SerializeField, ReadOnly] protected bool m_PressedDown;
 
+        private static float PressedBuffer = 0.075f;
+        [SerializeField, ReadOnly] private float m_PressedTicks;
+        [SerializeField, ReadOnly] private bool m_OnPressedDown;
+
         public void Init(int length, Vector3[] path) {
             m_Origin = transform.position;
             m_Path = path;
@@ -35,8 +39,21 @@ namespace Monet {
             gameObject.layer = LayerMask.NameToLayer("Platform");
         }
 
-        private void Update() {
+        protected virtual void Update() {
+            bool wasPressed = m_PressedDown;
             Obstacle.PressedDown(transform.position, m_CollisionContainer, ref m_PressedDown);
+            m_OnPressedDown = !wasPressed && m_PressedDown && m_PressedTicks == PressedBuffer ? true : m_OnPressedDown;
+
+            Timer.UpdateTicks(ref m_PressedTicks, !m_OnPressedDown, PressedBuffer, Time.deltaTime);
+            if (m_PressedTicks == 0f && m_OnPressedDown) {
+                Obstacle.Shake(transform, m_Origin, 0f);
+                m_OnPressedDown = false;
+            }
+
+            if (m_OnPressedDown) {
+                Obstacle.Shake(transform, m_Origin, 0.0375f);
+            }
+
         }
 
         private void OnCollisionEnter2D(Collision2D collision) {

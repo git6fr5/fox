@@ -53,11 +53,14 @@ namespace Monet {
         void FixedUpdate() {
             m_CharacterDebugger.OnUpdate(transform, m_Input, m_Controller, m_State, Time.fixedDeltaTime);
             m_Controller.OnFixedUpdate(m_Body, m_CollisionFrame, m_Input, m_State, Time.fixedDeltaTime);
+            m_State.OnFixedUpdate(Time.fixedDeltaTime);
         }
 
         public void Damage(int damage, Vector2 direction, float force) {
-            m_State.Hurt(damage);
-            m_Controller.Knockback(m_Body, force * direction.normalized, 0.1f);
+            if (!m_State.Immune) {
+                m_State.Hurt(damage);
+                m_Controller.Knockback(m_Body, force * direction.normalized, 0.2f);
+            }
         }
 
         void OnDrawGizmos() {

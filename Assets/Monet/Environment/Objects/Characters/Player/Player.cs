@@ -58,7 +58,8 @@ namespace Monet {
             m_Dash = KeyDownBuffer(m_DashKey, ref m_DashBufferTicks, m_DashBufferDuration, Time.deltaTime);
             m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_DashDirection);
 
-            m_Attack = KeyDownBuffer(m_AttackKey, ref m_AttackBufferTicks, m_AttackBufferDuration, Time.deltaTime);
+            m_Attack = KeyHeld(m_AttackKey, m_Attack);
+            // m_Attack = KeyDownBuffer(m_AttackKey, ref m_AttackBufferTicks, m_AttackBufferDuration, Time.deltaTime);
             m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_AttackDirection);
             // m_AttackDirection = GetDirection(Input.UserHorizontalInput, 0f, m_AttackDirection);
             
@@ -88,6 +89,21 @@ namespace Monet {
             return direction;
         }
 
+        // public float horAxisBufferTicks;
+        // public float vertAxisBufferTicks;
+
+        // private Vector2 GetLastSetDirection(float x, float y, Vector2 direction) {
+            
+        //     y = AxisBuffer(y, direction.y, ref vertAxisBufferTicks, 0.1f, Time.deltaTime);
+        //     x = AxisBuffer(x, direction.x, ref horAxisBufferTicks, 0.1f, Time.deltaTime);
+
+        //     if (x != 0f || y != 0f) {
+        //         direction = new Vector2(x, y);
+        //     }
+
+        //     return direction;
+        // }
+
         private NPC GetActiveNPC() {
             float minDistance = Mathf.Infinity;
             NPC closestNPC = null;
@@ -112,6 +128,11 @@ namespace Monet {
             else {
                 GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
             }
+        }
+
+        public override void ResetAttack() {
+            base.ResetAttack();
+            m_AttackBufferTicks = 0f;
         }
 
         public override void ResetJump() {

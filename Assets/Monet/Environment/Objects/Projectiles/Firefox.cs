@@ -23,9 +23,8 @@ namespace Monet {
             transform.SetParent(null);
         }
 
-        protected override void ProcessCollision(Collider2D collider) {
-            Character character = collider.GetComponent<Character>();
-            CharacterCollision(character);
+        protected override void GroundCollision() {
+            SoundManager.PlaySound(m_ImpactSound);
         }
 
         void FixedUpdate() {
