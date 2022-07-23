@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.VFX;
+using UnityEngine.U2D;
 using Monet;
 
 namespace Monet {
@@ -53,6 +55,16 @@ namespace Monet {
         [SerializeField] private float m_FrameRate = 6f;
         public static float FrameRate => Instance.m_FrameRate;
 
+        // Shaking.
+        [SerializeField] private AnimationCurve m_Curve;
+        [SerializeField, ReadOnly] public float m_ShakeStrength = 1f;
+        [SerializeField, ReadOnly] public float m_ShakeDuration = 0.5f;
+        [SerializeField, ReadOnly] float m_ElapsedTime = 0f;
+        [SerializeField, ReadOnly] public bool m_Shake;
+
+        [SerializeField] private Volume[] m_Lighting;
+        [SerializeField] private VFX[] m_Weather;
+
         #endregion
 
         // Runs once before the first frame.
@@ -78,6 +90,9 @@ namespace Monet {
             }
             if (m_Snap) {
                 m_Origin = Snap(m_SnapPosition, transform, m_SnapSpeed, ref m_Snap, Game.Physics.MovementPrecision);
+            }
+            if (m_Shake) {
+                m_Shake = Shake();
             }
         }
 
@@ -114,6 +129,32 @@ namespace Monet {
                 cameraTransform.position += (Vector3)deltaPosition * 2f * Time.deltaTime;
             }
             return cameraTransform.position;
+        }
+
+        public static void Shake(float strength, float duration) {
+            if (strength == 0f) {
+                return;
+            }
+            if (!Instance.m_Shake) {
+                Instance.m_ShakeStrength = strength;
+                Instance.m_ShakeDuration = duration;
+                Instance.m_Shake = true;
+            }
+            else {
+                Instance.m_ShakeStrength = Mathf.Max(Instance.m_ShakeStrength, strength);
+                Instance.m_ShakeDuration = Mathf.Max(Instance.m_ShakeDuration, Instance.m_ElapsedTime + duration);
+            }
+        }
+
+        public bool Shake() {
+            m_ElapsedTime += Time.deltaTime;
+            if (m_ElapsedTime >= m_ShakeDuration) {
+                m_ElapsedTime = 0f;
+                return false;
+            }
+            float strength = m_ShakeStrength * m_Curve.Evaluate(m_ElapsedTime / m_ShakeDuration);
+            transform.position += (Vector3)Random.insideUnitCircle * strength;
+            return true;
         }
 
     }

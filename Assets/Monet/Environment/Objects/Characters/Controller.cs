@@ -42,11 +42,11 @@ namespace Monet {
 
         // Special.
         [SerializeField] private bool m_UnlockedDoubleJump;
-        // public bool UnlockedDoubleJump => m_UnlockedDoubleJump;
+        public bool UnlockedDoubleJump => m_UnlockedDoubleJump;
         [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
         public bool DoubleJumpReset => m_DoubleJumpReset;
         [SerializeField] private bool m_UnlockedDash;
-        // public bool UnlockedDash => m_UnlockedDash;
+        public bool UnlockedDash => m_UnlockedDash;
         [SerializeField, ReadOnly] private bool m_DashReset;
         public bool DashReset => m_DashReset;
 
@@ -79,7 +79,7 @@ namespace Monet {
         public void OnFixedUpdate(Rigidbody2D body, CircleCollider2D collisionFrame, Input input, State state, float deltaTime) {
             // Checks.
             PhysicsCheck.OnGround(body.position + collisionFrame.offset, collisionFrame.radius, ref m_OnGround);
-            PhysicsCheck.Rising(body.velocity, ref m_Rising);
+            PhysicsCheck.Rising(body.velocity, ref m_Rising, m_OnGround);
             PhysicsCheck.Reset(ref m_DoubleJumpReset, m_UnlockedDoubleJump, m_OnGround);
             PhysicsCheck.Reset(ref m_DashReset, m_UnlockedDash, m_OnGround);
             Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, deltaTime);

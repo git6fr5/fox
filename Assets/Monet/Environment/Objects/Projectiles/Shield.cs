@@ -65,6 +65,7 @@ namespace Monet {
 
         protected override void GroundCollision() {
             SoundManager.PlaySound(m_ImpactSound);
+            Screen.Shake(0.075f, 0.1f);
         }
 
         protected override void CharacterCollision(Character character) {
@@ -72,7 +73,7 @@ namespace Monet {
                 return;
             }
             else if (m_Targets.Contains(character.gameObject.tag)) {
-                Vector2 knockbackDir = Quaternion.Euler(0f, 0f, 90f) * m_Body.velocity.normalized;
+                Vector2 knockbackDir = Quaternion.Euler(0f, 0f, 60f) * m_Body.velocity.normalized;
                 knockbackDir.y = Mathf.Abs(knockbackDir.y);
                 knockbackDir.y += 1f;
                 character.Damage(m_Damage, knockbackDir, m_KnockbackForce);
@@ -122,21 +123,25 @@ namespace Monet {
 
                 if (distance < m_ReturnThreshold) {
                     // Reset the body.
-                    m_Character.CharacterController.Knockback(m_Character.Body, m_Body.velocity.normalized * 5f, 0.1f);
-                    m_Body.velocity = Vector2.zero;
-                    m_Body.simulated = false;
+                    Catch();
 
-                    // Reattach the projectile.
-                    transform.SetParent(Node);
-                    transform.localPosition = Vector3.zero;
-                    transform.localRotation = Quaternion.identity;
-
-                    m_SmokeSparkle.Stop();
-
-                }   
+                }
 
             }
             
+        }
+
+        private void Catch() {
+            m_Character.CharacterController.Knockback(m_Character.Body, m_Body.velocity.normalized * 5f, 0.1f);
+            m_Body.velocity = Vector2.zero;
+            m_Body.simulated = false;
+
+            // Reattach the projectile.
+            transform.SetParent(Node);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+
+            m_SmokeSparkle.Stop();
         }
 
         private void Throw() {
@@ -160,7 +165,6 @@ namespace Monet {
             m_Power = 0f;
             m_Character.CharacterController.Knockback(m_Character.Body, -m_Direction.normalized * 5f, 0.1f);
             m_Character.CharacterInput.ResetAttack();
-
         }
 
     }

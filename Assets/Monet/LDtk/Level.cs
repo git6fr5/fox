@@ -17,6 +17,8 @@ namespace Monet {
         /* --- Variables --- */
         #region Variables
 
+        [SerializeField] private bool m_Loaded;
+
         // Components.
         [SerializeField] private BoxCollider2D m_Box;
         [SerializeField] public static Tilemap GroundMap;
@@ -57,6 +59,20 @@ namespace Monet {
             transform.localPosition = Vector3.zero;
             ReadJSONData(json, jsonID);
             InitializeBoundaryBox();
+        }
+
+        void FixedUpdate() {
+            if (!m_Loaded) {
+                return;
+            }
+
+            for (int i = 0; i < m_Height; i++) {
+                for (int j = 0; j < m_Width; j++) {
+                    Vector3Int position = new Vector3Int(GridOrigin.x + j, GridOrigin.y - i, 0);
+                    Level.WaterMap.RefreshTile(position);
+                }
+            }
+
         }
 
         public void ReadJSONData(LdtkJson  json, int jsonID) {
@@ -153,6 +169,16 @@ namespace Monet {
             }
         }
 
+        public void Settings(List<LDtkTileData> controlData) {
+            // Lighting
+            LDtkTileData lightingData = controlData.Find(data => data.VectorID.y == 3);
+            // Screen.SetLighting(lightingData.VectorID.x);
+            
+            // Weather.
+            LDtkTileData weatherData = controlData.Find(data => data.VectorID.y == 4);
+            // Screen.SetWeather(weatherData.VectorID.x);
+        }
+
         #endregion
 
         /* --- Entering --- */
@@ -165,6 +191,7 @@ namespace Monet {
                 Screen.Instance.Snap(WorldCenter);
                 Screen.Instance.Shape(new Vector2Int(m_Width, m_Height));
                 player.CurrentMinimap.Load(this);
+                m_Loaded = true;
             }
         }
 
@@ -172,7 +199,12 @@ namespace Monet {
             Player player = collider.GetComponent<Player>();
             if (player != null) {
                 LDtkLoader.Close(this);
+                m_Loaded = false;
             }
+        }
+
+        public void OnLoad(bool loaded) {
+            // m_Loaded = loaded;
         }
         
         #endregion

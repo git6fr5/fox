@@ -34,7 +34,18 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  m_Sprites:
-  - {fileID: 455284031, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
-  - {fileID: -69925826, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
-  - {fileID: -1403546106, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+  m_Animations:
+  - m_Sprites:
+    - {fileID: 455284031, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -69925826, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -1403546106, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -764984632, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+  - m_Sprites:
+    - {fileID: 961880737, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+  - m_Sprites:
+    - {fileID: -863838107, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+  - m_Sprites:
+    - {fileID: -208624561, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -1319986191, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -919633286, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}
+    - {fileID: -549392596, guid: 70aa9ad42175785418ae936810ae8f6f, type: 3}

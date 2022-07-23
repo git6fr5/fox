@@ -19,7 +19,7 @@ namespace Monet {
         public int Health => m_Health;
         [SerializeField, ReadOnly] private bool m_Immune;
         public bool Immune => m_Immune;
-        private static float ImmuneBuffer = 0.25f;
+        public static float ImmuneBuffer = 0.25f;
         [SerializeField, ReadOnly] private float m_ImmuneTicks;
 
         // Speed.
@@ -60,6 +60,7 @@ namespace Monet {
 
         // Respawn Anchor.
         [SerializeField, ReadOnly] private RespawnStation m_RespawnStation;
+        public RespawnStation CurrentRespawnStation => m_RespawnStation;
 
         public void Init() {
             m_Health = m_MaxHealth;
@@ -78,7 +79,8 @@ namespace Monet {
             }
         }
 
-        public void Hurt(int value) {
+        public void Hurt(int value, float shake) {
+            Screen.Shake(shake, 0.2f);
             m_Health -= value;
             if (m_Health <= 0) {
                 m_Health = 0;

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 using Monet;
 
 namespace Monet {
@@ -44,6 +45,17 @@ namespace Monet {
         [SerializeField] private AudioClip m_LandSound;
         [SerializeField] private AudioClip m_DoubleJumpSound;
         [SerializeField] private AudioClip m_DashSound;
+        [SerializeField] private AudioClip m_HurtSound;
+        [SerializeField] private AudioClip m_DeathSound;
+
+        // Effects.
+        [SerializeField] private VisualEffect m_StepEffect;
+        [SerializeField] private VisualEffect m_JumpEffect;
+        [SerializeField] private VisualEffect m_LandEffect;
+        [SerializeField] private VisualEffect m_DoubleJumpEffect;
+        [SerializeField] private VisualEffect m_DashEffect;
+        [SerializeField] private VisualEffect m_HurtEffect;
+        [SerializeField] private VisualEffect m_DeathEffect;
 
         // Animations
         [HideInInspector] private Sprite[] m_IdleAnimation;
@@ -58,6 +70,7 @@ namespace Monet {
         // Animation Conditions.
         private bool Knockedback => m_Character.CharacterController.Knockedback;
         private bool Immune => m_Character.CharacterState.Immune;
+        private bool PrevImmunity;
         private float ImmuneCycleTicks;
         private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
         private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
@@ -65,8 +78,8 @@ namespace Monet {
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
-        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset;
-        private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset;
+        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset && m_Character.CharacterController.UnlockedDoubleJump;
+        private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset && m_Character.CharacterController.UnlockedDash;
 
         // Effect Conditions.
         private bool Step => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
@@ -183,26 +196,43 @@ namespace Monet {
         private void GetEffect() {
             m_SpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
             if (Immune) {
+                if (!PrevImmunity) {
+                    if (m_Character.CharacterState.Health <= 0) {
+                        if (m_DeathEffect != null) { m_DeathEffect.Play(); }
+                        SoundManager.PlaySound(m_DeathSound);
+                    }
+                    else {
+                        if (m_HurtEffect != null) { m_HurtEffect.Play(); }
+                        SoundManager.PlaySound(m_HurtSound);
+                    }
+                }
                 bool on = Timer.CycleTicks(ref ImmuneCycleTicks, 0.075f, Time.deltaTime);
                 m_SpriteRenderer.color = on ? new Color(1f, 1f, 1f, 1f) : new Color(1f, 0f, 0f, 1f);
             }
             if (Step) { // && stepEFX != null
                 // Effect.Play etc.
                 // Where effect is both the vfx and sfx.\
+                if (m_StepEffect != null) { m_StepEffect.Play(); }
                 SoundManager.PlaySound(m_StepSound);
             }
             if (Jump) {
+                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
                 SoundManager.PlaySound(m_JumpSound);
             }
             else if (Land) {
+                if (m_LandEffect != null) { m_LandEffect.Play(); }
                 SoundManager.PlaySound(m_LandSound);
             }
             if (DoubleJump) {
+                if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
                 SoundManager.PlaySound(m_DoubleJumpSound);
             }
             if (Dash) {
+                if (m_DashEffect != null) { m_DashEffect.Play(); }
                 SoundManager.PlaySound(m_DashSound);
             }
+
+            PrevImmunity = Immune;
 
         }
 

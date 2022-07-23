@@ -58,9 +58,44 @@ namespace Monet {
 
         public void Damage(int damage, Vector2 direction, float force) {
             if (!m_State.Immune) {
-                m_State.Hurt(damage);
+                if (GetComponent<Player>() != null) {
+                    m_State.Hurt(damage, 0.25f);
+                    Game.HitStop();
+                }
+                else {
+                    m_State.Hurt(damage, 0.2f);
+                    Game.HitStop(4);
+                }
                 m_Controller.Knockback(m_Body, force * direction.normalized, 0.2f);
+                CheckForDeath();
             }
+        }
+
+        public void CheckForDeath() {
+            if (m_State.Health <= 0) {
+                StartCoroutine(IEDie());
+            }
+        }
+
+        private IEnumerator IEDie() {
+            if (GetComponent<Player>() != null) {
+                Game.RampStop();
+            }
+
+            yield return new WaitForSeconds(State.ImmuneBuffer);
+            if (gameObject != null) {
+                if (m_State.CurrentRespawnStation != null) {
+                    transform.position = m_State.CurrentRespawnStation.transform.position + Vector3.up * 2f;
+                    m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
+                    yield return new WaitForSeconds(0.5f);
+                    Start();
+                }
+                else {
+                    Destroy(gameObject);
+                    Game.HitStop(8);
+                }
+            }
+            yield return null;
         }
 
         void OnDrawGizmos() {

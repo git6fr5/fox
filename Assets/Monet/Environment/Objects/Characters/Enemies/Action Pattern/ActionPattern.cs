@@ -21,16 +21,20 @@ namespace Monet {
             [SerializeField, ReadOnly] private float m_Ticks;
             public float Ticks => m_Ticks;
 
+            [SerializeField] protected Vector2 m_Direction;
+            public Vector2 Direction => m_Direction;
             [SerializeField] protected bool m_MoveTowardsPlayer;
             public bool MoveTowardsPlayer => m_MoveTowardsPlayer;
             [SerializeField] protected float m_Range;
             public float Range => m_Range;
-            [SerializeField] protected Vector2 m_Direction;
-            public Vector2 Direction => m_Direction;
+            [SerializeField] protected bool m_MaintainDirection;
+            public bool MaintainDirection => m_MaintainDirection;
+
             [SerializeField] protected bool m_Jump;
             public bool Jump => m_Jump;
             [SerializeField] protected bool m_HoldJump;
             public bool HoldJump => m_HoldJump;
+
             [SerializeField] protected bool m_Attack;
             public bool Attack => m_Attack;
             [SerializeField] protected bool m_AttackTowardsPlayer;

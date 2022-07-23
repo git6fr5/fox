@@ -128,7 +128,7 @@ namespace Monet {
             Add(64, new List<int>{ 1, 4, 8, 16, 32, 128 }, 0, ref m_WaterMapping); // Surface
             Add(2 + 64, new List<int>{ 1, 4, 8, 16, 32, 128 }, 1, ref m_WaterMapping); // Center Column
             Add(2, new List<int>{ 1, 4, 8, 16, 32, 128 }, 2, ref m_WaterMapping); // Bottom
-
+            Add(0, new List<int>{ 8, 16 }, 3, ref m_WaterMapping); // Bottom
         }
 
         public static void Add(int x, List<int> o, int y, ref Dictionary<int, int> dict) {

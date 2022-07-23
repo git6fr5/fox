@@ -24,6 +24,8 @@ namespace Monet {
         public LayerMask Characters => m_Characters;
         [SerializeField] private LayerMask m_Projectiles;
         public LayerMask Projectiles => m_Projectiles;
+        [SerializeField] private LayerMask m_Opaque;
+        public LayerMask Opaque => m_Opaque;
 
     }
 

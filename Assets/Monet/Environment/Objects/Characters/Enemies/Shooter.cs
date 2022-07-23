@@ -15,100 +15,98 @@ namespace Monet {
         [SerializeField] private float m_PassiveSearchDistance;
         [SerializeField] private float m_ActiveSearchDistance;
 
+        // Action Pattern.
         [SerializeField] private ActionPattern m_ActionPattern;
 
         public override void OnUpdate() {
+
+            // Check for the player.
             bool playerWasNull = m_Player == null;
             float distance = playerWasNull ? m_PassiveSearchDistance : m_ActiveSearchDistance;
             m_Player = Search(transform.position, Game.MainPlayer.transform.position, distance);
             
+            // If there is no player.
             if (m_Player == null) {
-
-                Target();
-                m_Direction = (Vector2)(m_Path[m_PathIndex] - transform.position);
-                m_Jump = false;
-                m_HoldJump = false;
-                
+                PatrolAction();
             }
             else {
+
+                // If this is the first frame that a player has been seen.
                 if (playerWasNull) {
                     m_ActionPattern.OnStart();
                 }
 
+                // Get the action.
                 ActionPattern.Action action = m_ActionPattern.OnUpdate(Time.deltaTime);
                 if (action == null) {
-                    m_Direction = Vector2.zero;
-                    m_Jump = false;
-                    m_HoldJump = false;
+                    WaitAction();
                 }
                 else {
-                    if (action.MoveTowardsPlayer) {
-                        Vector2 direction = (m_Player.transform.position - transform.position);
-                        if (direction.magnitude > action.Range) {
-                            m_Direction = (direction.x * Vector3.right).normalized;
-                        }
-                        else {
-                            m_Direction = Vector2.zero;
-                        }
-                    }
-                    else {
-                        m_Direction = action.Direction;
-                    }
-                    m_Jump = action.Jump;
-                    m_HoldJump = action.HoldJump;
-                    m_Attack = action.Attack;
-                    if (action.AttackTowardsPlayer) {
-                        m_AttackDirection = (m_Player.transform.position - transform.position).normalized;
-                        if (action.AttackOnlyHorizontal) {
-                            m_AttackDirection = (m_AttackDirection.x * Vector3.right).normalized;
-                        }
-                    }
-                    else {
-                        m_AttackDirection = action.AttackDirection;
-                    }
-                    m_Dash = action.Dash;
-                    if (action.DashTowardsPlayer) {
-                        m_DashDirection = (m_Player.transform.position - transform.position).normalized;
-                        if (action.DashOnlyHorizontal) {
-                            m_DashDirection = (m_DashDirection.x * Vector3.right).normalized;
-                        }
-                    }
-                    else {
-                        m_DashDirection = action.DashDirection;
-                    }
+                    ReadAction(action);
                 }
 
             }
-
             
         }
 
-        // Sets the target for this enemy.
-        protected void Target() {
-            float distance = (m_Path[m_PathIndex] - transform.position).magnitude;
-            if (distance < Game.Physics.MovementPrecision) {
-                m_PathIndex = (m_PathIndex + 1) % m_Path.Length;
+        private void ReadAction(ActionPattern.Action action) {
+            if (action.MoveTowardsPlayer) {
+                Vector2 direction = (m_Player.transform.position - transform.position);
+                if (direction.magnitude > action.Range) {
+                    m_Direction = (direction.x * Vector3.right).normalized;
+                }
+                else {
+                    m_Direction = Vector2.zero;
+                }
+            }
+            else if (!action.MaintainDirection) {
+                m_Direction = action.Direction;
+            }
+            m_Jump = action.Jump;
+            m_HoldJump = action.HoldJump;
+            m_Attack = action.Attack;
+            if (action.AttackTowardsPlayer) {
+                m_AttackDirection = (m_Player.transform.position - transform.position).normalized;
+                if (action.AttackOnlyHorizontal) {
+                    m_AttackDirection = (m_AttackDirection.x * Vector3.right).normalized;
+                }
+            }
+            else {
+                m_AttackDirection = action.AttackDirection;
+            }
+            m_Dash = action.Dash;
+            if (action.DashTowardsPlayer) {
+                m_DashDirection = (m_Player.transform.position - transform.position).normalized;
+                if (action.DashOnlyHorizontal) {
+                    m_DashDirection = (m_DashDirection.x * Vector3.right).normalized;
+                }
+            }
+            else {
+                m_DashDirection = action.DashDirection;
             }
         }
 
-        private Player Search(Vector3 origin, Vector3 target, float distance) {
-            // Set up the ray.
-            Vector3 direction = (target - origin).normalized;
-            origin += direction * 2;
-
-            // Cast the ray.
-            RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, Game.Physics.CollisionLayers.Characters);
-            if (hit.collider != null && hit.collider.gameObject != gameObject) {
-                distance = (transform.position - (Vector3)hit.point).magnitude;
-
-                Player player = hit.collider.GetComponent<Player>();
-                if (player != null) {
-                    return player;
-                }
-                
+        private Player Search(Vector3 origin, Vector3 target, float maxDistance) {
+            float distance = (target - origin).magnitude;
+            if (distance > maxDistance) {
+                return null;
             }
 
-            return null;
+            // Set up the ray.
+            Vector3 direction = (target - origin).normalized;
+            origin += direction * 0.5f;
+            distance -= 0.5f;
+
+            // Cast the ray.
+            RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, Game.Physics.CollisionLayers.Opaque);
+            for (int i = 0; i < hits.Length; i++) {
+                RaycastHit2D hit = hits[i];
+                if (hit.collider != null && hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground")) {
+                    return null;
+                }
+            }
+            
+            return Game.MainPlayer;
         }
 
 

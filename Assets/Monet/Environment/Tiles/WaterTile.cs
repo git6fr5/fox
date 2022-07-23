@@ -19,19 +19,30 @@ namespace Monet {
     [Serializable]
     public class WaterTile : Tile {
 
-        [SerializeField] public Sprite[] m_Sprites;
+        [System.Serializable]
+        public class TileAnimation {
+            [SerializeField] private Sprite[] m_Sprites;
+            public Sprite[] Sprites => m_Sprites;
+        }
+
+        [SerializeField] public TileAnimation[] m_Animations;
 
         public override void RefreshTile(Vector3Int position, ITilemap tilemap) {
             base.RefreshTile(position, tilemap);
         }
 
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
+
             Neighbours neighbours = new Neighbours(position, tilemap);
             if (GroundTileEditor.WaterMapping != null && GroundTileEditor.WaterMapping.ContainsKey(neighbours.BinaryValue)) {
-                tileData.sprite = m_Sprites[GroundTileEditor.WaterMapping[neighbours.BinaryValue]];
+
+                TileAnimation animation = m_Animations[GroundTileEditor.WaterMapping[neighbours.BinaryValue]];
+                int frame = (int)Mathf.Floor(Game.Ticks * Screen.FrameRate) % animation.Sprites.Length;
+                tileData.sprite = animation.Sprites[frame];
+
             }
-            else if (m_Sprites != null && m_Sprites.Length > 0) {
-                tileData.sprite = m_Sprites[0];
+            else if (m_Animations != null && m_Animations.Length > 0 && m_Animations[0].Sprites.Length > 0) {
+                tileData.sprite = m_Animations[0].Sprites[0];
             }
             else {
                 tileData.sprite = null;

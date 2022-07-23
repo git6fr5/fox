@@ -62,6 +62,7 @@ namespace Monet {
         public static void Open(Level level) {
             LDtkUnity.Level ldtkLevel = level.LDtkLevel;
             Load(level, ldtkLevel);
+            level.OnLoad(true);
         }
 
         public static void Load(Level level, LDtkUnity.Level ldtkLevel) {
@@ -72,12 +73,13 @@ namespace Monet {
 
                 // Load the level.
                 level.GenerateEntities(entityData, controlData, Game.Environment.Entities);
-                
+                level.Settings(controlData);                
             }
         }
 
         public static void Close(Level level) {
             level.DestroyEntities();
+            level.OnLoad(false);
         }
 
     }

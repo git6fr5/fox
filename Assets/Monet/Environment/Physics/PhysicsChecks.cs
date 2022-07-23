@@ -32,8 +32,8 @@ namespace Monet {
             }
         }
 
-        public static void Rising(Vector2 velocity, ref bool rising) {
-            rising = velocity.y > 0f;
+        public static void Rising(Vector2 velocity, ref bool rising, bool onGround) {
+            rising = velocity.y > 0f && !onGround;
         }
 
     }

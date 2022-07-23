@@ -4758,7 +4758,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      kb_dark_alphanumeric_186: 7284378645698350542
+      kb_dark_alphanumeric_97: -5973002698498952887
       kb_dark_alphanumeric_19: 5594452371861806588
       kb_dark_alphanumeric_38: 1228212983356409455
       kb_dark_alphanumeric_148: -7994913827873540779
@@ -4948,8 +4948,8 @@ TextureImporter:
       kb_dark_alphanumeric_44: 3456729925780493678
       kb_dark_alphanumeric_153: 7953746549429308713
       kb_dark_alphanumeric_171: 9001844372145745199
-      kb_dark_alphanumeric_97: -5973002698498952887
       kb_dark_alphanumeric_185: -4870521255891731707
+      kb_dark_alphanumeric_186: 7284378645698350542
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
