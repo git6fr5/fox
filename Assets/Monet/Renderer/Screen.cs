@@ -9,6 +9,8 @@ using UnityEngine.VFX;
 using UnityEngine.U2D;
 using Monet;
 
+using PixelPerfectCamera = UnityEngine.Experimental.Rendering.Universal.PixelPerfectCamera;
+
 namespace Monet {
 
     /// <summary>
@@ -63,7 +65,7 @@ namespace Monet {
         [SerializeField, ReadOnly] public bool m_Shake;
 
         [SerializeField] private Volume[] m_Lighting;
-        [SerializeField] private VFX[] m_Weather;
+        [SerializeField] private VisualEffect[] m_Weather;
 
         #endregion
 

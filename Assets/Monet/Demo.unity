@@ -7567,6 +7567,8 @@ MonoBehaviour:
   m_ShakeDuration: 0.5
   m_ElapsedTime: 0
   m_Shake: 0
+  m_Lighting: []
+  m_Weather: []
 --- !u!114 &1575487445
 MonoBehaviour:
   m_ObjectHideFlags: 0
