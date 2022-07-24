@@ -16,13 +16,15 @@ namespace Monet {
         public bool Unloadable => m_Unloadable;
         [SerializeField] private Vector2Int m_VectorID;
         public Vector2Int VectorID => m_VectorID;
+        [SerializeField] private Vector2 m_LoadOffset;
+        public Vector2 LoadOffset => m_LoadOffset;
 
         [SerializeField, ReadOnly] private Vector2Int m_GridPosition;
         public Vector2Int GridPosition => m_GridPosition;
 
         public void Init(Vector2Int gridPosition, Vector3 position) {
             m_GridPosition = gridPosition;
-            transform.localPosition = position;
+            transform.localPosition = position + (Vector3)m_LoadOffset;
             gameObject.SetActive(true);
         }
 
