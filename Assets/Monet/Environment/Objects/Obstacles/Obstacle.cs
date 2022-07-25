@@ -38,6 +38,13 @@ namespace Monet {
             }
         }
 
+        // Cycles an object around a given origin.
+        public static void Cycle(Transform transform, float ticks, float period, Vector3 origin, Vector2 ellipse) {
+            Vector3 horizontal = Vector3.right * ellipse.x * Mathf.Cos(2f * Mathf.PI * ticks / period);
+            Vector3 vertical = Vector3.up * ellipse.y * Mathf.Sin(2f * Mathf.PI * ticks / period);
+            transform.position = origin + horizontal + vertical;
+        }
+
         // Shakes the obstacle a little bit.
         public static void Shake(Transform transform, Vector3 origin, float strength) {
             transform.position = origin;

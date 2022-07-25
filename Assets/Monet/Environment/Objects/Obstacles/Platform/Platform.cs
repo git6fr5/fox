@@ -37,6 +37,9 @@ namespace Monet {
             Obstacle.EditSpline(m_SpriteShapeController.spline, length);
             Obstacle.EditHitbox(m_Hitbox, length, 1f /16f);
             gameObject.layer = LayerMask.NameToLayer("Platform");
+            
+            Outline.Add(m_SpriteShapeRenderer, 0.5f, 16f);
+            Outline.Set(m_SpriteShapeRenderer, Color.black);
         }
 
         protected virtual void Update() {
@@ -47,11 +50,13 @@ namespace Monet {
             Timer.UpdateTicks(ref m_PressedTicks, !m_OnPressedDown, PressedBuffer, Time.deltaTime);
             if (m_PressedTicks == 0f && m_OnPressedDown) {
                 Obstacle.Shake(transform, m_Origin, 0f);
+                Outline.Set(m_SpriteShapeRenderer, Color.black);
                 m_OnPressedDown = false;
             }
 
             if (m_OnPressedDown) {
                 Obstacle.Shake(transform, m_Origin, 0.0375f);
+                Outline.Set(m_SpriteShapeRenderer, Color.white);
             }
 
         }

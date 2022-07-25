@@ -31,6 +31,9 @@ namespace Monet {
             m_Active = true;
             transform.eulerAngles = new Vector3(0f, 0f, m_Rotation);
             m_Target = transform.position;
+            
+            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
+            Outline.Set(m_SpriteRenderer, Color.black);
         }
 
         protected virtual void FixedUpdate() {
@@ -47,14 +50,18 @@ namespace Monet {
                     direction.y += 1f;
                 }
                 direction = direction.normalized;
-                character.Damage(1, direction, m_KnockbackForce);
-                m_Hitbox.enabled = false;
-                StartCoroutine(IEHitbox());
+                bool didDamage = character.Damage(1, direction, m_KnockbackForce);
+                if (didDamage) {
+                    Outline.Set(m_SpriteRenderer, Color.white);
+                    m_Hitbox.enabled = false;
+                    StartCoroutine(IEHitbox());
+                }
             }
         }
         
         protected IEnumerator IEHitbox() {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
+            Outline.Set(m_SpriteRenderer, Color.black);
             m_Hitbox.enabled = m_Active;
         }
 

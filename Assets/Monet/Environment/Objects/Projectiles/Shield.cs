@@ -32,6 +32,11 @@ namespace Monet {
         public bool Return => Active && m_Ticks == 0f;
         public bool Swing => !m_Backswing && m_Power > 0f;
         
+        [SerializeField] private Sprite m_FlashSprite;
+        [SerializeField] private float m_FlashDuration;
+        [SerializeField, ReadOnly] private float m_FlashTicks;
+        [HideInInspector] private Sprite m_BaseSprite;
+
         #endregion
 
         void Start() {
@@ -44,6 +49,11 @@ namespace Monet {
 
             // Unsimulate the body.
             m_Body.simulated = false;
+
+            // m_SpriteRenderer.materials = m_Materials;
+            m_BaseSprite = m_SpriteRenderer.sprite;
+            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
+            Outline.Set(m_SpriteRenderer, Color.black);
         }
 
         public override void Fire(Input input, bool fire, Vector2 direction, List<string> targets) {
@@ -66,6 +76,13 @@ namespace Monet {
         protected override void GroundCollision() {
             SoundManager.PlaySound(m_ImpactSound);
             Screen.Shake(0.075f, 0.1f);
+            Flash();
+        }
+
+        public void Flash() {
+            m_FlashTicks = m_FlashDuration;
+            m_SpriteRenderer.sprite = m_FlashSprite;
+            Outline.Set(m_SpriteRenderer, Color.white);
         }
 
         protected override void CharacterCollision(Character character) {
@@ -78,13 +95,27 @@ namespace Monet {
                 knockbackDir.y += 1f;
                 character.Damage(m_Damage, knockbackDir, m_KnockbackForce);
                 SoundManager.PlaySound(m_ImpactSound);
+                Flash();
             }
         }
 
         void FixedUpdate() {
 
+            bool finished = Timer.CountdownTicks(ref m_FlashTicks, false, 0f, Time.fixedDeltaTime);
+            if (finished) {
+                m_SpriteRenderer.sprite = m_BaseSprite;
+                Outline.Set(m_SpriteRenderer, Color.black);
+            }
+
             if (!Active) {
                 transform.localPosition = m_Origin;
+                if (transform.parent != null) {
+                    int frame =  transform.parent.GetComponent<Flipbook>().CurrentFrame;
+                    int period =  transform.parent.GetComponent<Flipbook>().AnimationLength;
+                    float flip = transform.parent.eulerAngles.y == 0f ? 1f : -1f;
+                    Vector3 origin = new Vector3(m_Origin.x * flip, m_Origin.y, 0f);
+                    Obstacle.Cycle(transform, frame + 2, period, transform.parent.position + origin, new Vector2(0.5f/16f, 1f/16f));
+                }
             }
 
             if (m_Backswing) {
@@ -109,7 +140,8 @@ namespace Monet {
 
                 if (!m_SmokeSparkle.gameObject.activeSelf) {
                     SoundManager.PlaySound(m_ReturnSound);
-                    m_SmokeSparkle.Play();
+                    // m_SmokeSparkle.Play();
+                    m_SpriteRenderer.sprite = m_FlashSprite;
                 }
                 
                 // Reset the collider.
@@ -141,7 +173,8 @@ namespace Monet {
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
 
-            m_SmokeSparkle.Stop();
+            m_SpriteRenderer.sprite = m_BaseSprite;
+            // m_SmokeSparkle.Stop();
         }
 
         private void Throw() {

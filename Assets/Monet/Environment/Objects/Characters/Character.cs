@@ -56,7 +56,7 @@ namespace Monet {
             m_State.OnFixedUpdate(Time.fixedDeltaTime);
         }
 
-        public void Damage(int damage, Vector2 direction, float force) {
+        public bool Damage(int damage, Vector2 direction, float force) {
             if (!m_State.Immune) {
                 if (GetComponent<Player>() != null) {
                     m_State.Hurt(damage, 0.25f);
@@ -68,7 +68,9 @@ namespace Monet {
                 }
                 m_Controller.Knockback(m_Body, force * direction.normalized, 0.2f);
                 CheckForDeath();
+                return true;
             }
+            return false;
         }
 
         public void CheckForDeath() {
@@ -87,7 +89,7 @@ namespace Monet {
                 if (m_State.CurrentRespawnStation != null) {
                     transform.position = m_State.CurrentRespawnStation.transform.position + Vector3.up * 2f;
                     m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(State.DeathBuffer);
                     Start();
                 }
                 else {

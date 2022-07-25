@@ -99,6 +99,7 @@ namespace Monet {
         }
 
         public void Shape(Vector2Int shape, int ppu = 16) {
+            // ppu /= 2;
             m_PixelPerfectCamera.refResolutionX = shape.x * ppu;
             m_PixelPerfectCamera.refResolutionY = shape.y * ppu;
             m_PixelPerfectCamera.assetsPPU = ppu;

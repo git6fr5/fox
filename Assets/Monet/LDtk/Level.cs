@@ -110,6 +110,10 @@ namespace Monet {
             GroundMap.transform.SetParent(transform);
             GroundMap.transform.localPosition = Vector3.zero;
             GroundMap.gameObject.layer = LayerMask.NameToLayer("Ground");
+
+            Outline.Add(GroundMap.GetComponent<TilemapRenderer>(), 0.5f, 16f);
+            Outline.Set(GroundMap.GetComponent<TilemapRenderer>(), Color.black);
+
         }
 
         public static void InitializeWaterLayer(Transform transform) {

@@ -14,7 +14,7 @@ namespace Monet {
 
         [SerializeField] private bool m_OnlyForPlayers;
 
-        void Start() {
+        void Awake() {
             GetComponent<CircleCollider2D>().isTrigger = true;
         }
 

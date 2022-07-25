@@ -21,6 +21,7 @@ namespace Monet {
         public bool Immune => m_Immune;
         public static float ImmuneBuffer = 0.25f;
         [SerializeField, ReadOnly] private float m_ImmuneTicks;
+        public static float DeathBuffer = 0.5f;
 
         // Speed.
         [SerializeField] protected float m_Speed;
