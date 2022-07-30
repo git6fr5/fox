@@ -12,16 +12,25 @@ namespace Monet {
     [System.Serializable]
     public class State {
 
+        #region Variables.
+
         // Health.
         [SerializeField] private int m_MaxHealth;
         public int MaxHealth => m_MaxHealth;
         [SerializeField] private int m_Health;
         public int Health => m_Health;
-        [SerializeField, ReadOnly] private bool m_Immune;
-        public bool Immune => m_Immune;
-        public static float ImmuneBuffer = 0.25f;
+
+        // Hurt.
+        public bool Immune => m_ImmuneTicks > 0f;
         [SerializeField, ReadOnly] private float m_ImmuneTicks;
-        public static float DeathBuffer = 0.5f;
+        [SerializeField] private float m_ImmuneBuffer = 0.2f; // 0.25f for player.
+        public float ImmuneBuffer => m_ImmuneBuffer;
+        [SerializeField] private int m_HitStopFrames = 4; // 16 for player.
+        public int HitStopFrames => m_HitStopFrames;
+        [SerializeField] private float m_ShakeStrength = 0.2f; // 16 for player.
+        public float ShakeStrength => m_ShakeStrength;
+        [SerializeField] private float m_DeathBuffer = 0.35f; // 0.5f for player.
+        public float DeathBuffer => m_DeathBuffer;
 
         // Speed.
         [SerializeField] protected float m_Speed;
@@ -62,41 +71,64 @@ namespace Monet {
         // Respawn Anchor.
         [SerializeField, ReadOnly] private RespawnStation m_RespawnStation;
         public RespawnStation CurrentRespawnStation => m_RespawnStation;
+        public bool CanRespawn => m_RespawnStation != null;
 
-        public void Init() {
+        #endregion
+
+        // Called when this character starts/respawns.
+        public void OnStart() {
             m_Health = m_MaxHealth;
+            m_ImmuneTicks = 0f;
         }
 
+        // Called when the character this is attached to dies.
+        public void OnDeath(Transform transform) {
+            if (CanRespawn) {
+                Vector3 respawnPosition = m_RespawnStation.transform.position;
+                transform.position = respawnPosition + Vector3.up * 2f;
+            }
+        }
+
+        // Runs once every frame in order to calculate the settings.
         public void OnUpdate() {
             PhysicsSettings.CalculateJump(m_JumpHeight, m_RisingTime, m_FallingTime, ref m_JumpSpeed, ref m_Weight, ref m_Sink);
             PhysicsSettings.CalculateJump(m_DoubleJumpHeight, m_DoubleJumpRisingTime, ref m_DoubleJumpSpeed, ref m_DoubleJumpWeight);
             PhysicsSettings.CalculateDash(m_DashDistance, m_DashDuration, ref m_DashSpeed);
         }
 
+        // Called once every fixed interval in order to increment timers.
         public void OnFixedUpdate(float deltaTime) {
-            Timer.CountdownTicks(ref m_ImmuneTicks, !m_Immune, ImmuneBuffer, deltaTime);
-            if (m_Immune && m_ImmuneTicks == 0f) {
-                m_Immune = false;
-            }
+            Timer.TickDown(ref m_ImmuneTicks, deltaTime);
         }
 
-        public void Hurt(int value, float shake) {
-            Screen.Shake(shake, 0.2f);
+        // Hurt the character that this state is attached to.
+        public void OnHurt(int value, bool feedback = true) {
+            // Provide visual feedback.
+            if (feedback) {
+                Screen.Shake(m_ShakeStrength, m_ImmuneBuffer);
+                Game.HitStop(m_HitStopFrames);
+            }
+
+            // Increment the values.
             m_Health -= value;
-            if (m_Health <= 0) {
-                m_Health = 0;
-            }
-            m_Immune = true;
+            m_Health = m_Health <= 0 ? 0 : m_Health;
+
+            // Provide some immunity frames.
+            Timer.Start(ref m_ImmuneTicks, m_ImmuneBuffer);
         }
 
-        public void Heal(int value = -1) {
+        // heal the character that this state is attached to.
+        public void OnHeal(int value = -1) {
+            // Provide a full heal by default.
             if (value == -1) {
                 value = m_MaxHealth;
+                return;
             }
+
+            // Increment the values.
             m_Health += value;
-            if (m_Health > m_MaxHealth) {
-                m_Health = m_MaxHealth;
-            }
+            m_Health = m_Health > m_MaxHealth ? m_MaxHealth : m_Health;
+
         }
 
         public void SetRespawn(RespawnStation respawnStation) {

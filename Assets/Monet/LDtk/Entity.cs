@@ -10,9 +10,9 @@ namespace Monet {
     /// <summary>
     public class Entity : MonoBehaviour {
 
-        [SerializeField] bool m_Singular;
+        [SerializeField] bool m_Singular = false;
         public bool Singular => m_Singular;
-        [SerializeField] bool m_Unloadable;
+        [SerializeField] bool m_Unloadable = true;
         public bool Unloadable => m_Unloadable;
         [SerializeField] private Vector2Int m_VectorID;
         public Vector2Int VectorID => m_VectorID;

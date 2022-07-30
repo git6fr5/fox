@@ -24,6 +24,7 @@ namespace Monet {
             m_JSON = m_LDtkData.FromJson();
             m_Levels = Collect(m_JSON, transform);
             LoadAllTiles(m_Levels);
+            Level.GroundMap.GetComponent<ShadowCaster2DTileMap>().Generate(0.5f);
         }
         
         private static List<Level> Collect(LdtkJson json, Transform transform) {

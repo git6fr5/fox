@@ -8,39 +8,61 @@ using Monet.UI;
 namespace Monet {
 
     ///<summary>
-    ///
+    /// An NPC that can be interacted with and talked to.
     ///<summary>
-    [RequireComponent(typeof(CircleCollider2D))]
-    [RequireComponent(typeof(SpriteRenderer))]
-    public class NPC : MonoBehaviour {
+    public class NPC : Input {
 
-        [SerializeField, ReadOnly] private Sparkle m_SpeechSparkle;
+        // Components.
+        public Rigidbody2D Body => GetComponent<Rigidbody2D>();
+
+        // Patrol path.
+        [HideInInspector] protected Vector3 m_Origin;
+        [SerializeField] protected Vector3[] m_Path;
+        [SerializeField, ReadOnly] protected int m_PathIndex;
+
+        // Waiting.
+        public bool Waiting => m_WaitTicks != 0f;
+        public float m_WaitBuffer = 1f;
+        [SerializeField] private float m_WaitTicks;
+
+        // Interaction.
+        [SerializeField] private Twine m_StartingTwine;
         private bool m_Hover => Game.MainPlayer.ActiveNPC == this;
         private bool m_Active => m_Hover && ChatUI.MainChatUI.PromptObject.activeSelf;
-        
-        [SerializeField] private Twine m_StartingTwine;
 
+        // Runs once on the first frame.
         void Start() {
-            GetComponent<CircleCollider2D>().isTrigger = true;
+            Timer.Start(ref m_WaitTicks, m_WaitBuffer);
+            m_Origin = transform.position;
+            m_Path = new Vector3[2] { m_Origin + 2f * Vector3.right, m_Origin - 2f * Vector3.right };
+            Body.simulated = true;
         }
 
-        void Update() {
+        // Runs once very fixed interval.
+        void FixedUpdate() {
+            // Calculate these values.
+            float distance = Mathf.Abs(m_Path[m_PathIndex].x - transform.position.x);
+            float dx = Mathf.Abs(Body.velocity.x) * Time.fixedDeltaTime;
+            bool finished = Timer.TickDownIf(ref m_WaitTicks, Time.fixedDeltaTime, Waiting);
 
+            // Start the timer if the close enough to the target.
+            Timer.StartIf(ref m_WaitTicks, m_WaitBuffer, distance < dx && !Waiting);
+            // Cycle the patrol array index if the timer has finished ticking down.
+            Utilities.CycleIndexIf(ref m_PathIndex, 1, m_Path.Length, finished);
+        }
+
+        // Runs once every frame.
+        public override void OnUpdate() {
             if (m_Hover) {
-                FacePlayer();
+                WaitAction();
+                // FacePlayer();
             }
-
-            if (m_SpeechSparkle == null && m_Active && ChatUI.MainChatUI.ActiveTwine.Reading) {
-                m_SpeechSparkle = EffectManager.PlaySparkle(EffectManager.Sparkles.Speech, transform, Vector3.up * 0.5f + Vector3.left * 0.5f);
+            else {
+                PatrolAction();
             }
-            else if (m_SpeechSparkle != null && !m_Active && !ChatUI.MainChatUI.ActiveTwine.Reading) {
-                print("destroying speech sparkle");
-                Destroy(m_SpeechSparkle.gameObject);
-            }
-            
-
         }
 
+        // Make this NPC face towards the player.
         private void FacePlayer() {
             float direction = (Game.MainPlayer.transform.position.x - transform.position.x);
             float angle = 0f;
@@ -50,10 +72,36 @@ namespace Monet {
             transform.eulerAngles = angle * Vector3.up;
         }
 
-        public void Interact() {
-            // Move player to interact radius.
+        // Patrols between two points.
+        protected void PatrolAction() {
+            if (Waiting) {
+                WaitAction();
+            }
+            else {
+                PathAction();
+            }
+        }
 
+        // Waits.
+        protected void WaitAction() {
+            m_Direction = Vector2.zero;
+            m_Attack = false;
+            m_Jump = false;
+            m_HoldJump = false;
+        }
+
+        // The logic for when this NPC is interacted with.
+        public void Interact() {
+            // TODO: Move player to interact radius.
             m_StartingTwine.Play();
+        }
+
+        // Moves to a point.
+        protected void PathAction() {
+            m_Direction = (Vector2)(m_Path[m_PathIndex] - transform.position);
+            m_Attack = false;
+            m_Jump = false;
+            m_HoldJump = false;
         }
 
     }

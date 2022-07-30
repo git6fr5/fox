@@ -24,7 +24,7 @@ namespace Monet {
         [SerializeField] private bool m_Shadow = false;
         public bool Shadow => m_Shadow;
 
-        [SerializeField] private Vector3 m_Origin;
+        [SerializeField, ReadOnly] private Vector3 m_Origin;
         public Vector3 Origin => m_Origin;
 
         void Start() {

@@ -16,15 +16,21 @@ namespace Monet {
 
         /* --- Variables --- */
         #region Variables
+
+        // Player.
+        public bool IsPlayer => GetComponent<Player>() != null;
         
         // Components.
         [HideInInspector] private Rigidbody2D m_Body;
         public Rigidbody2D Body => m_Body;
         [HideInInspector] private CircleCollider2D m_CollisionFrame;
         public CircleCollider2D CollisionFrame => m_CollisionFrame;
-        [HideInInspector] private Input m_Input;
-        public Input CharacterInput => m_Input;
 
+        // Character Components.
+        [HideInInspector] private Input m_Input;
+        [SerializeField] private Flipbook m_Flipbook;
+        public Flipbook CharacterFlipbook => m_Flipbook;
+        public Input CharacterInput => m_Input;
         [SerializeField] private Controller m_Controller;
         public Controller CharacterController => m_Controller;
         [SerializeField] private State m_State;
@@ -36,18 +42,21 @@ namespace Monet {
         void Start() {
             // Initializes the script.
             m_Body = GetComponent<Rigidbody2D>();
-            m_Body.constraints = RigidbodyConstraints2D.FreezeRotation;
             m_CollisionFrame = GetComponent<CircleCollider2D>();
             m_Input = GetComponent<Input>();
-            m_State.Init();
-            m_Controller.Init();
             gameObject.layer = LayerMask.NameToLayer("Characters");
+
+            // Start these dependent scripts.
+            m_State.OnStart();
+            m_Controller.OnStart(m_Body);
+            m_Flipbook.OnStart();
         }
 
         void Update() {
             m_Input.OnUpdate();
             m_State.OnUpdate();
             m_Controller.OnUpdate(m_Body, m_Input, m_State);
+            m_Flipbook.OnUpdate(Time.deltaTime);
         }
 
         void FixedUpdate() {
@@ -58,46 +67,39 @@ namespace Monet {
 
         public bool Damage(int damage, Vector2 direction, float force) {
             if (!m_State.Immune) {
-                if (GetComponent<Player>() != null) {
-                    m_State.Hurt(damage, 0.25f);
-                    Game.HitStop();
-                }
-                else {
-                    m_State.Hurt(damage, 0.2f);
-                    Game.HitStop(4);
-                }
+                m_State.OnHurt(damage);
                 m_Controller.Knockback(m_Body, force * direction.normalized, 0.2f);
-                CheckForDeath();
+                Die();
                 return true;
             }
             return false;
         }
 
-        public void CheckForDeath() {
+        public void Die() {
             if (m_State.Health <= 0) {
                 StartCoroutine(IEDie());
             }
         }
 
         private IEnumerator IEDie() {
-            if (GetComponent<Player>() != null) {
+            // Ramp stop if this character is a player.
+            if (IsPlayer) {
                 Game.RampStop();
             }
+            yield return new WaitForSeconds(m_State.ImmuneBuffer);
 
-            yield return new WaitForSeconds(State.ImmuneBuffer);
-            if (gameObject != null) {
-                if (m_State.CurrentRespawnStation != null) {
-                    transform.position = m_State.CurrentRespawnStation.transform.position + Vector3.up * 2f;
-                    m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
-                    yield return new WaitForSeconds(State.DeathBuffer);
-                    Start();
-                }
-                else {
-                    Destroy(gameObject);
-                    Game.HitStop(8);
-                }
+            m_State.OnDeath(transform);
+            m_Controller.OnStop(m_Body);
+            yield return new WaitForSeconds(m_State.DeathBuffer);
+
+            if (m_State.CanRespawn) {
+                Start();
             }
-            yield return null;
+            else {
+                Game.HitStop(m_State.HitStopFrames * 2);
+                Destroy(gameObject);
+            }
+            
         }
 
         void OnDrawGizmos() {

@@ -47,7 +47,13 @@ namespace Monet {
             Level.InitializeWaterLayer(m_Grid.transform);
             m_Environment.Init();
             m_LevelLoader.Init();
+            StartCoroutine(IELoadOpeningLevel());
+        }
+
+        private IEnumerator IELoadOpeningLevel() {
+            yield return 0;
             m_LevelLoader.Open(m_OpeningLevel, m_Player.transform);
+            yield return null;
         }
 
         bool m_RampStop;

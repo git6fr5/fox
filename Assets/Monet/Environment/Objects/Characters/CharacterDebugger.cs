@@ -7,20 +7,24 @@ using Monet;
 namespace Monet {
 
     ///<summary>
-    ///
+    /// A useful script for checking whether things in the character are actually working.
     ///<summary>
     [System.Serializable]
     public class CharacterDebugger  {
 
+        #region Variables.
+
         [HideInInspector] private Vector3 m_CachedPosition;
-        [SerializeField, ReadOnly] private float m_CachedDirection;
-        [SerializeField, ReadOnly] private float m_Speed;
+        [HideInInspector] private float m_CachedDirection;
+        [SerializeField, ReadOnly] private float m_CalculatedSpeed;
 
         [HideInInspector] private Vector3 m_CachedGroundPosition;
         [HideInInspector] private bool m_CachedOnGround;
         [SerializeField, ReadOnly] private float m_JumpHeight;
         [SerializeField, ReadOnly] private float m_RisingTime;
         [SerializeField, ReadOnly] private float m_FallingTime;
+
+        #endregion
 
         public void OnUpdate(Transform transform, Input input, Controller controller, State state, float dt) {
             DebugSpeed(transform.position, input.MoveDirection, dt);
@@ -30,10 +34,10 @@ namespace Monet {
         private void DebugSpeed(Vector3 currentPosition, float direction, float dt) {
             // Not working currently.
             if (direction == m_CachedDirection && direction != 0f) {
-                float speed = Mathf.Abs(currentPosition.x - m_CachedPosition.x) / dt;
-                m_Speed = speed;
+                float dx = Mathf.Abs(currentPosition.x - m_CachedPosition.x);
+                m_CalculatedSpeed = dx / dt;
             }
-            
+            // Cache these values.
             m_CachedDirection = direction;
             m_CachedPosition = currentPosition;
         }
@@ -59,8 +63,6 @@ namespace Monet {
                 }
 
             }
-
-
         }
 
         public void Draw(Vector3 center, float radius) {            

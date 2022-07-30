@@ -7,27 +7,34 @@ using Monet;
 namespace Monet {
 
     ///<summary>
-    ///
+    /// Handles all the player input logic to control the character.
     ///<summary>
     public class Player : Input {
 
+        #region Variables
+
+        // Jumping.
         [SerializeField] private UnityEngine.KeyCode m_JumpKey = UnityEngine.KeyCode.Space;
         [SerializeField] protected float m_JumpBufferDuration;
         [SerializeField, ReadOnly] protected float m_JumpBufferTicks;
 
+        // Attacking.
         [SerializeField] private UnityEngine.KeyCode m_AttackKey = UnityEngine.KeyCode.J;
         [SerializeField] protected float m_AttackBufferDuration;
         [SerializeField, ReadOnly] protected float m_AttackBufferTicks;
 
+        // Dashing.
         [HideInInspector] private UnityEngine.KeyCode m_DashKey = UnityEngine.KeyCode.K;
         [SerializeField] protected float m_DashBufferDuration;
         [SerializeField, ReadOnly] protected float m_DashBufferTicks;
 
+        // Minimap.
         [HideInInspector] private UnityEngine.KeyCode m_MinimapKey = UnityEngine.KeyCode.M;
         [SerializeField] private Minimap m_Minimap;
         public Minimap CurrentMinimap => m_Minimap;
         [SerializeField, ReadOnly] private bool m_MinimapToggle;
 
+        // Interacting.
         [HideInInspector] private UnityEngine.KeyCode m_InteractKey = UnityEngine.KeyCode.E;
         [SerializeField] private float m_InteractRadius;
         [SerializeField, ReadOnly] private bool m_Interact;
@@ -35,11 +42,14 @@ namespace Monet {
         [SerializeField, ReadOnly] private NPC m_ActiveNPC;
         public bool ActiveNPC => m_ActiveNPC;
         [HideInInspector] private UnityEngine.KeyCode m_SelectKey = UnityEngine.KeyCode.Space;
-        [SerializeField] private bool m_Select;
+        [SerializeField, ReadOnly] private bool m_Select;
         public bool Select => m_Select;
-        [SerializeField] private bool m_HoldSelect;
+        [SerializeField, ReadOnly] private bool m_HoldSelect;
         public bool HoldSelect => m_HoldSelect;
 
+        #endregion
+
+        // Runs once every frame to update the input.
         public override void OnUpdate() {
             if (m_Interacting) { 
                 m_Direction = new Vector2(0f, 0f);
@@ -59,16 +69,14 @@ namespace Monet {
             m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_DashDirection);
 
             m_Attack = KeyHeld(m_AttackKey, m_Attack);
-            // m_Attack = KeyDownBuffer(m_AttackKey, ref m_AttackBufferTicks, m_AttackBufferDuration, Time.deltaTime);
             m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_AttackDirection);
-            // m_AttackDirection = GetDirection(Input.UserHorizontalInput, 0f, m_AttackDirection);
             
             m_MinimapToggle = KeyDown(m_MinimapKey);
             if (m_MinimapToggle) {
                 m_Minimap.gameObject.SetActive(!m_Minimap.gameObject.activeSelf);
             }
 
-            m_ActiveNPC = GetActiveNPC();
+            m_ActiveNPC = PhysicsCheck.Closest<NPC>(transform.position, m_InteractRadius, Game.Physics.CollisionLayers.Characters);
             m_Interact =  KeyDown(m_InteractKey);
             if (m_ActiveNPC != null && m_Interact) {
                 m_ActiveNPC.Interact();
@@ -76,59 +84,13 @@ namespace Monet {
 
         }
 
-        private Vector2 GetDirection(float x, float y, Vector2 direction) {
-            if (x == 0f && y == 0f) {
-                if (direction.x == 0f) {
-                    direction.x = 1f;
-                }
-                direction.y = 0f;
-            }
-            else {
-                direction = new Vector2(x, y);
-            }
-            return direction;
-        }
-
-        // public float horAxisBufferTicks;
-        // public float vertAxisBufferTicks;
-
-        // private Vector2 GetLastSetDirection(float x, float y, Vector2 direction) {
-            
-        //     y = AxisBuffer(y, direction.y, ref vertAxisBufferTicks, 0.1f, Time.deltaTime);
-        //     x = AxisBuffer(x, direction.x, ref horAxisBufferTicks, 0.1f, Time.deltaTime);
-
-        //     if (x != 0f || y != 0f) {
-        //         direction = new Vector2(x, y);
-        //     }
-
-        //     return direction;
-        // }
-
-        private NPC GetActiveNPC() {
-            float minDistance = Mathf.Infinity;
-            NPC closestNPC = null;
-            Collider2D[] colliders = UnityEngine.Physics2D.OverlapCircleAll(transform.position, m_InteractRadius, Game.Physics.CollisionLayers.Characters);
-            for (int i = 0; i < colliders.Length; i++) {
-                NPC npc = colliders[i].GetComponent<NPC>();
-                if (npc != null) {
-                    float distance = (npc.transform.position - transform.position).magnitude;
-                    if (distance < minDistance) {
-                        closestNPC = npc;
-                    }
-                }
-            }
-            return closestNPC;
-        }
-
         public void SetInteracting(bool interacting) {
             m_Interacting = interacting;
-            if (interacting) {
-                GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-            }
-            else {
-                GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
-            }
+            Character character = GetComponent<Character>();
+            character.Body.constraints = interacting ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;
         }
+
+        #region Input Resets.
 
         public override void ResetAttack() {
             base.ResetAttack();
@@ -145,6 +107,7 @@ namespace Monet {
             m_DashBufferTicks = 0f;
         }
 
+        #endregion
 
     }
 }

@@ -17,7 +17,9 @@ namespace Monet {
         /* --- Variables --- */
         #region Variables
 
-        [SerializeField] private bool m_Loaded;
+        [SerializeField, ReadOnly] private bool m_Loaded;
+        [SerializeField, ReadOnly] private bool m_Unloading;
+        [SerializeField, ReadOnly] private float m_UnloadTicks;
 
         // Components.
         [SerializeField] private BoxCollider2D m_Box;
@@ -66,6 +68,12 @@ namespace Monet {
                 return;
             }
 
+            bool finished = Timer.TickDownIf(ref m_UnloadTicks, Time.fixedDeltaTime, m_Unloading);
+            if (finished) {
+                LDtkLoader.Close(this);
+                m_Loaded = false;
+            }
+
             for (int i = 0; i < m_Height; i++) {
                 for (int j = 0; j < m_Width; j++) {
                     Vector3Int position = new Vector3Int(GridOrigin.x + j, GridOrigin.y - i, 0);
@@ -107,12 +115,21 @@ namespace Monet {
         public static void InitializeGroundLayer(Transform transform) {
             GroundMap = new GameObject("Ground", typeof(Tilemap), typeof(TilemapRenderer), typeof(TilemapCollider2D)).GetComponent<Tilemap>();
             GroundMap.GetComponent<TilemapRenderer>().sortingLayerName = Screen.RenderingLayers.Foreground;
+            GroundMap.color = new Color(0.8f, 0.8f, 0.8f, 1f);
+
+            GroundMap.gameObject.AddComponent<Rigidbody2D>();
+            GroundMap.gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
+            GroundMap.gameObject.AddComponent<CompositeCollider2D>();
+            GroundMap.gameObject.GetComponent<CompositeCollider2D>().geometryType = CompositeCollider2D.GeometryType.Polygons;
+            GroundMap.GetComponent<TilemapCollider2D>().usedByComposite = true;
+            GroundMap.gameObject.AddComponent<ShadowCaster2DTileMap>();
+
             GroundMap.transform.SetParent(transform);
             GroundMap.transform.localPosition = Vector3.zero;
             GroundMap.gameObject.layer = LayerMask.NameToLayer("Ground");
 
-            Outline.Add(GroundMap.GetComponent<TilemapRenderer>(), 0.5f, 16f);
-            Outline.Set(GroundMap.GetComponent<TilemapRenderer>(), Color.black);
+            // Outline.Add(GroundMap.GetComponent<TilemapRenderer>(), 0.5f, 16f);
+            // Outline.Set(GroundMap.GetComponent<TilemapRenderer>(), Color.black);
 
         }
 
@@ -191,24 +208,42 @@ namespace Monet {
         void OnTriggerEnter2D(Collider2D collider) {
             Player player = collider.GetComponent<Player>();
             if (player != null) {
-                LDtkLoader.Open(this);
+
+                if (m_Loaded) {
+                    m_Unloading = false;
+                }
+                else {
+                    LDtkLoader.Open(this);
+                    m_Loaded = true;
+                }
+
+                LightSwitch(true);
+                player.CurrentMinimap.Load(this);
                 Screen.Instance.Snap(WorldCenter);
                 Screen.Instance.Shape(new Vector2Int(m_Width, m_Height));
-                player.CurrentMinimap.Load(this);
-                m_Loaded = true;
+                
             }
         }
 
         void OnTriggerExit2D(Collider2D collider) {
             Player player = collider.GetComponent<Player>();
             if (player != null) {
-                LDtkLoader.Close(this);
-                m_Loaded = false;
+                Timer.Start(ref m_UnloadTicks, 60f);
+                LightSwitch(false);
+                m_Unloading = true;
             }
         }
 
         public void OnLoad(bool loaded) {
             // m_Loaded = loaded;
+        }
+
+        public void LightSwitch(bool on) {
+            for (int i = 0; i < m_Entities.Count; i++) {
+                if (m_Entities[i] != null && m_Entities[i].GetComponent<UnityEngine.Rendering.Universal.Light2D>()) {
+                    m_Entities[i].gameObject.SetActive(on);
+                }
+            }
         }
         
         #endregion

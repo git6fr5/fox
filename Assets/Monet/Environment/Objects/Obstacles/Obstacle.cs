@@ -51,6 +51,13 @@ namespace Monet {
             transform.position += (Vector3)Random.insideUnitCircle * strength;
         }
 
+        // Shakes the obstacle along the horizontal axis.
+        public static void HorizontalShake(Transform transform, Vector3 origin, float strength) {
+            transform.position = origin;
+            transform.position += (Vector3)Random.insideUnitCircle * strength;
+            transform.position = new Vector3(transform.position.x, origin.y, origin.z);
+        }
+
         // When an obstacle collides with something.
         public static void OnCollision(Collision2D collision, ref List<Transform> container, bool enter) {
             // Check if there is a character.

@@ -36,6 +36,22 @@ namespace Monet {
             rising = velocity.y > 0f && !onGround;
         }
 
+        public static TMonoBehaviour Closest<TMonoBehaviour>(Vector3 position, float radius, LayerMask layers) where TMonoBehaviour : MonoBehaviour {
+            float minDistance = Mathf.Infinity;
+            TMonoBehaviour closest = null;
+            Collider2D[] colliders = UnityEngine.Physics2D.OverlapCircleAll(position, radius, layers);
+            for (int i = 0; i < colliders.Length; i++) {
+                TMonoBehaviour temp = colliders[i].GetComponent<TMonoBehaviour>();
+                if (temp != null) {
+                    float distance = (temp.transform.position - position).magnitude;
+                    if (distance < minDistance) {
+                        closest = temp;
+                    }
+                }
+            }
+            return closest;
+        }
+
     }
 
 }

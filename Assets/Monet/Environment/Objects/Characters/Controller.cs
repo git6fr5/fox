@@ -13,6 +13,8 @@ namespace Monet {
     [System.Serializable]
     public class Controller {
 
+        #region Variables
+
         // Projectile.
         [SerializeField] protected Projectile m_Weapon;
         public Projectile MainWeapon => m_Weapon;
@@ -50,19 +52,18 @@ namespace Monet {
         [SerializeField, ReadOnly] private bool m_DashReset;
         public bool DashReset => m_DashReset;
 
-
-        /* --- Initialization --- */
-        #region Initialization
-
-        public void Init() {
-
-        }
-        
-
         #endregion
 
         /* --- Process --- */
         #region Unity 
+
+        public void OnStart(Rigidbody2D body) {
+            body.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        public void OnStop(Rigidbody2D body) {
+            body.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
 
         public void OnUpdate(Rigidbody2D body, Input input, State state) {        
             // Actions.
@@ -108,7 +109,7 @@ namespace Monet {
 
         public static float GetSpeed(State state, bool attack) {
             if (attack) {
-                return 0f;
+                return state.Speed * 0.25f;
             }
             return state.Speed;
         }

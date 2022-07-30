@@ -7,12 +7,11 @@ using Monet;
 namespace Monet {
 
     ///<summary>
-    ///
+    /// Leaves a trail behind it.
     ///<summary>
     [RequireComponent(typeof(LineRenderer))]
     public class Trail : MonoBehaviour {
 
-        /* --- Variables --- */
         #region Variables
 
         // Components.
@@ -20,61 +19,46 @@ namespace Monet {
 
         // Trail.
         [SerializeField] private float m_Width;
-        [SerializeField] public float m_FadeInterval;
+        [SerializeField] private float m_FadeInterval;
+        [SerializeField] private float m_TrailPrecision;
         [SerializeField, ReadOnly] public List<Vector3> m_Trail;
+        [SerializeField, ReadOnly] private Vector3 m_CachedPosition;
 
         #endregion
 
-        /* --- Unity --- */
-        #region Unity
-
+        // Runs once before the first frame.
         void Start() {
             m_LineRenderer = GetComponent<LineRenderer>();
+            m_LineRenderer.endWidth = 0f;
+            m_LineRenderer.startWidth = m_Width;
             m_Trail = new List<Vector3>();
         }
 
+        // Runs once every frame.
         void Update() {
-            Capture();
-            Render();
+            float dx = (m_CachedPosition - transform.position).magnitude;
+            if (dx > m_TrailPrecision) {
+                Add();
+            }
         }
 
-        #endregion
-
-        /* --- Trail --- */
-        #region Trail
-
-        private void Capture() {
-            if (m_Trail.Count <= 0) {
-                m_Trail.Insert(0, transform.position);
-                StartCoroutine(IEFade());
-            }
-            else if ((m_Trail[0] - transform.position).magnitude > 0.05f) {
-                m_Trail.Insert(0, transform.position);
-                StartCoroutine(IEFade());
-            }
-            
+        // Adds a point
+        void Add() {
+            m_Trail.Insert(0, transform.position);
+            m_CachedPosition = transform.position;
+            m_LineRenderer.positionCount = m_Trail.Count;
+            m_LineRenderer.SetPositions(m_Trail.ToArray());
+            StartCoroutine(IERemove());
         }
 
-        private IEnumerator IEFade() {
+        // Removes the end of the trail.
+        private IEnumerator IERemove() {
             yield return new WaitForSeconds(m_FadeInterval);
             if (m_Trail.Count > 0) {
                 m_Trail.RemoveAt(m_Trail.Count - 1);
             }
         }
 
-        #endregion
-
-        /* --- Rendering --- */
-        #region Rendering
-
-        void Render() {
-            m_LineRenderer.startWidth = m_Width;
-            m_LineRenderer.endWidth = 0f;
-            m_LineRenderer.positionCount = m_Trail.Count;
-            m_LineRenderer.SetPositions(m_Trail.ToArray());
-        }
-
-        #endregion
     }
     
 }

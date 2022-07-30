@@ -10,30 +10,44 @@ namespace Monet {
     ///<summary>
     ///
     ///<summary>
-    [RequireComponent(typeof(Character))]
     [RequireComponent(typeof(SpriteRenderer))]
     public class Flipbook : MonoBehaviour {
 
-        // Components.
-        [HideInInspector] public SpriteRenderer m_SpriteRenderer;
-        [HideInInspector] public Character m_Character;
+        #region Variables
 
-        // Animation Data
-        [Space(2), Header("Data")]
-        [SerializeField] private Material[] m_Materials;
+        // Components.
+        [SerializeField] private Character m_Character;
         [SerializeField] private Sprite[] m_Sprites;
-        [HideInInspector] private Sprite[] m_CurrentAnimation;
-        [HideInInspector] private Sprite[] m_PreviousAnimation;
+        [HideInInspector] public SpriteRenderer m_SpriteRenderer;
+        
+        // Current info.
+        [SerializeField, ReadOnly] private float m_Ticks;
         [SerializeField, ReadOnly] private int m_CurrentFrame;
+        [HideInInspector] private Sprite[] m_CurrentAnimation;
         public int CurrentFrame => m_CurrentFrame;
         public int AnimationLength => m_CurrentAnimation == null ? 1 : m_CurrentAnimation.Length;
-        [SerializeField, ReadOnly] private int m_PreviousFrame;
-        [SerializeField, ReadOnly] private float m_Ticks;
-        [SerializeField, ReadOnly] private int m_IdleIndex;
+        
+        // Cached info.
+        [HideInInspector] private Sprite[] m_PreviousAnimation;
+        [HideInInspector] private int m_PreviousFrame;
+        [HideInInspector] private bool m_PrevImmunity;
+        [HideInInspector] private float m_ImmuneCycleTicks;
+
+        // Attack info.
+        [HideInInspector] private bool m_Attack;
+        [HideInInspector] private bool m_PrevAttack;
+        [HideInInspector] private bool m_StartedAttack;
+        [HideInInspector] private bool m_FinishedAttack;
+
+        // Stretch info.
+        [HideInInspector] private Vector2 m_CachedStretch = new Vector2(0f, 0f);
+        public static float StretchFactor = 1f;
+
+        // Outline color.
+        [SerializeField] private Color m_OutlineColor;
 
         // Frames
-        [Space(2), Header("Slicing")]
-        [SerializeField] private int m_IdleVariations = 1;
+        [Space(2), Header("Frames")]
         [SerializeField] private int m_IdleFrames = 4;
         [SerializeField] private int m_MovementFrames = 4;
         [SerializeField] private int m_RisingFrames;
@@ -45,7 +59,9 @@ namespace Monet {
         [SerializeField] private int m_DashFrames;
 
         // Sounds.
-        [SerializeField] private AudioClip m_StepSound;
+        [Space(2), Header("Sounds")]
+        [SerializeField] private AudioClip m_StepSoundA;
+        [SerializeField] private AudioClip m_StepSoundB;
         [SerializeField] private AudioClip m_JumpSound;
         [SerializeField] private AudioClip m_LandSound;
         [SerializeField] private AudioClip m_DoubleJumpSound;
@@ -54,7 +70,9 @@ namespace Monet {
         [SerializeField] private AudioClip m_DeathSound;
 
         // Effects.
-        [SerializeField] private VisualEffect m_StepEffect;
+        [Space(2), Header("Effects")]
+        [SerializeField] private VisualEffect m_StepEffectA;
+        [SerializeField] private VisualEffect m_StepEffectB;
         [SerializeField] private VisualEffect m_JumpEffect;
         [SerializeField] private VisualEffect m_LandEffect;
         [SerializeField] private VisualEffect m_DoubleJumpEffect;
@@ -63,8 +81,7 @@ namespace Monet {
         [SerializeField] private VisualEffect m_DeathEffect;
 
         // Animations
-        [HideInInspector] private Sprite[] m_StaticAnimation;
-        [HideInInspector] private List<Sprite[]> m_IdleAnimations;
+        [HideInInspector] private Sprite[] m_IdleAnimation;
         [HideInInspector] private Sprite[] m_MovementAnimation;
         [HideInInspector] private Sprite[] m_RisingAnimation;
         [HideInInspector] private Sprite[] m_FallingAnimation;
@@ -74,17 +91,12 @@ namespace Monet {
         [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
         [HideInInspector] private Sprite[] m_DashAnimation;
 
-        //
-        [HideInInspector] private Color m_BaseOutlineColor;
-
         // Animation Conditions.
         private bool Knockedback => m_Character.CharacterController.Knockedback;
         private bool Immune => m_Character.CharacterState.Immune;
-        private bool PrevImmunity;
-        private float ImmuneCycleTicks;
 
+        // Movement Conditions.
         private bool Moving => !ChargingAttack && m_Character.CharacterInput.MoveDirection != 0f;
-        private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
         private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
@@ -93,55 +105,49 @@ namespace Monet {
         private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset && m_Character.CharacterController.UnlockedDash;
 
         // Effect Conditions.
-        private bool Step => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
+        private bool Step => m_CurrentAnimation == m_MovementAnimation && m_PreviousAnimation != m_MovementAnimation;
+        private bool StepA => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
+        private int MidStep => (int)Mathf.Ceil(m_MovementFrames / 2f);
+        private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == MidStep && m_PreviousFrame != MidStep;
         private bool Jump => m_CurrentAnimation == m_RisingAnimation && m_PreviousAnimation != m_RisingAnimation;
         private bool Land => m_PreviousAnimation == m_FallingAnimation && m_CurrentAnimation != m_FallingAnimation;
         private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
         private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
 
-        // Attacks.
-        private bool m_Attack;
-        private bool m_PrevAttack;
-        private bool m_StartedAttack;
-        private bool m_FinishedAttack;
+        // Attack Conditions.
+        private bool StartedAttack => m_StartedAttack;
+        private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
+
+        #endregion
 
         /* --- Initialization --- */
         #region Initialization
 
-        void Start() {
-            Init();
+        public void OnStart() {
+            OrganizeSprites();
+            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
+            Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
-        public virtual void Init() {
-            // Caching components.
+        private int OrganizeSprites() {
+            // Guard clause to protect from slicing with no sprites.
+            if (!Game.Validate<Sprite>(m_Sprites)) { return 0; }
+
+            // Cache the sprite renderer.
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
             m_SpriteRenderer.sortingLayerName = Screen.RenderingLayers.Midground;
-            m_Character = GetComponent<Character>();
-            if (m_Sprites != null && m_Sprites.Length > 0) {
-                Organize();
-            }
-            // m_SpriteRenderer.materials = m_Materials;
-            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
-            Outline.Set(m_SpriteRenderer, Color.black);
-            // m_BaseOutlineColor = m_SpriteRenderer.material.GetColor("_OutlineColor"); // sprite;
-        }
 
-        public virtual int Organize() {
-            int startIndex = SliceSheet(0, 1, ref m_StaticAnimation);
-            m_IdleAnimations = new List<Sprite[]>();
-            for (int i = 0; i < m_IdleVariations; i++) {
-                Sprite[] idleAnim = new Sprite[m_IdleFrames];
-                startIndex = SliceSheet(startIndex, m_IdleFrames, ref idleAnim);
-                m_IdleAnimations.Add(idleAnim);
-            }
-            startIndex = SliceSheet(startIndex, m_MovementFrames, ref m_MovementAnimation);
-            startIndex = SliceSheet(startIndex, m_RisingFrames, ref m_RisingAnimation);
-            startIndex = SliceSheet(startIndex, m_FallingFrames, ref m_FallingAnimation);
-            startIndex = SliceSheet(startIndex, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);
-            startIndex = SliceSheet(startIndex, m_AttackFrames, ref m_AttackAnimation);
-            startIndex = SliceSheet(startIndex, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
-            startIndex = SliceSheet(startIndex, m_DashFrames, ref m_DashAnimation);
-            return startIndex;
+            // Slice the sheet into the individual animations.
+            int index = 0;
+            index = SliceSheet(index, m_IdleFrames, ref m_IdleAnimation);
+            index = SliceSheet(index, m_MovementFrames, ref m_MovementAnimation);
+            index = SliceSheet(index, m_RisingFrames, ref m_RisingAnimation);
+            index = SliceSheet(index, m_FallingFrames, ref m_FallingAnimation);
+            index = SliceSheet(index, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);
+            index = SliceSheet(index, m_AttackFrames, ref m_AttackAnimation);
+            index = SliceSheet(index, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
+            index = SliceSheet(index, m_DashFrames, ref m_DashAnimation);
+            return index;
         }
 
         private int SliceSheet(int startIndex, int length, ref Sprite[] array) {
@@ -158,41 +164,39 @@ namespace Monet {
         /* --- Rendering --- */
         #region Rendering
 
-        void Update() {
-            float deltaTime = Time.deltaTime;
-            if (m_Sprites != null && m_Sprites.Length > 0) {
-                Animate(deltaTime);
-            }
-            Rotate();
-            Stretch();
+        public void OnUpdate(float deltaTime) {
+            Animate(deltaTime);
         }
 
-
+        // Animates the flipbook by setting the animation, frame, and playing any effects.
         private void Animate(float deltaTime) {
+            // Guard clause to protect from animating with no sprites.
+            if (!Game.Validate<Sprite>(m_Sprites)) { return; }
+
+            // Update the current animation, frame and sprite.
             m_CurrentAnimation = GetAnimation();
             m_Ticks = m_PreviousAnimation == m_CurrentAnimation ? m_Ticks + deltaTime : 0f;
             m_CurrentFrame = (int)Mathf.Floor(m_Ticks * Screen.FrameRate) % m_CurrentAnimation.Length;
             m_SpriteRenderer.sprite = m_CurrentAnimation[m_CurrentFrame];
 
+            // Check for whtether an attack any other effects have started.
+            GetAttack();
             GetEffect();
+            GetRotation();
+            GetImmune(deltaTime);
+            GetScale(deltaTime);
 
+            // Cache the current animation and frame to check for changes.
             m_PreviousAnimation = m_CurrentAnimation;
             m_PreviousFrame = m_CurrentFrame;
         }
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
-
-            m_Attack = m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
-            m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
-
-            m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);
-            m_PrevAttack = m_Attack;
-
             if (Immune && Game.Validate<Sprite>(m_HurtAnimation)) {
                 return m_HurtAnimation;
             }
-            else if (m_StartedAttack && Game.Validate<Sprite>(m_AttackAnimation)) {
+            else if (StartedAttack && Game.Validate<Sprite>(m_AttackAnimation)) {
                 return m_AttackAnimation;
             }
             else if (ChargingAttack && Game.Validate<Sprite>(m_ChargeAttackAnimation)) {
@@ -213,20 +217,49 @@ namespace Monet {
             else if (Moving && Game.Validate<Sprite>(m_MovementAnimation)) {
                 return m_MovementAnimation;
             }
-            // else if (m_IdleIndex != -1 && Game.Validate<Sprite>(m_IdleAnimations[m_IdleIndex])) {
-            //     return m_IdleAnimations[m_IdleIndex];
-            // }
-            return m_IdleAnimations[0];
+            return m_IdleAnimation;
+        }
+
+        private void GetAttack() {
+            m_Attack = m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
+            m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
+
+            m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);
+            m_PrevAttack = m_Attack;
         }
 
         private void GetEffect() {
+            if (Step || StepA) {
+                if (m_StepEffectA != null) { m_StepEffectA.Play(); }
+                SoundManager.PlaySound(m_StepSoundA, 0.05f);
+            }
+            if (StepB) {
+                if (m_StepEffectB != null) { m_StepEffectB.Play(); }
+                SoundManager.PlaySound(m_StepSoundB, 0.025f);
+            }
+            if (Jump) {
+                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
+                SoundManager.PlaySound(m_JumpSound, 0.2f);
+            }
+            else if (Land) {
+                if (m_LandEffect != null) { m_LandEffect.Play(); }
+                SoundManager.PlaySound(m_LandSound, 0.1f);
+            }
+            if (DoubleJump) {
+                if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
+                SoundManager.PlaySound(m_DoubleJumpSound);
+            }
+            if (Dash) {
+                if (m_DashEffect != null) { m_DashEffect.Play(); }
+                SoundManager.PlaySound(m_DashSound);
+            }
 
+        }
+
+        private void GetImmune(float deltaTime) {
             m_SpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-            // if (m_BaseOutlineColor != null) {
-            //     m_SpriteRenderer.material.SetColor("_OutlineColor", m_BaseOutlineColor);
-            // }
             if (Immune) {
-                if (!PrevImmunity) {
+                if (!m_PrevImmunity) {
                     if (m_Character.CharacterState.Health <= 0) {
                         if (m_DeathEffect != null) { m_DeathEffect.Play(); }
                         SoundManager.PlaySound(m_DeathSound);
@@ -237,80 +270,35 @@ namespace Monet {
                     }
                     Outline.Set(m_SpriteRenderer, Color.white);
                 }
-                bool on = Timer.CycleTicks(ref ImmuneCycleTicks, 0.075f, Time.deltaTime);
+                bool on = Timer.CycleTicks(ref m_ImmuneCycleTicks, 0.075f, deltaTime);
                 m_SpriteRenderer.color = on ? new Color(1f, 1f, 1f, 1f) : new Color(1f, 0f, 0f, 1f);
-                // if (m_BaseOutlineColor != null) {
-                //     m_SpriteRenderer.material.SetColor("_OutlineColor", Color.white);
-                // }
             }
-            if (!Immune && PrevImmunity) {
-                Outline.Set(m_SpriteRenderer, Color.black);
+            if (!Immune && m_PrevImmunity) {
+                Outline.Set(m_SpriteRenderer, m_OutlineColor);
             }
 
-            PrevImmunity = Immune;
-
-            if (Step) {
-                if (m_StepEffect != null) { m_StepEffect.Play(); }
-                SoundManager.PlaySound(m_StepSound);
-            }
-            if (Jump) {
-                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
-                SoundManager.PlaySound(m_JumpSound);
-            }
-            else if (Land) {
-                if (m_LandEffect != null) { m_LandEffect.Play(); }
-                SoundManager.PlaySound(m_LandSound);
-            }
-            if (DoubleJump) {
-                if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
-                SoundManager.PlaySound(m_DoubleJumpSound);
-            }
-            if (Dash) {
-                if (m_DashEffect != null) { m_DashEffect.Play(); }
-                SoundManager.PlaySound(m_DashSound);
-            }
-        
-
-            if (m_IdleAnimations.Contains(m_CurrentAnimation) || m_IdleIndex == -1) {
-                bool condA = m_PreviousFrame == m_CurrentAnimation.Length - 1;
-                bool condB = m_CurrentFrame == 0;
-                if (condA && condB) {
-                    m_IdleIndex = -1;
-                    float prob = Random.Range(0f, 1f);
-                    if (prob > 0.995f) {
-                        m_IdleIndex = Random.Range(0, m_IdleAnimations.Count);
-                    }
-                }
-            }
-
+            m_PrevImmunity = Immune;
         }
 
-        protected virtual void Rotate() {
-            if (Direction < 0f) {
-                RotateBody(m_Character.Body, 180f);
-            }
-            else if (Direction > 0f) {
-                RotateBody(m_Character.Body, 0f);
+        protected virtual void GetRotation() {
+            float currentAngle = transform.eulerAngles.y;
+            float angle = Direction < 0f ? 180f : Direction > 0f ? 0f : currentAngle;
+            if (transform.eulerAngles.y != angle) {
+                transform.eulerAngles = angle * Vector3.up;
             }
         }
 
-        private static void RotateBody(Rigidbody2D body, float angle) {
-            if (body.transform.eulerAngles == angle * Vector3.up) { return; }
-            body.constraints = RigidbodyConstraints2D.None;
-            body.transform.eulerAngles = angle * Vector3.up;
-            body.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
-
-        // [SerializeField] private Vector2 m_CachedStretch;
-        // [SerializeField] private float StretchFactor = 10f;
-
-        void Stretch() {
-            // Vector2 stretch = new Vector2(1f, 1f);
-            // if (Rising || Falling) {
-            //     stretch.y = 0.75f;
-            //     stretch.x = 1.25f;
-            // }
-            // m_SpriteRenderer.materials[0].SetVector("_Stretch", stretch);
+        protected virtual void GetScale(float deltaTime) {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            Vector2 stretch = Vector2.zero;
+            float factor = StretchFactor * deltaTime;
+            if (Rising || Falling) {
+                float x = Mathf.Abs(m_Character.Body.velocity.x) * factor;
+                float y = Mathf.Abs(m_Character.Body.velocity.y) * factor;
+                stretch = new Vector2((x - y) / 2f, y - x);
+                transform.localScale += (Vector3)(stretch + m_CachedStretch);
+            }
+            m_CachedStretch = stretch;
         }
 
         public static void AfterImage(SpriteRenderer spriteRenderer, Transform transform, float delay, float transparency) {

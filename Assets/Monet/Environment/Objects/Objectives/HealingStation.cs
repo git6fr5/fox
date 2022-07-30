@@ -12,7 +12,7 @@ namespace Monet {
     public class HealingStation : Station {
 
         protected override void Activate(State state) {
-            state.Heal();
+            state.OnHeal();
         }
         
     }
