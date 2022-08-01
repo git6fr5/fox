@@ -48,7 +48,7 @@ namespace Monet {
 
             // Start these dependent scripts.
             m_State.OnStart();
-            m_Controller.OnStart(m_Body);
+            m_Controller.OnStart(this, m_Body);
             m_Flipbook.OnStart();
         }
 

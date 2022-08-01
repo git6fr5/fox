@@ -48,6 +48,10 @@ namespace Monet {
         public float GravityScale => m_GravityScale;
 
         // Collision.
+        [SerializeField] private float m_FlyResistance = 0.975f;
+        public float FlyResistance => m_FlyResistance;
+
+        // Collision.
         [SerializeField] private CollisionLayer m_CollisionLayers;
         public CollisionLayer CollisionLayers => m_CollisionLayers;
 

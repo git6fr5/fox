@@ -42,6 +42,7 @@ namespace Monet {
         [SerializeField] private Transform m_Follow;
         [SerializeField] private float m_FollowBounds = 0.25f;
         private float FollowBounds => m_FollowBounds;
+        [SerializeField] private bool m_FollowAbsolute;
 
         [Header("Snap")]
         [SerializeField] private bool m_Snap;
@@ -88,7 +89,7 @@ namespace Monet {
         void LateUpdate() {
             transform.position = m_Origin;
             if (m_Follow != null) {
-                m_Origin = Follow(m_Follow, transform, m_FollowBounds);
+                m_Origin = Follow(m_Follow, transform, m_FollowBounds, m_FollowAbsolute);
             }
             if (m_Snap) {
                 m_Origin = Snap(m_SnapPosition, transform, m_SnapSpeed, ref m_Snap, Game.Physics.MovementPrecision);
@@ -123,14 +124,20 @@ namespace Monet {
             return cameraTransform.position;
         }
 
-        private static Vector3 Follow(Transform followTransform, Transform cameraTransform, float bounds) {
+        private static Vector3 Follow(Transform followTransform, Transform cameraTransform, float bounds, bool absolute) {
             Vector2 targetPosition = (Vector2)followTransform.position;
             Vector2 deltaPosition = targetPosition - (Vector2)cameraTransform.position;
             
             if (deltaPosition.magnitude > bounds) {
-                deltaPosition = deltaPosition.normalized * Mathf.Max(1f, deltaPosition.magnitude);
-                cameraTransform.position += (Vector3)deltaPosition * 2f * Time.deltaTime;
+                if (absolute) {
+                    cameraTransform.position = new Vector3(targetPosition.x, targetPosition.y, cameraTransform.position.z);
+                }
+                else {
+                    deltaPosition = deltaPosition.normalized * Mathf.Max(1f, deltaPosition.magnitude);
+                    cameraTransform.position += (Vector3)deltaPosition * 2f * Time.deltaTime;
+                }
             }
+
             return cameraTransform.position;
         }
 

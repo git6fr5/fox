@@ -13,7 +13,7 @@ namespace Monet.UI {
     public class Prompt {
 
         // The interval between printing letters.
-        public static float PrintInterval = 0.065f; 
+        public static float PrintInterval = 0.035f; 
 
         // The lines this prompt has.
         [SerializeField] private string[] m_Lines;

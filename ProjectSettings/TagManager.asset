@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - NPC
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -51,6 +52,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 618029683
+    locked: 0
+  - name: Paticles
+    uniqueID: 4249906175
     locked: 0
   - name: UI
     uniqueID: 4172483913

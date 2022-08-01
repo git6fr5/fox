@@ -20,6 +20,7 @@ namespace Monet {
         public static float UserVerticalInput => UnityEngine.Input.GetAxisRaw("Vertical");
 
         [SerializeField, ReadOnly] protected Vector2 m_Direction;
+        public Vector2 FlyDirection => m_Direction.normalized;
         public float MoveDirection => m_Direction.x != 0f ? Mathf.Sign(m_Direction.x) : 0f;
 
         [SerializeField, ReadOnly] protected bool m_Jump;

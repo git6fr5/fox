@@ -32,6 +32,9 @@ namespace Monet {
         [SerializeField] private LDtkLoader m_LevelLoader;
         public static LDtkLoader LevelLoader => Instance.m_LevelLoader;
 
+        [SerializeField] private SoundManager m_SoundManager;
+        public static SoundManager SoundManager => Instance.m_SoundManager;
+
         [SerializeField] private Grid m_Grid;
         public static Grid MainGrid => Instance.m_Grid;
 
@@ -47,12 +50,18 @@ namespace Monet {
             Level.InitializeWaterLayer(m_Grid.transform);
             m_Environment.Init();
             m_LevelLoader.Init();
+            Screen.Instance.gameObject.SetActive(false);
             StartCoroutine(IELoadOpeningLevel());
         }
 
         private IEnumerator IELoadOpeningLevel() {
             yield return 0;
             m_LevelLoader.Open(m_OpeningLevel, m_Player.transform);
+            m_Player.gameObject.SetActive(true);
+            Screen.Instance.transform.position = new Vector3(m_Player.transform.position.x, m_Player.transform.position.y + 10f, Screen.Instance.transform.position.z);
+            Screen.Instance.gameObject.SetActive(true);
+            yield return 0;
+            m_SoundManager.OnStart();
             yield return null;
         }
 

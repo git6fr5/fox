@@ -97,7 +97,7 @@ namespace Monet {
 
         // Movement Conditions.
         private bool Moving => !ChargingAttack && m_Character.CharacterInput.MoveDirection != 0f;
-        private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
+        private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.Charging;
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
@@ -221,7 +221,7 @@ namespace Monet {
         }
 
         private void GetAttack() {
-            m_Attack = m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.CanFire;
+            m_Attack = m_Character.CharacterController.MainWeapon != null && m_Character.CharacterController.MainWeapon.Active;
             m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
 
             m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);

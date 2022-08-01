@@ -20,8 +20,8 @@ namespace Monet {
 
         // Attacking.
         [SerializeField] private UnityEngine.KeyCode m_AttackKey = UnityEngine.KeyCode.J;
-        [SerializeField] protected float m_AttackBufferDuration;
-        [SerializeField, ReadOnly] protected float m_AttackBufferTicks;
+        // [SerializeField] protected float m_AttackBufferDuration;
+        // [SerializeField, ReadOnly] protected float m_AttackBufferTicks;
 
         // Dashing.
         [HideInInspector] private UnityEngine.KeyCode m_DashKey = UnityEngine.KeyCode.K;
@@ -91,11 +91,6 @@ namespace Monet {
         }
 
         #region Input Resets.
-
-        public override void ResetAttack() {
-            base.ResetAttack();
-            m_AttackBufferTicks = 0f;
-        }
 
         public override void ResetJump() {
             base.ResetJump();

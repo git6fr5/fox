@@ -12,64 +12,70 @@ namespace Monet {
     public class SoundManager : MonoBehaviour {
 
         // The background music.
-        [SerializeField] private AudioClip m_MSC;
+        [SerializeField] private AudioClip m_DefaultMSC;
         [SerializeField] private float m_MusicVolume;
-        [SerializeField] private AudioClip m_Ambience;
+        [SerializeField] private AudioClip m_DefaultAmbience;
         [SerializeField] private float m_AmbientVolume;
         [SerializeField] private float m_MuteMusic;
         [SerializeField] private float m_MuteGameSounds;
 
         // The sound effects.
-        private static AudioSource MSCPlayer;
-        private static List<AudioSource> SFXPlayers;
+        private static AudioSource MSCSource;
+        private static AudioSource AmbientSource;
+        private static List<AudioSource> SFXSources;
 
-        void Start() {
-            CreatePlayer(m_MSC, "Music Player", m_MusicVolume);
-            CreatePlayer(m_Ambience, "Ambience", m_AmbientVolume);
+        public void OnStart() {
+            CreatePlayer(m_DefaultMSC, "Music Source", m_MusicVolume, ref MSCSource);
+            CreatePlayer(m_DefaultAmbience, "Ambient Source", m_AmbientVolume, ref AmbientSource);
             CreateSoundEffectPlayers();
         }
 
-        void Update() {
-
-        }
-
-        private static void CreatePlayer(AudioClip music, string name, float volume) {
-            MSCPlayer = new GameObject(name, typeof(AudioSource)).GetComponent<AudioSource>();
-            MSCPlayer.transform.SetParent(Camera.main.transform);
-            MSCPlayer.transform.position = Vector3.zero;
-            MSCPlayer.clip = music;
-            MSCPlayer.volume = volume;
-            MSCPlayer.loop = true;
-            MSCPlayer.Play();
+        private static void CreatePlayer(AudioClip music, string name, float volume, ref AudioSource source) {
+            source = new GameObject(name, typeof(AudioSource)).GetComponent<AudioSource>();
+            source.transform.SetParent(Camera.main.transform);
+            source.transform.position = Vector3.zero;
+            source.clip = music;
+            source.volume = volume;
+            source.loop = true;
+            source.Play();
         }
 
         private static void CreateSoundEffectPlayers() {
-            SFXPlayers = new List<AudioSource>();
+            SFXSources = new List<AudioSource>();
             for (int i = 0; i < 10; i++) {
-                SFXPlayers.Add(new GameObject("SFX Player " + i.ToString(), typeof(AudioSource)).GetComponent<AudioSource>());
-                SFXPlayers[i].transform.SetParent(Camera.main.transform);
-                SFXPlayers[i].transform.position = Vector3.zero;
+                SFXSources.Add(new GameObject("SFX Source " + i.ToString(), typeof(AudioSource)).GetComponent<AudioSource>());
+                SFXSources[i].transform.SetParent(Camera.main.transform);
+                SFXSources[i].transform.position = Vector3.zero;
             }
         }
 
-        public static void PlaySound(AudioClip audioClip, float volume = 0.45f) {
-            if (audioClip == null || SFXPlayers == null) { return; }
+        public static void SetMusic(AudioClip audioClip) {
+            MSCSource.clip = audioClip;
+        }
 
-            for (int i = 0; i < SFXPlayers.Count; i++) {
-                if (!SFXPlayers[i].isPlaying) {
-                    SFXPlayers[i].clip = audioClip;
-                    SFXPlayers[i].volume = volume;
-                    SFXPlayers[i].Play();
+        public static void SetAmbience(AudioClip audioClip) {
+            AmbientSource.clip = audioClip;
+        }
+
+
+        public static void PlaySound(AudioClip audioClip, float volume = 0.45f) {
+            if (audioClip == null || SFXSources == null) { return; }
+
+            for (int i = 0; i < SFXSources.Count; i++) {
+                if (!SFXSources[i].isPlaying) {
+                    SFXSources[i].clip = audioClip;
+                    SFXSources[i].volume = volume;
+                    SFXSources[i].Play();
                     return;
                 }
             }
 
-            SFXPlayers.Add(new GameObject("SFX Player " + (SFXPlayers.Count - 1).ToString(), typeof(AudioSource)).GetComponent<AudioSource>());
-            SFXPlayers[SFXPlayers.Count - 1].transform.SetParent(Camera.main.transform);
-            SFXPlayers[SFXPlayers.Count - 1].transform.position = Vector3.zero;
-            SFXPlayers[SFXPlayers.Count - 1].clip = audioClip;
-            SFXPlayers[SFXPlayers.Count - 1].volume = volume;
-            SFXPlayers[SFXPlayers.Count - 1].Play();
+            SFXSources.Add(new GameObject("SFX Player " + (SFXSources.Count - 1).ToString(), typeof(AudioSource)).GetComponent<AudioSource>());
+            SFXSources[SFXSources.Count - 1].transform.SetParent(Camera.main.transform);
+            SFXSources[SFXSources.Count - 1].transform.position = Vector3.zero;
+            SFXSources[SFXSources.Count - 1].clip = audioClip;
+            SFXSources[SFXSources.Count - 1].volume = volume;
+            SFXSources[SFXSources.Count - 1].Play();
         }
 
     }

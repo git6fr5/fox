@@ -52,6 +52,19 @@ namespace Monet {
             return closest;
         }
 
+        public static List<TMonoBehaviour> All<TMonoBehaviour>(Vector3 position, float radius, LayerMask layers) where TMonoBehaviour : MonoBehaviour {
+            List<TMonoBehaviour> list = new List<TMonoBehaviour>();
+            Collider2D[] colliders = UnityEngine.Physics2D.OverlapCircleAll(position, radius, layers);
+            for (int i = 0; i < colliders.Length; i++) {
+                TMonoBehaviour behaviour = colliders[i].GetComponent<TMonoBehaviour>();
+                if (behaviour != null) {
+                    list.Add(behaviour);
+                }
+            }
+            Debug.Log(list.Count);
+            return list;
+        }
+
     }
 
 }

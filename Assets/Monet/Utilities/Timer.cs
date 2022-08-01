@@ -84,7 +84,7 @@ namespace Monet {
             bool wasnotmax = ticks < max;
             ticks += dt;
             bool isnowmax = ticks >= max;
-            if (ticks > max) {
+            if (ticks >= max) {
                 ticks = max;
             }
             return wasnotmax && isnowmax;

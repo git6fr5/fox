@@ -16,8 +16,8 @@ namespace Monet {
         #region Variables
 
         // Projectile.
-        [SerializeField] protected Projectile m_Weapon;
-        public Projectile MainWeapon => m_Weapon;
+        [SerializeField] protected Weapon m_Weapon;
+        public Weapon MainWeapon => m_Weapon;
         [SerializeField] private List<string> m_Targets = new List<string>();
         public List<string> Targets => m_Targets;
 
@@ -52,13 +52,19 @@ namespace Monet {
         [SerializeField, ReadOnly] private bool m_DashReset;
         public bool DashReset => m_DashReset;
 
+        // Flying.
+        [SerializeField] private bool m_Flying;
+
         #endregion
 
         /* --- Process --- */
         #region Unity 
 
-        public void OnStart(Rigidbody2D body) {
+        public void OnStart(Character character, Rigidbody2D body) {
             body.constraints = RigidbodyConstraints2D.FreezeRotation;
+            if (m_Weapon != null) {
+                m_Weapon.OnStart(character, m_Targets);
+            }
         }
 
         public void OnStop(Rigidbody2D body) {
@@ -72,7 +78,7 @@ namespace Monet {
             PhysicsAction.DoubleJump(body, input, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
             PhysicsAction.Dash(body, input, input.Dash, input.DashDirection, state.DashSpeed, ref m_KnockbackTicks, state.DashDuration, ref m_DashReset);
             if (m_Weapon != null) {
-                m_Weapon.Fire(input, input.Attack, input.AttackDirection, m_Targets);
+                m_Weapon.Attack(input.Attack, input.AttackDirection, m_Targets);
             }
         }
 
@@ -94,9 +100,14 @@ namespace Monet {
             if (m_KnockbackTicks > 0f) { return; }
             float acceleration = Controller.GetAcceleration(state, m_OnGround);
             float speed = Controller.GetSpeed(state, input.Attack);
-            PhysicsAction.Move(body, input.MoveDirection, speed, acceleration, finishKnockback, deltaTime);
+            if (m_Flying) {
+                PhysicsAction.Move(body, input.FlyDirection, speed, acceleration, finishKnockback, deltaTime, Game.Physics.FlyResistance);
+            }
+            else {
+                PhysicsAction.Move(body, input.MoveDirection, speed, acceleration, finishKnockback, deltaTime);
+            }
 
-            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump);
+            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump, m_Flying);
             PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
 
         }
@@ -109,7 +120,7 @@ namespace Monet {
 
         public static float GetSpeed(State state, bool attack) {
             if (attack) {
-                return state.Speed * 0.25f;
+                return state.Speed; // * 0.25f;
             }
             return state.Speed;
         }
@@ -121,7 +132,10 @@ namespace Monet {
             return state.Acceleration;
         }
 
-        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset, bool doubleJumpUnlocked) {
+        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset, bool doubleJumpUnlocked, bool flying) {
+            if (flying) {
+                return 0f;
+            }
             if (!doubleJumpReset && doubleJumpUnlocked && rising) {
                 return state.DoubleJumpWeight;
             }

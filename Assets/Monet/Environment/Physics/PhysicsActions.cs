@@ -36,6 +36,35 @@ namespace Monet {
 
         }
 
+        public static void Move(Rigidbody2D body, Vector2 direction, float speed, float acceleration, bool finishKnockback, float deltaTime, float resistance) {
+
+            // Hard decelleration at the end of knockback.
+            if (finishKnockback) {
+                body.velocity *= 0.25f;
+            }
+
+            Vector2 targetVelocity = direction.normalized * speed;
+            Vector2 deltaVelocity = (targetVelocity - body.velocity).normalized * acceleration * deltaTime;
+            body.velocity += deltaVelocity;
+
+            if (body.velocity.magnitude > speed) {
+                body.velocity = speed * body.velocity.normalized;
+            }
+
+            // Resistance
+            if (targetVelocity == Vector2.zero) {
+                body.velocity *= resistance;
+            }
+            // Check for released inputs.
+            if (targetVelocity.y == 0f && Mathf.Abs(body.velocity.y) < Mathf.Abs(deltaVelocity.y)) {
+                body.velocity = new Vector2(body.velocity.x, 0f);
+            }
+            if (targetVelocity.x == 0f && Mathf.Abs(body.velocity.x) < Mathf.Abs(deltaVelocity.x)) {
+                body.velocity = new Vector2(0f, body.velocity.y);
+            }
+
+        }
+
         public static void Jump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, ref float coyote) {
             if (jump && (onGround || coyote > 0f)) {
                 body.position += Vector2.up * Game.Physics.MovementPrecision;

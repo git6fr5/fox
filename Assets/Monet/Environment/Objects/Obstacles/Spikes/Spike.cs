@@ -32,8 +32,8 @@ namespace Monet {
             transform.eulerAngles = new Vector3(0f, 0f, m_Rotation);
             m_Target = transform.position;
             
-            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
-            Outline.Set(m_SpriteRenderer, Color.black);
+            // Outline.Add(m_SpriteRenderer, 0.5f, 16f);
+            // Outline.Set(m_SpriteRenderer, Color.black);
         }
 
         protected virtual void FixedUpdate() {
