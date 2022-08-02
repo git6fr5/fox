@@ -42,6 +42,7 @@ namespace Monet {
 
         // Detail.
         [SerializeField] protected AudioClip m_FireSound;
+        [SerializeField] private Color m_OutlineColor;
         
         #endregion
 
@@ -50,6 +51,8 @@ namespace Monet {
             m_Character = character;
             m_Targets = targets;
             m_LocalOrigin = transform.localPosition;
+            // Outline.Add(m_SpriteRenderer, 1f, 16f);
+            // Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
         // Updates the weapon.

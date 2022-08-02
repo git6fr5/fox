@@ -72,10 +72,20 @@ hold j dettached - saw in place (return on release)
 k to block
 k + left/ right to shield dash
 k + down while in air to ground pound
+k + up to charge jump
 k + down + left/right while on ground to move while holding block direction
 
 floating blocks
 
+rune that plays on the tiara when it activates a spell
+impact effects for projectiles
+activate/ charge effects for weapons
 
+proper outline shader
+dummy room to test out movement.
+character abilities
+enemies
+vfx
+sfx
 
 

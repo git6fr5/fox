@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 using Monet;
 
 namespace Monet {
@@ -13,63 +14,98 @@ namespace Monet {
     [RequireComponent(typeof(BoxCollider2D))]
     public class Spike : MonoBehaviour {
 
+        /* --- Variables --- */
+        #region Variables
+        
+        private static float ResetDelay = 2f;
+        
+        protected SpriteRenderer m_SpriteRenderer => GetComponent<SpriteRenderer>();
+        protected BoxCollider2D m_Hitbox => GetComponent<BoxCollider2D>();
 
-        [HideInInspector] protected SpriteRenderer m_SpriteRenderer;
-        [HideInInspector] protected BoxCollider2D m_Hitbox;
+        public Vector3 Rotation => new Vector3(0f, 0f, m_Rotation);
+        public Vector3 Direction => Quaternion.Euler(0f, 0f, m_Rotation) * Vector3.up;
         
         [SerializeField] protected float m_KnockbackForce = 5f;
         [SerializeField] protected float m_Rotation = 0f;
-        [SerializeField, ReadOnly] protected bool m_Active = false;
-        [SerializeField, ReadOnly] protected Vector3 m_Target;
+        [SerializeField, ReadOnly] protected Vector3 m_Origin;
+
+        [SerializeField] private VisualEffect m_ShatterEffect;
+        [SerializeField] private AudioClip m_ShatterSound;
+        [SerializeField] private VisualEffect m_RegrowEffect;
+        [SerializeField] private AudioClip m_RegrowSound;
+        
+        #endregion
 
         void Start() {
-            // Caching.
-            m_SpriteRenderer = GetComponent<SpriteRenderer>();
-            m_Hitbox = GetComponent<BoxCollider2D>();
-            // Initial values.
+            m_Origin = transform.position;
             m_Hitbox.isTrigger = true;
-            m_Active = true;
-            transform.eulerAngles = new Vector3(0f, 0f, m_Rotation);
-            m_Target = transform.position;
-            
-            // Outline.Add(m_SpriteRenderer, 0.5f, 16f);
-            // Outline.Set(m_SpriteRenderer, Color.black);
-        }
-
-        protected virtual void FixedUpdate() {
-            float deltaTime = Time.fixedDeltaTime;
-            transform.position += (m_Target - transform.position).normalized * deltaTime / 0.5f;
+            transform.eulerAngles = Rotation;
         }
 
         void OnTriggerEnter2D(Collider2D collider) {
+            ProcessCollision(collider);
+        }
+
+        protected virtual void ProcessCollision(Collider2D collider) {
+            CharacterCollision(collider);
+        }
+
+        private void CharacterCollision(Collider2D collider) {
             Character character = collider.GetComponent<Character>();
-            Player player = collider.GetComponent<Player>();
-            if (character != null && player != null) {
-                Vector3 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector3.up;
-                if (direction.y == 0f) {
-                    direction.y += 1f;
-                }
-                direction = direction.normalized;
-                bool didDamage = character.Damage(1, direction, m_KnockbackForce);
+            if (character != null && character.IsPlayer) {
+                Vector3 knockbackDirection = GetKnockbackDirection(m_Rotation);
+                bool didDamage = character.Damage(1, knockbackDirection, m_KnockbackForce);
                 if (didDamage) {
-                    Outline.Set(m_SpriteRenderer, Color.white);
-                    m_Hitbox.enabled = false;
-                    StartCoroutine(IEHitbox());
+                    Shatter();
                 }
             }
         }
-        
-        protected IEnumerator IEHitbox() {
-            yield return new WaitForSeconds(0.5f);
-            Outline.Set(m_SpriteRenderer, Color.black);
-            m_Hitbox.enabled = m_Active;
+
+        private static Vector3 GetKnockbackDirection(float rotation) {
+            Vector3 direction = Quaternion.Euler(0f, 0f, rotation) * Vector3.up;
+            direction.y = direction.y == 0f ? direction.y + 1f : direction.y;
+            return direction.normalized;
         }
 
-        public void OnFlip() {
-            Vector3 direction = Quaternion.Euler(0f, 0f, m_Rotation) * Vector3.up;
-            m_Target += (m_Active ? -1f : 1f) * direction;
-            m_Active = !m_Active;
-            m_Hitbox.enabled = m_Active;
+        protected virtual void Shatter() {
+            if (m_ShatterEffect != null) {
+                m_ShatterEffect.Play();
+            }
+            SoundManager.PlaySound(m_ShatterSound);
+            m_Hitbox.enabled = false;
+            m_SpriteRenderer.enabled = false;
+            StartCoroutine(IEReset());
+        }
+
+        // Reset after a delay.
+        IEnumerator IEReset() {
+            float ratio = 7f / 16f;
+            yield return new WaitForSeconds(ratio * ResetDelay);
+            int count = 6;
+            Color temp = m_SpriteRenderer.color;
+            Color _temp = temp;
+            _temp.a = 0.2f;
+            m_SpriteRenderer.color = _temp; 
+            for (int i = 0; i < count; i++) {
+                _temp.a += 0.075f;
+                m_SpriteRenderer.color = _temp; 
+                m_SpriteRenderer.enabled = !m_SpriteRenderer.enabled;
+                yield return new WaitForSeconds(ratio * ResetDelay / (float)count);
+            }
+            m_SpriteRenderer.color = temp;
+            m_SpriteRenderer.enabled = true;
+            yield return new WaitForSeconds(ResetDelay * (1f - 2f * ratio));
+            Regrow();
+            yield return null;
+        }
+        
+        protected void Regrow() {
+            if (m_RegrowEffect != null) {
+                m_RegrowEffect.Play();
+            }
+            SoundManager.PlaySound(m_RegrowSound);
+            m_Hitbox.enabled = true;
+            m_SpriteRenderer.enabled = true;
         }
 
     }

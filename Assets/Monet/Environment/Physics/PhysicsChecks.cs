@@ -61,8 +61,17 @@ namespace Monet {
                     list.Add(behaviour);
                 }
             }
-            Debug.Log(list.Count);
             return list;
+        }
+
+        public static TMonoBehaviour LineOfSight<TMonoBehaviour>(Vector3 position, Vector2 direction, LayerMask layers) where TMonoBehaviour : MonoBehaviour {
+            List<TMonoBehaviour> list = new List<TMonoBehaviour>();
+            RaycastHit2D hit = UnityEngine.Physics2D.Raycast(position, direction, Mathf.Infinity, layers);
+            TMonoBehaviour behaviour = hit.collider.GetComponent<TMonoBehaviour>();
+            if (behaviour != null) {
+                return behaviour;
+            }
+            return null;
         }
 
     }

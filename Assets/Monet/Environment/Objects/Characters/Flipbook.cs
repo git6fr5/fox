@@ -125,7 +125,7 @@ namespace Monet {
 
         public void OnStart() {
             OrganizeSprites();
-            Outline.Add(m_SpriteRenderer, 0.5f, 16f);
+            Outline.Add(m_SpriteRenderer, 1f, 16f);
             Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
