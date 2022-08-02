@@ -79,6 +79,11 @@ namespace Monet {
             m_Targets = targets;
         }
 
+        public void Block(bool block, Vector2 direction) {
+            // m_Block = block;
+            // m_BlockDirection = direction;
+        }
+
         protected virtual void Charge(float deltaTime) {
             Timer.TickUp(ref m_Power, m_MaxPower, Time.fixedDeltaTime);
         }

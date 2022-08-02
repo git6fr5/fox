@@ -29,6 +29,9 @@ namespace Monet {
         [SerializeField, ReadOnly] protected bool m_HoldJump;
         public bool HoldJump => m_HoldJump;
 
+        [SerializeField, ReadOnly] protected bool m_JumpRelease;
+        public bool JumpRelease => m_JumpRelease;
+
         [SerializeField, ReadOnly] protected bool m_Attack;
         public bool Attack => m_Attack;
 
@@ -38,9 +41,24 @@ namespace Monet {
         [SerializeField, ReadOnly] protected bool m_Dash;
         public bool Dash => m_Dash;
 
+        [SerializeField, ReadOnly] protected bool m_HoldDash;
+        public bool HoldDash => m_HoldDash;
+
+        [SerializeField, ReadOnly] protected bool m_DashRelease;
+        public bool DashRelease => m_DashRelease;
+
         [SerializeField, ReadOnly] protected Vector2 m_DashDirection;
         public Vector2 DashDirection => m_DashDirection;
 
+        [SerializeField, ReadOnly] protected float m_FacingDirection = 1f;
+        public float FacingDirection => m_FacingDirection;
+
+        [SerializeField, ReadOnly] protected bool m_Block;
+        public bool Block => m_Block;
+
+        [SerializeField, ReadOnly] protected bool m_BlockRelease;
+        public bool BlockRelease => m_BlockRelease;
+        
         #endregion
 
         #region Directional Inputs
@@ -60,6 +78,18 @@ namespace Monet {
             return cachedAxis;
         }
 
+        public static Vector2 GetLatestDirection(float x, float y, Vector2 curr, ref Vector2 cache) {
+            if (x != cache.x) {
+                cache = new Vector2(x, y);
+                return new Vector2(x, 0f);
+            }
+            else if (y != cache.y) {
+                cache = new Vector2(x, y);
+                return new Vector2(0f, y);
+            }
+            return curr;
+        }
+
         // Gets the direction based on the inputs.
         public static Vector2 GetDirection(float x, float y, Vector2 direction) {
             if (x == 0f && y == 0f) {
@@ -70,6 +100,15 @@ namespace Monet {
             }
             else {
                 direction = new Vector2(x, y);
+            }
+            return direction;
+        }
+
+        // Gets the direction based on the inputs.
+        public static Vector2 GetDirection(float x, float y, float facing) {
+            Vector2 direction = new Vector2(x, y);
+            if (x == 0f && y == 0f) {
+                direction.x = facing;
             }
             return direction;
         }
@@ -91,6 +130,22 @@ namespace Monet {
         // Allows for a little time buffer when a key is pressed.
         public static bool KeyDownBuffer(UnityEngine.KeyCode keyCode, ref float bufferTicks, float bufferDuration, float dt) {
             if (UnityEngine.Input.GetKeyDown(keyCode)) {
+                bufferTicks = bufferDuration;
+            }
+            if (bufferTicks != 0f) {
+                bufferTicks -= dt;
+                if (bufferTicks < 0f) {
+                    bufferTicks = 0f;
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // Allows for a little time buffer when a key is pressed.
+        public static bool KeyUpBuffer(UnityEngine.KeyCode keyCode, ref float bufferTicks, float bufferDuration, float dt) {
+            if (UnityEngine.Input.GetKeyUp(keyCode)) {
                 bufferTicks = bufferDuration;
             }
             if (bufferTicks != 0f) {
@@ -129,6 +184,18 @@ namespace Monet {
 
         public virtual void ResetDash() {
             m_Dash = false;
+        }
+
+        public virtual void ResetJumpRelease() {
+            m_JumpRelease = false;
+        }
+
+        public virtual void ResetDashRelease() {
+            m_DashRelease = false;
+        }
+
+        public virtual void ResetBlockRelease() {
+            m_BlockRelease = false;
         }
 
         #endregion

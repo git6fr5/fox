@@ -13,20 +13,24 @@ namespace Monet {
 
         #region Variables
 
+        [SerializeField] protected float DownBufferDuration = 0.05f;
+        [SerializeField] protected float UpBufferDuration = 0.1f;
+
         // Jumping.
         [SerializeField] private UnityEngine.KeyCode m_JumpKey = UnityEngine.KeyCode.Space;
-        [SerializeField] protected float m_JumpBufferDuration;
         [SerializeField, ReadOnly] protected float m_JumpBufferTicks;
+        [SerializeField, ReadOnly] protected float m_JumpReleaseBufferTicks;
 
         // Attacking.
         [SerializeField] private UnityEngine.KeyCode m_AttackKey = UnityEngine.KeyCode.J;
-        // [SerializeField] protected float m_AttackBufferDuration;
         // [SerializeField, ReadOnly] protected float m_AttackBufferTicks;
 
         // Dashing.
-        [HideInInspector] private UnityEngine.KeyCode m_DashKey = UnityEngine.KeyCode.K;
-        [SerializeField] protected float m_DashBufferDuration;
+        [SerializeField] private UnityEngine.KeyCode m_DashKey = UnityEngine.KeyCode.K;
         [SerializeField, ReadOnly] protected float m_DashBufferTicks;
+        [SerializeField, ReadOnly] protected float m_DashReleaseBufferTicks;
+
+        [SerializeField, ReadOnly] protected float m_BlockReleaseBufferTicks;
 
         // Minimap.
         [HideInInspector] private UnityEngine.KeyCode m_MinimapKey = UnityEngine.KeyCode.M;
@@ -47,6 +51,8 @@ namespace Monet {
         [SerializeField, ReadOnly] private bool m_HoldSelect;
         public bool HoldSelect => m_HoldSelect;
 
+        [HideInInspector] private Vector2 m_CachedDirection;
+
         #endregion
 
         // Runs once every frame to update the input.
@@ -62,14 +68,23 @@ namespace Monet {
             }
 
             m_Direction = new Vector2(Input.UserHorizontalInput, Input.UserVerticalInput);
-            m_Jump = KeyDownBuffer(m_JumpKey, ref m_JumpBufferTicks, m_JumpBufferDuration, Time.deltaTime);
+            m_FacingDirection = Input.UserHorizontalInput != 0f ?  Input.UserHorizontalInput : m_FacingDirection;
+
+            m_Jump = KeyDownBuffer(m_JumpKey, ref m_JumpBufferTicks, DownBufferDuration, Time.deltaTime);
             m_HoldJump = KeyHeld(m_JumpKey, m_HoldJump);
-            
-            m_Dash = KeyDownBuffer(m_DashKey, ref m_DashBufferTicks, m_DashBufferDuration, Time.deltaTime);
-            m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_DashDirection);
+            m_JumpRelease = KeyUpBuffer(m_JumpKey, ref m_JumpReleaseBufferTicks, UpBufferDuration, Time.deltaTime);
+
+            m_Dash = KeyDownBuffer(m_DashKey, ref m_DashBufferTicks, DownBufferDuration, Time.deltaTime);
+            m_HoldDash = KeyHeld(m_DashKey, m_HoldDash);
+            m_DashRelease = KeyUpBuffer(m_DashKey, ref m_DashReleaseBufferTicks, UpBufferDuration, Time.deltaTime);
+            m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_FacingDirection);
 
             m_Attack = KeyHeld(m_AttackKey, m_Attack);
-            m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_AttackDirection);
+            m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_FacingDirection);
+
+            m_Block = m_Direction.y == -1f;
+            Timer.CountdownTicks(ref m_BlockReleaseBufferTicks, m_Block, UpBufferDuration, Time.deltaTime);
+            m_BlockRelease = !m_Block && m_BlockReleaseBufferTicks != 0f;
             
             m_MinimapToggle = KeyDown(m_MinimapKey);
             if (m_MinimapToggle) {
@@ -100,6 +115,21 @@ namespace Monet {
         public override void ResetDash() {
             base.ResetDash();
             m_DashBufferTicks = 0f;
+        }
+
+        public override void ResetJumpRelease() {
+            base.ResetJumpRelease();
+            m_JumpReleaseBufferTicks = 0f;
+        }
+
+        public override void ResetDashRelease() {
+            base.ResetDashRelease();
+            m_DashReleaseBufferTicks = 0f;
+        }
+
+        public override void ResetBlockRelease() {
+            base.ResetBlockRelease();
+            m_BlockReleaseBufferTicks = 0f;
         }
 
         #endregion

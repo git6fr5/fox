@@ -61,6 +61,16 @@ namespace Monet {
             weight = 2f * height / (risingTime * risingTime) / Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale);
         }
 
+        // Calculations.
+        public static float GetJumpSpeed(float height, float weight) {
+            float factor = Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale);
+            return 2f * height / Mathf.Sqrt(2f * height / (weight * factor));
+        }
+
+        public static float GetDashDuration(float distance, float speed) {
+            return distance / speed;
+        }
+
         public static void CalculateJump(float height, float risingTime, float fallingTime, ref float speed, ref float weight, ref float floatiness) {
             speed = 2f * height / risingTime;
             weight = 2f * height / (risingTime * risingTime) / Mathf.Abs(UnityEngine.Physics2D.gravity.y * Game.Physics.GravityScale);

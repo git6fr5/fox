@@ -43,14 +43,49 @@ namespace Monet {
         public bool Rising => m_Rising;
 
         // Special.
+
+        // Double Jump.
         [SerializeField] private bool m_UnlockedDoubleJump;
         public bool UnlockedDoubleJump => m_UnlockedDoubleJump;
         [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
         public bool DoubleJumpReset => m_DoubleJumpReset;
+
+        // Dash.
         [SerializeField] private bool m_UnlockedDash;
         public bool UnlockedDash => m_UnlockedDash;
         [SerializeField, ReadOnly] private bool m_DashReset;
         public bool DashReset => m_DashReset;
+        [SerializeField, ReadOnly] private float m_DashCooldownTicks;
+        private static float m_DashCooldown = 0.25f;
+
+        // Slam.
+        [SerializeField] private bool m_UnlockedSlam;
+        public bool UnlockedSlam => m_UnlockedSlam;
+        [SerializeField, ReadOnly] private bool m_SlamReset;
+        public bool SlamReset => m_SlamReset;
+        [SerializeField, ReadOnly] private bool m_Slamming;
+
+        // Charge Abilities.
+        private static float ChargeBuffer = 0.5f;
+
+        // Charge Jump.
+        [SerializeField] private bool m_UnlockedChargeJump;
+        public bool UnlockedChargeJump => m_UnlockedChargeJump;
+        [SerializeField, ReadOnly] private bool m_ChargeJumpReset;
+        public bool ChargeJumpReset => m_ChargeJumpReset;
+        [SerializeField, ReadOnly] private float m_ChargeJumpTicks;
+        [SerializeField, ReadOnly] private bool m_ChargeJumping;
+        public float JumpCharge => 1f - m_ChargeJumpTicks / ChargeBuffer;
+        public bool ChargingJump => JumpCharge > 0f;
+
+        // Charge Dash.
+        [SerializeField] private bool m_UnlockedChargeDash;
+        public bool UnlockedChargeDash => m_UnlockedChargeDash;
+        [SerializeField, ReadOnly] private bool m_ChargeDashReset;
+        public bool ChargeDashReset => m_ChargeDashReset;
+        [SerializeField, ReadOnly] private float m_ChargeDashTicks;
+        public float DashCharge => 1f - m_ChargeDashTicks / ChargeBuffer;
+        public bool ChargingDash => DashCharge > 0f;
 
         // Flying.
         [SerializeField] private bool m_Flying;
@@ -72,14 +107,34 @@ namespace Monet {
         }
 
         public void OnUpdate(Rigidbody2D body, Input input, State state) {        
-            // Actions.
-            if (m_KnockbackTicks > 0f) { return; }
-            PhysicsAction.Jump(body, input, input.Jump, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
-            PhysicsAction.DoubleJump(body, input, input.Jump, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
-            PhysicsAction.Dash(body, input, input.Dash, input.DashDirection, state.DashSpeed, ref m_KnockbackTicks, state.DashDuration, ref m_DashReset);
+            if (m_KnockbackTicks > 0f || m_Slamming) { return; }
+
+            // Regular.
+            bool charging = input.Block && m_OnGround;
+            bool canDash = m_DashCooldownTicks == 0f;
+            PhysicsAction.Jump(body, input, input.Jump && !charging, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
+            PhysicsAction.DoubleJump(body, input, input.Jump && !input.Block, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpReset);
+            PhysicsAction.Dash(body, input, input.Dash && canDash && !charging, input.DashDirection, state.DashSpeed, state.DashDuration, ref m_DashReset, ref m_KnockbackTicks);
+            
+            bool slam = input.Jump && input.Block && !m_OnGround;
+            PhysicsAction.Slam(body, input, input.Jump && input.Block && !m_OnGround, ref m_SlamReset, ref m_Slamming);
+            
+            // Charged
+            // Either release one, or release both at the same time.
+            // bool releaseChargeJump = ChargingJump && ((!input.HoldJump && input.Block) || (input.HoldJump || input.JumpRelease) && input.BlockRelease);
+            bool releaseChargeJump = ChargingJump && (input.JumpRelease && input.BlockRelease);
+            PhysicsAction.ChargeJump(body, input, releaseChargeJump, state.ChargeJumpHeight, state.Weight, ref m_ChargeJumpTicks, ChargeBuffer, ref m_ChargeJumpReset, ref m_ChargeJumping);
+            // bool releaseChargeDash = ChargingDash && ((!input.HoldDash && input.Block) || (input.HoldDash || input.DashRelease) && input.BlockRelease);
+            bool releaseChargeDash = ChargingDash && (input.DashRelease && input.BlockRelease);
+            Debug.Log(releaseChargeDash);
+            PhysicsAction.ChargeDash(body, input, releaseChargeDash, input.FacingDirection, state.DashSpeed, state.ChargeDashDistance, ref m_ChargeDashTicks, ChargeBuffer, ref m_ChargeDashReset, ref m_KnockbackTicks);
+            
+            // Attack.
             if (m_Weapon != null) {
                 m_Weapon.Attack(input.Attack, input.AttackDirection, m_Targets);
+                m_Weapon.Block(input.Block, input.AttackDirection);
             }
+
         }
 
         // Runs once every fixed interval.
@@ -87,28 +142,46 @@ namespace Monet {
             // Checks.
             PhysicsCheck.OnGround(body.position + collisionFrame.offset, collisionFrame.radius, ref m_OnGround);
             PhysicsCheck.Rising(body.velocity, ref m_Rising, m_OnGround);
+            Timer.CountdownTicks(ref m_DashCooldownTicks, !m_DashReset, m_DashCooldown, deltaTime);
+            Timer.StartIf(ref m_KnockbackTicks, 0.01f, m_OnGround && m_Slamming);
+
+            // Resets.
             PhysicsCheck.Reset(ref m_DoubleJumpReset, m_UnlockedDoubleJump, m_OnGround);
             PhysicsCheck.Reset(ref m_DashReset, m_UnlockedDash, m_OnGround);
+            PhysicsCheck.Reset(ref m_SlamReset, m_UnlockedSlam, m_OnGround);
+            PhysicsCheck.Reset(ref m_ChargeJumpReset, m_UnlockedChargeJump, m_OnGround);
+            PhysicsCheck.Reset(ref m_ChargeDashReset, m_UnlockedChargeDash, m_OnGround);
+            m_ChargeJumping = m_OnGround || input.Jump ? false : m_ChargeJumping;
+            m_Slamming = m_OnGround ? false : m_Slamming;
+
+            // Buffers.
             Timer.CountdownTicks(ref m_AntiGravityTicks, m_OnGround || m_Rising, m_AntiGravityBuffer, deltaTime);
             Timer.CountdownTicks(ref m_CoyoteTicks, m_OnGround, m_CoyoteBuffer, deltaTime);
-            bool finishKnockback = Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
+            bool chargeJump = m_OnGround && (input.HoldJump || input.JumpRelease) && (input.Block || input.BlockRelease);
+            Timer.CountdownTicks(ref m_ChargeJumpTicks, !chargeJump, ChargeBuffer, deltaTime);
+            bool chargeDash = m_OnGround && (input.HoldDash || input.DashRelease) && (input.Block || input.BlockRelease);
+            Timer.CountdownTicks(ref m_ChargeDashTicks, !chargeDash, ChargeBuffer, deltaTime);
+
+            // Weapon Cooldown.
             if (m_Weapon != null) {
                 m_Weapon.OnUpdate(deltaTime);
             }
-            
-            // Actions.
-            if (m_KnockbackTicks > 0f) { return; }
+
+            // Knockback.
+            bool finishKnockback = Timer.UpdateTicks(ref m_KnockbackTicks, false, 0f, deltaTime);
+            if (m_KnockbackTicks > 0f || m_Slamming) { return; }
+
+            // Movement.
             float acceleration = Controller.GetAcceleration(state, m_OnGround);
-            float speed = Controller.GetSpeed(state, input.Attack);
+            float speed = Controller.GetSpeed(state, input.Attack, input.Block);
             if (m_Flying) {
                 PhysicsAction.Move(body, input.FlyDirection, speed, acceleration, finishKnockback, deltaTime, Game.Physics.FlyResistance);
             }
             else {
                 PhysicsAction.Move(body, input.MoveDirection, speed, acceleration, finishKnockback, deltaTime);
             }
-
             float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump, m_Flying);
-            PhysicsAction.Gravity(body, input.HoldJump, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
+            PhysicsAction.Gravity(body, input.HoldJump || m_ChargeJumping, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
 
         }
 
@@ -118,9 +191,12 @@ namespace Monet {
             m_KnockbackTicks = duration;
         }
 
-        public static float GetSpeed(State state, bool attack) {
+        public static float GetSpeed(State state, bool attack, bool block) {
+            if (block) {
+                return state.Speed * 0.25f;
+            }
             if (attack) {
-                return state.Speed; // * 0.25f;
+                return state.Speed * 0.75f;
             }
             return state.Speed;
         }

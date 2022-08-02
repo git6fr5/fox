@@ -180,10 +180,16 @@ MonoBehaviour:
   m_Direction: {x: 0, y: 0}
   m_Jump: 0
   m_HoldJump: 0
+  m_JumpRelease: 0
   m_Attack: 0
   m_AttackDirection: {x: 0, y: 0}
   m_Dash: 0
+  m_HoldDash: 0
+  m_DashRelease: 0
   m_DashDirection: {x: 0, y: 0}
+  m_FacingDirection: 1
+  m_Block: 0
+  m_BlockRelease: 0
   m_Ticks: 0
   m_Origin: {x: 0, y: 0, z: 0}
   m_Tiara: {fileID: 2692613502902253441}
@@ -262,6 +268,17 @@ MonoBehaviour:
     m_DoubleJumpReset: 0
     m_UnlockedDash: 0
     m_DashReset: 0
+    m_DashCooldownTicks: 0
+    m_UnlockedSlam: 0
+    m_SlamReset: 0
+    m_Slamming: 0
+    m_UnlockedChargeJump: 0
+    m_ChargeJumpReset: 0
+    m_ChargeJumpTicks: 0
+    m_ChargeJumping: 0
+    m_UnlockedChargeDash: 0
+    m_ChargeDashReset: 0
+    m_ChargeDashTicks: 0
     m_Flying: 1
   m_State:
     m_MaxHealth: 16
@@ -288,6 +305,8 @@ MonoBehaviour:
     m_DashDistance: 0
     m_DashDuration: 0
     m_DashSpeed: 0
+    m_ChargeJumpHeight: 0
+    m_ChargeDashDistance: 0
     m_RespawnStation: {fileID: 0}
   m_CharacterDebugger:
     m_CalculatedSpeed: 0
@@ -4217,6 +4236,17 @@ MonoBehaviour:
     m_DoubleJumpReset: 0
     m_UnlockedDash: 0
     m_DashReset: 0
+    m_DashCooldownTicks: 0
+    m_UnlockedSlam: 0
+    m_SlamReset: 0
+    m_Slamming: 0
+    m_UnlockedChargeJump: 0
+    m_ChargeJumpReset: 0
+    m_ChargeJumpTicks: 0
+    m_ChargeJumping: 0
+    m_UnlockedChargeDash: 0
+    m_ChargeDashReset: 0
+    m_ChargeDashTicks: 0
     m_Flying: 0
   m_State:
     m_MaxHealth: 3
@@ -4243,6 +4273,8 @@ MonoBehaviour:
     m_DashDistance: 0
     m_DashDuration: 0
     m_DashSpeed: 0
+    m_ChargeJumpHeight: 0
+    m_ChargeDashDistance: 0
     m_RespawnStation: {fileID: 0}
   m_CharacterDebugger:
     m_CalculatedSpeed: 0
@@ -4264,10 +4296,16 @@ MonoBehaviour:
   m_Direction: {x: 0, y: 0}
   m_Jump: 0
   m_HoldJump: 0
+  m_JumpRelease: 0
   m_Attack: 0
   m_AttackDirection: {x: 0, y: 0}
   m_Dash: 0
+  m_HoldDash: 0
+  m_DashRelease: 0
   m_DashDirection: {x: 0, y: 0}
+  m_FacingDirection: 1
+  m_Block: 0
+  m_BlockRelease: 0
   m_Path: []
   m_PathIndex: 0
   m_WaitBuffer: 1
@@ -5676,10 +5714,16 @@ MonoBehaviour:
   m_Direction: {x: 0, y: 0}
   m_Jump: 0
   m_HoldJump: 0
+  m_JumpRelease: 0
   m_Attack: 0
   m_AttackDirection: {x: 0, y: 0}
   m_Dash: 0
+  m_HoldDash: 0
+  m_DashRelease: 0
   m_DashDirection: {x: 0, y: 0}
+  m_FacingDirection: 1
+  m_Block: 0
+  m_BlockRelease: 0
   m_Path: []
   m_PathIndex: 0
   m_WaitBuffer: 1
@@ -5729,6 +5773,17 @@ MonoBehaviour:
     m_DoubleJumpReset: 0
     m_UnlockedDash: 0
     m_DashReset: 0
+    m_DashCooldownTicks: 0
+    m_UnlockedSlam: 0
+    m_SlamReset: 0
+    m_Slamming: 0
+    m_UnlockedChargeJump: 0
+    m_ChargeJumpReset: 0
+    m_ChargeJumpTicks: 0
+    m_ChargeJumping: 0
+    m_UnlockedChargeDash: 0
+    m_ChargeDashReset: 0
+    m_ChargeDashTicks: 0
     m_Flying: 0
   m_State:
     m_MaxHealth: 1
@@ -5755,6 +5810,8 @@ MonoBehaviour:
     m_DashDistance: 0
     m_DashDuration: 0
     m_DashSpeed: 0
+    m_ChargeJumpHeight: 0
+    m_ChargeDashDistance: 0
     m_RespawnStation: {fileID: 0}
   m_CharacterDebugger:
     m_CalculatedSpeed: 0
@@ -9136,9 +9193,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.040895812
     y: 0
-    width: 1
+    width: 0.9184031
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
@@ -10569,7 +10626,7 @@ MonoBehaviour:
   m_LevelLoader: {fileID: 1881129251}
   m_SoundManager: {fileID: 1881129252}
   m_Grid: {fileID: 1881129250}
-  m_OpeningLevel: Level_26
+  m_OpeningLevel: Level_33
 --- !u!156049354 &1881129250
 Grid:
   m_ObjectHideFlags: 0
@@ -10951,10 +11008,21 @@ MonoBehaviour:
     m_AntiGravityTicks: 0
     m_OnGround: 0
     m_Rising: 0
-    m_UnlockedDoubleJump: 0
+    m_UnlockedDoubleJump: 1
     m_DoubleJumpReset: 0
-    m_UnlockedDash: 0
+    m_UnlockedDash: 1
     m_DashReset: 0
+    m_DashCooldownTicks: 0
+    m_UnlockedSlam: 1
+    m_SlamReset: 0
+    m_Slamming: 0
+    m_UnlockedChargeJump: 1
+    m_ChargeJumpReset: 0
+    m_ChargeJumpTicks: 0
+    m_ChargeJumping: 0
+    m_UnlockedChargeDash: 0
+    m_ChargeDashReset: 0
+    m_ChargeDashTicks: 0
     m_Flying: 0
   m_State:
     m_MaxHealth: 5
@@ -10981,6 +11049,8 @@ MonoBehaviour:
     m_DashDistance: 6
     m_DashDuration: 0.15
     m_DashSpeed: 0
+    m_ChargeJumpHeight: 10
+    m_ChargeDashDistance: 10
     m_RespawnStation: {fileID: 0}
   m_CharacterDebugger:
     m_CalculatedSpeed: 0
@@ -11002,16 +11072,26 @@ MonoBehaviour:
   m_Direction: {x: 0, y: 0}
   m_Jump: 0
   m_HoldJump: 0
+  m_JumpRelease: 0
   m_Attack: 0
   m_AttackDirection: {x: 0, y: 0}
   m_Dash: 0
+  m_HoldDash: 0
+  m_DashRelease: 0
   m_DashDirection: {x: 0, y: 0}
+  m_FacingDirection: 1
+  m_Block: 0
+  m_BlockRelease: 0
+  DownBufferDuration: 0.05
+  UpBufferDuration: 0.1
   m_JumpKey: 32
-  m_JumpBufferDuration: 0.05
   m_JumpBufferTicks: 0
+  m_JumpReleaseBufferTicks: 0
   m_AttackKey: 106
-  m_DashBufferDuration: 0.05
+  m_DashKey: 107
   m_DashBufferTicks: 0
+  m_DashReleaseBufferTicks: 0
+  m_BlockReleaseBufferTicks: 0
   m_Minimap: {fileID: 1887670572}
   m_MinimapToggle: 0
   m_InteractRadius: 1.5

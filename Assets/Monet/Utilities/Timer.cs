@@ -7,6 +7,7 @@ namespace Monet {
 
     public class Timer {
 
+        // Rename this to triangle ticks
         public static bool UpdateTicks(ref float ticks, bool condition, float buffer, float dt) {
             bool wasnotzero = ticks != 0f;
             if (condition) {
@@ -33,6 +34,7 @@ namespace Monet {
             return ticks > buffer;
         }
 
+        // Rename this to buffer ticks
         public static bool CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
             bool wasnotzero = ticks != 0f;
             if (condition) {

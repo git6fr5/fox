@@ -183,6 +183,7 @@ namespace Monet {
             GetAttack();
             GetEffect();
             GetRotation();
+            GetShake();
             GetImmune(deltaTime);
             GetScale(deltaTime);
 
@@ -286,6 +287,11 @@ namespace Monet {
             if (transform.eulerAngles.y != angle) {
                 transform.eulerAngles = angle * Vector3.up;
             }
+        }
+
+        private void GetShake() {
+            float strength = Mathf.Max(m_Character.CharacterController.JumpCharge, m_Character.CharacterController.DashCharge);
+            Obstacle.Shake(transform, m_Character.transform.position, strength * 0.1f);
         }
 
         protected virtual void GetScale(float deltaTime) {

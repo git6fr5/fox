@@ -47,12 +47,12 @@ namespace Monet {
                 return; 
             }
 
-            if (!Charging) {
-                Animate(m_Character.CharacterFlipbook);
-            }
-            else {
+            if (Charging) {
                 Vector3 position = new Vector3(- m_Direction.x, -m_Direction.y, 0f).normalized;
                 transform.localPosition = position * m_Power / m_MaxPower * 0.5f;
+            }
+            else {
+                Animate(m_Character.CharacterFlipbook);
             }
         }
 

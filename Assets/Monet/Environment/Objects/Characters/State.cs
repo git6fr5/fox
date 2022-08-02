@@ -68,6 +68,14 @@ namespace Monet {
         [SerializeField, ReadOnly] private float m_DashSpeed;
         public float DashSpeed => m_DashSpeed;
 
+        // Charge Jump.
+        [SerializeField] private float m_ChargeJumpHeight;
+        public float ChargeJumpHeight => m_ChargeJumpHeight;
+
+        // Charge Dash.
+        [SerializeField] private float m_ChargeDashDistance;
+        public float ChargeDashDistance => m_ChargeDashDistance;
+        
         // Respawn Anchor.
         [SerializeField, ReadOnly] private RespawnStation m_RespawnStation;
         public RespawnStation CurrentRespawnStation => m_RespawnStation;
