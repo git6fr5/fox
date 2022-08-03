@@ -39,6 +39,9 @@ namespace Monet {
         [HideInInspector] private bool m_StartedAttack;
         [HideInInspector] private bool m_FinishedAttack;
 
+        // After Images.
+        [HideInInspector] private float m_AfterImageTicks;
+
         // Stretch info.
         [HideInInspector] private Vector2 m_CachedStretch = new Vector2(0f, 0f);
         public static float StretchFactor = 1f;
@@ -125,7 +128,7 @@ namespace Monet {
 
         public void OnStart() {
             OrganizeSprites();
-            Outline.Add(m_SpriteRenderer, 1f, 16f);
+            Outline.Add(m_SpriteRenderer, 0f, 16f);
             Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
@@ -186,6 +189,7 @@ namespace Monet {
             GetShake();
             GetImmune(deltaTime);
             GetScale(deltaTime);
+            GetAfterImages(deltaTime);
 
             // Cache the current animation and frame to check for changes.
             m_PreviousAnimation = m_CurrentAnimation;
@@ -305,6 +309,23 @@ namespace Monet {
                 transform.localScale += (Vector3)(stretch + m_CachedStretch);
             }
             m_CachedStretch = stretch;
+        }
+
+        // public GameObject eyeObj;
+
+        private void GetAfterImages(float deltaTime) {
+            if (Dashing) {
+                // TODO: okay getting real lazy.
+                // eyeObj.SetActive(true);
+                bool finished = Timer.TickDown(ref m_AfterImageTicks, deltaTime);
+                if (finished || m_AfterImageTicks <= 0f) {
+                    AfterImage(m_SpriteRenderer, transform, 0.15f, 0.5f);
+                    Timer.Start(ref m_AfterImageTicks, 0.03f);
+                }
+            }
+            else {
+                // eyeObj.SetActive(false);
+            }
         }
 
         public static void AfterImage(SpriteRenderer spriteRenderer, Transform transform, float delay, float transparency) {

@@ -59,6 +59,10 @@ namespace Monet {
             }
         }
 
+        void OnEnable() {
+            m_Trail = new List<Vector3>();
+        }
+
     }
     
 }

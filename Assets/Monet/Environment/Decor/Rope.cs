@@ -15,7 +15,7 @@ namespace Monet {
         protected EdgeCollider2D edgeCollider;
 
         /* --- Static Variables --- */
-        [SerializeField] protected static float SegmentLength  = 1f/16f;
+        [SerializeField] protected static float SegmentLength  = 2f/16f;
 
         /* --- Variables --- */
         [HideInInspector] protected int segmentCount; // The number of segments.
@@ -43,11 +43,6 @@ namespace Monet {
             RopeSegments();
         }
 
-        // Runs once every frame.
-        void Update() {
-            Render();
-        }
-
         // Runs once every set time interval.
         void FixedUpdate() {
             Simulation();
@@ -57,13 +52,6 @@ namespace Monet {
         void OnTriggerStay2D(Collider2D collider) {
             if (collider.GetComponent<Character>()) {
                 Jiggle(collider);
-            }
-        }
-
-        // Runs if this trigger is activated.
-        void OnCollisionStay2D(Collision2D collision) {
-            if (collision.collider.GetComponent<Character>()) {
-                // Jiggle(collision.collider);
             }
         }
 
@@ -89,19 +77,6 @@ namespace Monet {
                 prevRopeSegments[i] = ropeSegments[i];
                 velocities[i] = new Vector2(0f, 0f);
             }
-        }
-
-        // Renders the rope using the line renderer and edge collider.
-        void Render() {
-            lineRenderer.positionCount = segmentCount;
-            lineRenderer.SetPositions(ropeSegments);
-
-            Vector2[] points = new Vector2[segmentCount];
-            for (int i = 0; i < segmentCount; i++) {
-                points[i] = (Vector2)ropeSegments[i];
-            }
-
-            edgeCollider.points = points;
         }
 
         // Adds a jiggle whenever a body collides with this.
@@ -143,6 +118,17 @@ namespace Monet {
             for (int i = 0; i < stiffness; i++) {
                 Constraints();
             }
+
+            lineRenderer.positionCount = segmentCount;
+            lineRenderer.SetPositions(ropeSegments);
+
+            Vector2[] points = new Vector2[segmentCount];
+            for (int i = 0; i < segmentCount; i++) {
+                points[i] = (Vector2)ropeSegments[i];
+            }
+
+            edgeCollider.points = points;
+            
         }
 
         protected virtual void OnAwake() {

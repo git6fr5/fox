@@ -60,6 +60,8 @@ namespace Monet {
         public float DoubleJumpSpeed => m_DoubleJumpSpeed;
         [SerializeField, ReadOnly] private float m_DoubleJumpWeight;
         public float DoubleJumpWeight => m_DoubleJumpWeight;
+        [SerializeField] private int m_DoubleJumps;
+        public int DoubleJumps => m_DoubleJumps;
 
         // Dash.
         [SerializeField] private float m_DashDistance;

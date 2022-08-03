@@ -79,10 +79,13 @@ namespace Monet {
             }
         }
 
-        public static void DoubleJump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, float coyote, ref bool reset) {
+        public static void DoubleJump(Rigidbody2D body, Input input, bool jump, float jumpSpeed, bool onGround, float coyote, ref int count, ref bool reset) {
             if (jump && reset && !onGround && coyote <= 0f) {
                 body.velocity = Vector2.up * jumpSpeed;
-                reset = false;
+                count -= 1;
+                if (count <= 0) {
+                    reset = false;
+                }
                 input.ResetJump(); // This line and requiring the whole input to be passed is ugly.
             }
         }
@@ -102,11 +105,13 @@ namespace Monet {
             }
         }
 
-        public static void Dash(Rigidbody2D body, Input input, bool dash, Vector2 direction, float speed, float duration, ref bool reset, ref float knockbackTicks) {
+        public static void Dash(Rigidbody2D body, Input input, bool dash, Vector2 direction, float speed, float duration, ref bool reset, ref float knockbackTicks, Controller controller) {
             if (dash && reset) {
                 body.gravityScale = 0f;
-                body.velocity = direction.normalized * speed;
-                knockbackTicks = duration;
+                body.velocity = Vector2.zero; // direction.normalized * speed;
+                float delay = duration / 3f;
+                Game.Instance.DelayedDashEffect(body, input, speed, duration, delay, controller);
+                knockbackTicks = duration + delay;
                 reset = false;
                 input.ResetDash(); // This line and requiring the whole input to be passed is ugly.
             }

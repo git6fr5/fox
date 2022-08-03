@@ -22,6 +22,8 @@ namespace Monet {
         // Tiles.
         [SerializeField] private GroundTile m_Ground;
         public GroundTile Ground => m_Ground; 
+        [SerializeField] private GroundTile m_GroundMask;
+        public GroundTile GroundMask => m_GroundMask; 
         [SerializeField] private WaterTile m_Water;
         public WaterTile Water => m_Water;
         

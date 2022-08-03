@@ -133,6 +133,34 @@ namespace Monet {
             return list != null && list.Count > 0;
         }
 
+        // TODO: find a better place to put this.
+        public void DelayedDashEffect(Rigidbody2D body, Input input, float speed, float duration, float delay, Controller controller) {
+            
+            StartCoroutine(IEDelayedDashEffect(body, input, speed, delay, controller));
+
+            IEnumerator IEDelayedDashEffect(Rigidbody2D body, Input input, float speed, float delay, Controller controller) {
+                yield return new WaitForSeconds(delay);
+                body.velocity = input.DashDirection.normalized * speed;
+
+                int count = 4;
+                for (int i = 0; i < count; i++) {
+                    yield return new WaitForSeconds(duration - delay);
+                    if (input.HoldDash && input.FlyDirection != Vector2.zero) {
+                        controller.Knockback(body, Vector2.zero, 0.5f);
+
+                        yield return new WaitForSeconds(delay * 2f);
+                        controller.Knockback(body, input.FlyDirection.normalized * speed, duration);
+                    }
+                    else {
+                        break;
+                    }
+                }
+
+                yield return null;
+            }
+
+        }
+
     }
     
 }

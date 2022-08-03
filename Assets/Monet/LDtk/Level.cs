@@ -24,6 +24,7 @@ namespace Monet {
         // Components.
         [SerializeField] private BoxCollider2D m_Box;
         [SerializeField] public static Tilemap GroundMap;
+        [SerializeField] public static Tilemap GroundMapMask;
         [SerializeField] public static Tilemap WaterMap;
         [SerializeField] private List<Entity> m_Entities = new List<Entity>();
 
@@ -128,6 +129,14 @@ namespace Monet {
             GroundMap.transform.localPosition = Vector3.zero;
             GroundMap.gameObject.layer = LayerMask.NameToLayer("Ground");
 
+            GroundMapMask = new GameObject("Ground Mask", typeof(Tilemap), typeof(TilemapRenderer)).GetComponent<Tilemap>();
+            GroundMapMask.GetComponent<TilemapRenderer>().sortingLayerName = Screen.RenderingLayers.Midground;
+            GroundMapMask.GetComponent<TilemapRenderer>().sortingOrder = 10000;
+            GroundMapMask.color = new Color(0.8f, 0.8f, 0.8f, 1f);
+
+            GroundMapMask.transform.SetParent(transform);
+            GroundMapMask.transform.localPosition = Vector3.zero;
+
             // Outline.Add(GroundMap.GetComponent<TilemapRenderer>(), 0.5f, 16f);
             // Outline.Set(GroundMap.GetComponent<TilemapRenderer>(), Color.black);
 
@@ -169,17 +178,18 @@ namespace Monet {
             m_Entities.RemoveAll(entity => entity == null);
         }
 
-        public void GenerateMap(List<LDtkTileData> tileData, GroundTile groundTile, WaterTile waterTile) {
+        public void GenerateMap(List<LDtkTileData> tileData, GroundTile groundTile, GroundTile maskTile, WaterTile waterTile) {
             List<LDtkTileData> groundData = tileData.FindAll(tile => tile.VectorID == new Vector2Int(0, 0));
             List<LDtkTileData> waterData = tileData.FindAll(tile => tile.VectorID == new Vector2Int(1, 0));
-            GenerateGround(groundData, groundTile);
+            GenerateGround(groundData, groundTile, maskTile);
             GenerateWater(waterData, waterTile);
         }
 
-        public void GenerateGround(List<LDtkTileData> tileData, GroundTile tile) {
+        public void GenerateGround(List<LDtkTileData> tileData, GroundTile tile, GroundTile maskTile) {
             for (int i = 0; i < tileData.Count; i++) {
                 Vector3Int tilePosition = Level.GridToTilePosition(tileData[i].GridPosition, GridOrigin);
                 GroundMap.SetTile(tilePosition, tile);
+                GroundMapMask.SetTile(tilePosition, maskTile);
             }
         }
 
@@ -228,7 +238,7 @@ namespace Monet {
         void OnTriggerExit2D(Collider2D collider) {
             Player player = collider.GetComponent<Player>();
             if (player != null) {
-                Timer.Start(ref m_UnloadTicks, 60f);
+                Timer.Start(ref m_UnloadTicks, 2f);
                 LightSwitch(false);
                 m_Unloading = true;
             }

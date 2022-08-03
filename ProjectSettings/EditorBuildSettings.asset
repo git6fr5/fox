@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Game/Zones/The Fall/The Fall.unity
+    path: Assets/Game/Zones/Fallen's Regret/The Fall.unity
     guid: 716aa7667f325c8438316b3318988479
   - enabled: 1
-    path: Assets/Game/Zones/The Forgotten's Cave/The Forgotten's Cave.unity
+    path: Assets/Game/Zones/Lover's Forest/The Forgotten's Cave.unity
     guid: 55dbd2a59a8feda47a4e53e730e7145d
   m_configObjects: {}

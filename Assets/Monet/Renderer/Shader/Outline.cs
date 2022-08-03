@@ -14,6 +14,8 @@ namespace Monet {
     public class Outline : MonoBehaviour {
 
         public static void Add(SpriteRenderer renderer, float width, float ppu) {
+            // if (width == 0f) { return; }
+
             List<Material> outlines = new List<Material>();
             Material right = Add(renderer, 1f, 0, width / ppu);
             Material left = Add(renderer, -1f, 0, width / ppu);

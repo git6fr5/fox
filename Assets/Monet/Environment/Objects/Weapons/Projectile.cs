@@ -52,7 +52,7 @@ namespace Monet {
         void Start() {
             gameObject.layer = LayerMask.NameToLayer("Projectiles");
             m_BaseSprite = m_SpriteRenderer.sprite;
-            Outline.Add(m_SpriteRenderer, 1f, 16f);
+            Outline.Add(m_SpriteRenderer, 0f, 16f);
             Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 

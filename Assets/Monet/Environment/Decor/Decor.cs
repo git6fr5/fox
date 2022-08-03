@@ -18,6 +18,9 @@ namespace Monet {
 
         void Start() {
             m_SpriteRenderer = GetComponent<SpriteRenderer>();
+            if (m_SpriteRenderer.sortingLayerName == "Foreground") {
+                m_SpriteRenderer.color = new Color(0.8f, 0.8f, 0.8f, 1f);
+            }
             Pick();
         }
 

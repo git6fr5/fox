@@ -44,10 +44,11 @@ namespace Monet {
             for (int i = 0; i < levels.Count; i++) {
                 LDtkUnity.Level ldtkLevel = levels[i].LDtkLevel;
                 List<LDtkTileData> tileData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Ground);
-                levels[i].GenerateMap(tileData, Game.Environment.Ground, Game.Environment.Water);
+                levels[i].GenerateMap(tileData, Game.Environment.Ground, Game.Environment.GroundMask, Game.Environment.Water);
             }
             Level.WaterMap.RefreshAllTiles();
             Level.GroundMap.RefreshAllTiles();
+            Level.GroundMapMask.RefreshAllTiles();
         }
 
         public void Open(string levelName, Transform playerTransform = null) {
