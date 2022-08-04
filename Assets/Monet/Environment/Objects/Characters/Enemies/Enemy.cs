@@ -42,7 +42,7 @@ namespace Monet {
         }
 
         // Runs once very fixed interval.
-        void FixedUpdate() {
+        protected virtual void FixedUpdate() {
             // Calculate these values.
             float distance = Mathf.Abs(m_Path[m_PathIndex].x - transform.position.x);
             float dx = Mathf.Abs(Body.velocity.x) * Time.fixedDeltaTime;
@@ -90,6 +90,14 @@ namespace Monet {
             else {
                 PathAction();
             }
+        }
+
+        // Attacks.
+        protected void AttackAction() {
+            m_Direction = Vector2.zero;
+            m_Attack = true;
+            m_Jump = false;
+            m_HoldJump = false;
         }
 
         // Waits.

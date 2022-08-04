@@ -142,7 +142,7 @@ namespace Monet {
                 yield return new WaitForSeconds(delay);
                 body.velocity = input.DashDirection.normalized * speed;
 
-                int count = 4;
+                int count = 0;
                 for (int i = 0; i < count; i++) {
                     yield return new WaitForSeconds(duration - delay);
                     if (input.HoldDash && input.FlyDirection != Vector2.zero) {
