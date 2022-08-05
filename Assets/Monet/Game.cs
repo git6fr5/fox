@@ -18,7 +18,7 @@ namespace Monet {
         [SerializeField] private float m_Ticks;
         public static float Ticks => Instance.m_Ticks;
 
-         // Player.
+        // Player.
         [SerializeField] private Player m_Player;
         public static Player MainPlayer => Instance.m_Player;
 
@@ -142,7 +142,7 @@ namespace Monet {
                 yield return new WaitForSeconds(delay);
                 body.velocity = input.DashDirection.normalized * speed;
 
-                int count = 0;
+                int count = 4;
                 for (int i = 0; i < count; i++) {
                     yield return new WaitForSeconds(duration - delay);
                     if (input.HoldDash && input.FlyDirection != Vector2.zero) {

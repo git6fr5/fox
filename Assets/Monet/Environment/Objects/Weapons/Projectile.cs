@@ -75,7 +75,7 @@ namespace Monet {
             transform.SetParent(null);
             transform.position += (Vector3)direction.normalized * Game.Physics.MovementPrecision;
             m_Body.simulated = true;
-            // m_Hitbox.enabled = true;
+            m_Hitbox.isTrigger = false;
             m_Body.velocity =  m_Speed * direction.normalized;
             m_Targets = targets;
         }
@@ -83,6 +83,7 @@ namespace Monet {
         public void Deactivate() {
             m_Body.velocity = Vector2.zero;
             m_Body.simulated = false;
+            m_SpriteRenderer.sprite = m_BaseSprite;
             // m_Hitbox.enabled = false;
         }
 

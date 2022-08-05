@@ -29,7 +29,7 @@ namespace Monet {
 
         public void Return() {
             m_SpriteRenderer.sprite = m_FlashSprite;
-            m_Hitbox.isTrigger = false;
+            m_Hitbox.isTrigger = true;
             m_Return = true;
         }
 
