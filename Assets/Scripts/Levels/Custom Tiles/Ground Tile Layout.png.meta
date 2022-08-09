@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 34ba4adcbd62a9345a1c760cbf5adbd4
+guid: a1943bcbe6b62e542b5ebe7856e8c4c8
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -407,7 +407,7 @@ TextureImporter:
       name: 9_RD
       rect:
         serializedVersion: 2
-        x: 48
+        x: 47
         y: 239
         width: 16
         height: 16
