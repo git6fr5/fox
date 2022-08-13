@@ -1,0 +1,10 @@
+make minimap function similar to watersheet
+
+screen
+spritesheet
+
+ground tile
+loading point
+
+not acceleration but time to go from 0 to fullspeed
+not resistance but time to stop once let go

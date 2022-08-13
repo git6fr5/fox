@@ -1,0 +1,107 @@
+player
+	idle a
+	idle b
+	squish on the jump
+	rope
+background
+	vines
+	grass
+enemy
+platforms
+spikes
+lighting
+effects
+sound
+
+trees
+clouds
+birds
+falling leaves
+
+pulsing lights
+
+
+grass
+rope
+stars
+outlines
+stretchiness
+
+
+
+shield
+tilemap value
+vignette
+go towards the light
+vine movement
+load level timer
+
+sound
+house
+harlow (eccentric)
+crawler
+
+mine explosion riding
+
+
+ground pound
+sloped ground (gentle/steep)
+coins
+thwomps
+
+dragons' lair lava bubble
+
+goblin bob omb
+
+double jump = cloud jumping
+Bumper
+Seesaw
+Lift (opposite to sink)
+rising lava
+warp box
+pushable box
+floating box
+
+
+
+
+
+
+rune that plays on the tiara when it activates a spell
+impact effects for projectiles
+activate/ charge effects for weapons
+
+outline shadergraph that normalizes input width to texture size
+glowing shadergraph that takes emission sheet
+
+dummy room to test out movement.
+character abilities
+enemies
+vfx
+sfx
+
+the divine dancer
+
+
+block version of all the platforms (i.e. they are like the ground in that they interact with projectiles + you cant jump into them from over -> however they are only a 1 x 1 block)
+
+lava ground tile
+magma block that you hide in the lava that spits magma based on the given control interval
+
+
+
+
+
+
+enemies
+
+
+
+
+
+
+
+
+
+
+
