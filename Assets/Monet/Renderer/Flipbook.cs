@@ -63,8 +63,8 @@ namespace Monet {
 
         // Sounds.
         [Space(2), Header("Sounds")]
-        [SerializeField] private AudioClip m_StepSoundA;
-        [SerializeField] private AudioClip m_StepSoundB;
+        [SerializeField] private AudioClip m_StepSound;
+        // [SerializeField] private AudioClip m_StepSoundB;
         [SerializeField] private AudioClip m_JumpSound;
         [SerializeField] private AudioClip m_LandSound;
         [SerializeField] private AudioClip m_DoubleJumpSound;
@@ -174,6 +174,10 @@ namespace Monet {
             Animate(deltaTime);
         }
 
+        void Update() {
+            GetFrameEffect();
+        }
+
         // Animates the flipbook by setting the animation, frame, and playing any effects.
         private void Animate(float deltaTime) {
             // Guard clause to protect from animating with no sprites.
@@ -186,8 +190,8 @@ namespace Monet {
             m_SpriteRenderer.sprite = m_CurrentAnimation[m_CurrentFrame];
 
             // Check for whtether an attack any other effects have started.
+            GetAnimatedEffect();
             GetAttack();
-            GetEffect();
             GetRotation();
             GetShake();
             GetImmune(deltaTime);
@@ -236,28 +240,23 @@ namespace Monet {
             m_PrevAttack = m_Attack;
         }
 
-        private void GetEffect() {
+        private void GetAnimatedEffect() {
 
-            Jump = Rising && CacheOnGround;
-            Land = m_Character.CharacterController.OnGround && !CacheOnGround;
-            CacheOnGround = m_Character.CharacterController.OnGround;
-
+            
             if (Step || StepA) {
-                if (m_StepEffectA != null) { m_StepEffectA.Play(); }
-                SoundManager.PlaySound(m_StepSoundA, 0.05f);
+                // if (m_StepEffectA != null) { m_StepEffectA.Play(); }
+                float vA = Random.Range(0.025f, 0.05f);
+                SoundManager.PlaySound(m_StepSound, vA);
+                SoundManager.PlaySound(Game.SoundManager.GroundStepSoundA, vA);
             }
             if (StepB) {
-                if (m_StepEffectB != null) { m_StepEffectB.Play(); }
-                SoundManager.PlaySound(m_StepSoundB, 0.025f);
+                float vB = Random.Range(0.02f, 0.03f);
+                // if (m_StepEffectB != null) { m_StepEffectB.Play(); }
+                SoundManager.PlaySound(m_StepSound, vB);
+                SoundManager.PlaySound(Game.SoundManager.GroundStepSoundB, vB);
+
             }
-            if (Jump) {
-                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
-                SoundManager.PlaySound(m_JumpSound, 0.2f);
-            }
-            else if (Land) {
-                if (m_LandEffect != null) { m_LandEffect.Play(); }
-                SoundManager.PlaySound(m_LandSound, 0.2f);
-            }
+
             if (DoubleJump) {
                 if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
                 SoundManager.PlaySound(m_DoubleJumpSound);
@@ -267,6 +266,22 @@ namespace Monet {
                 SoundManager.PlaySound(m_DashSound, 0.2f);
             }
 
+        }
+
+        private void GetFrameEffect() {
+            Jump = Rising && CacheOnGround;
+            Land = m_Character.CharacterController.OnGround && !CacheOnGround;
+            CacheOnGround = m_Character.CharacterController.OnGround;
+
+            if (Jump) {
+                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
+                SoundManager.PlaySound(m_JumpSound, 0.2f);
+            }
+            else if (Land) {
+                if (m_LandEffect != null) { m_LandEffect.Play(); }
+                SoundManager.PlaySound(m_LandSound, 0.15f);
+                SoundManager.PlaySound(Game.SoundManager.GroundImpactSound, 0.15f);
+            }
         }
 
         private void GetImmune(float deltaTime) {

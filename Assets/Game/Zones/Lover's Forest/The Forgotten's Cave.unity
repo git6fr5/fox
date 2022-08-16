@@ -10459,14 +10459,14 @@ MonoBehaviour:
   m_ChargeAttackFrames: 0
   m_DoubleJumpFrames: 1
   m_DashFrames: 4
-  m_StepSoundA: {fileID: 8300000, guid: 1aef48e87f3bbdb47a1b47ee041861ef, type: 3}
-  m_StepSoundB: {fileID: 8300000, guid: 4eba022a89a5e2f4d9f6aace76e57761, type: 3}
+  m_StepSoundA: {fileID: 8300000, guid: 50777cbb3f45c004a83005919e869ffc, type: 3}
+  m_StepSoundB: {fileID: 8300000, guid: 5c3e5739d5707004d9e720926fcd0503, type: 3}
   m_JumpSound: {fileID: 8300000, guid: de169e861e4f79046b3306ce17106db1, type: 3}
-  m_LandSound: {fileID: 8300000, guid: a5c6809ca94d7114d961ec2314c89745, type: 3}
-  m_DoubleJumpSound: {fileID: 0}
+  m_LandSound: {fileID: 8300000, guid: bee04b3378c208549983a31288481291, type: 3}
+  m_DoubleJumpSound: {fileID: 8300000, guid: de2a9f04b81f5e840bd7c663c756c970, type: 3}
   m_DashSound: {fileID: 8300000, guid: 4ed20f11e44b9d143a7e8b38853f347e, type: 3}
-  m_HurtSound: {fileID: 0}
-  m_DeathSound: {fileID: 0}
+  m_HurtSound: {fileID: 8300000, guid: 8c5eaf17b16715c43af04957b92ebd4a, type: 3}
+  m_DeathSound: {fileID: 8300000, guid: aae41f2e6a4cc7d43aad05c345d9ba7a, type: 3}
   m_StepEffectA: {fileID: 0}
   m_StepEffectB: {fileID: 0}
   m_JumpEffect: {fileID: 0}
@@ -15571,7 +15571,7 @@ MonoBehaviour:
   m_OnGroundCollision: 3
   m_OnCharacterCollision: 3
   m_Period: 1
-  m_Ellipse: {x: 0, y: 0.25}
+  m_Ellipse: {x: 0, y: 0.15}
   m_Ticks: 0
 --- !u!58 &2004634017
 CircleCollider2D:

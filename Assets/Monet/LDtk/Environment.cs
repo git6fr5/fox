@@ -26,7 +26,7 @@ namespace Monet {
         public GroundTile GroundMask => m_GroundMask; 
         [SerializeField] private WaterTile m_Water;
         public WaterTile Water => m_Water;
-        
+
         #endregion
 
         /* --- Initialization --- */

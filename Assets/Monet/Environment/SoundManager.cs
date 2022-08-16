@@ -19,6 +19,14 @@ namespace Monet {
         [SerializeField] private float m_MuteMusic;
         [SerializeField] private float m_MuteGameSounds;
 
+        // Environemnt sounds.
+        [SerializeField] private AudioClip m_GroundImpactSound;
+        public AudioClip GroundImpactSound => m_GroundImpactSound;
+        [SerializeField] private AudioClip m_GroundStepSoundA;
+        public AudioClip GroundStepSoundA => m_GroundStepSoundA;
+         [SerializeField] private AudioClip m_GroundStepSoundB;
+        public AudioClip GroundStepSoundB => m_GroundStepSoundB;
+        
         // The sound effects.
         private static AudioSource MSCSource;
         private static AudioSource AmbientSource;

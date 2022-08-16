@@ -13,7 +13,7 @@ namespace Monet {
 
         [HideInInspector] private float m_CachedY = 0f;
         [SerializeField] private float m_Period = 1f;
-        [SerializeField] private Vector2 m_Ellipse = new Vector2(0f, 0.25f);
+        [SerializeField] private Vector2 m_Ellipse = new Vector2(0f, 0.15f);
         [SerializeField, ReadOnly] private float m_Ticks;
 
         void Awake() {
