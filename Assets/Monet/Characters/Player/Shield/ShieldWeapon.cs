@@ -63,7 +63,7 @@ namespace Monet {
         }
 
         public void Catch(Vector2 velocity) {
-            m_Character.CharacterController.Knockback(m_Character.Body, velocity.normalized * 5f, 0.1f);
+            // m_Character.CharacterController.Knockback(m_Character.Body, velocity.normalized * 5f, 0.1f);
             transform.SetParent(m_Character.transform);
             transform.localPosition = m_LocalOrigin;
             transform.localRotation = Quaternion.identity;

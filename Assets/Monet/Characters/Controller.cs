@@ -57,6 +57,7 @@ namespace Monet {
         [SerializeField, ReadOnly] private bool m_DashReset;
         public bool DashReset => m_DashReset;
         [SerializeField, ReadOnly] private float m_DashCooldownTicks;
+        public float DashCooldownTicks => m_DashCooldownTicks;
         private static float m_DashCooldown = 0.25f;
 
         // Slam.
@@ -115,7 +116,7 @@ namespace Monet {
             bool canDash = m_DashCooldownTicks == 0f;
             PhysicsAction.Jump(body, input, input.Jump && !charging, state.JumpSpeed, m_OnGround, ref m_CoyoteTicks);
             PhysicsAction.DoubleJump(body, input, input.Jump && !input.Block, state.DoubleJumpSpeed, m_OnGround, m_CoyoteTicks, ref m_DoubleJumpCounter, ref m_DoubleJumpReset);
-            PhysicsAction.Dash(body, input, input.Dash && canDash && !charging, input.DashDirection, state.DashSpeed, state.DashDuration, ref m_DashReset, ref m_KnockbackTicks, this);
+            PhysicsAction.Dash(body, input, input.Dash && canDash, input.DashDirection, state.DashSpeed, state.DashDuration, ref m_DashReset, ref m_KnockbackTicks, this);
             
             bool slam = input.Jump && input.Block && !m_OnGround;
             PhysicsAction.Slam(body, input, input.Jump && input.Block && !m_OnGround, ref m_SlamReset, ref m_Slamming);
@@ -204,7 +205,7 @@ namespace Monet {
                 return state.Speed * 0.25f;
             }
             if (attack) {
-                return state.Speed * 0.75f;
+                return state.Speed * 0.5f;
             }
             return state.Speed;
         }

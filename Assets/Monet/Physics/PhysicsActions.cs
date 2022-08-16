@@ -107,10 +107,11 @@ namespace Monet {
 
         public static void Dash(Rigidbody2D body, Input input, bool dash, Vector2 direction, float speed, float duration, ref bool reset, ref float knockbackTicks, Controller controller) {
             if (dash && reset) {
+                Vector2 cacheV = body.velocity;
                 body.gravityScale = 0f;
                 body.velocity = Vector2.zero; // direction.normalized * speed;
-                float delay = duration / 3f;
-                Game.Instance.DelayedDashEffect(body, input, speed, duration, delay, controller);
+                float delay = duration / 2f;
+                Game.Instance.DelayedDashEffect(body, input, speed, duration, delay, controller, cacheV);
                 knockbackTicks = duration + delay;
                 reset = false;
                 input.ResetDash(); // This line and requiring the whole input to be passed is ugly.
@@ -150,6 +151,9 @@ namespace Monet {
 
             if (hold && rising) {
                 body.gravityScale *= weight;
+            }
+            else if (!hold && rising) {
+                body.velocity = new Vector2(body.velocity.x, body.velocity.y * 0.95f);
             }
             else {
                 body.gravityScale *= (weight * sink);

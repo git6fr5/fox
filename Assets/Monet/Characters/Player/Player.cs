@@ -74,15 +74,15 @@ namespace Monet {
             m_HoldJump = KeyHeld(m_JumpKey, m_HoldJump);
             m_JumpRelease = KeyUpBuffer(m_JumpKey, ref m_JumpReleaseBufferTicks, UpBufferDuration, Time.deltaTime);
 
-            // m_Dash = KeyDownBuffer(m_DashKey, ref m_DashBufferTicks, DownBufferDuration, Time.deltaTime);
+            m_Dash = KeyDownBuffer(m_DashKey, ref m_DashBufferTicks, DownBufferDuration, Time.deltaTime);
             m_HoldDash = KeyHeld(m_DashKey, m_HoldDash);
             m_DashRelease = KeyUpBuffer(m_DashKey, ref m_DashReleaseBufferTicks, UpBufferDuration, Time.deltaTime);
-            m_Dash = m_DashRelease;
+            // m_Dash = m_DashRelease;
             m_DashDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_FacingDirection);
 
             m_Attack = KeyHeld(m_AttackKey, m_Attack);
-            m_AttackDirection = new Vector2(m_FacingDirection, 0f);
-            // GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_FacingDirection);
+            // m_AttackDirection = new Vector2(m_FacingDirection, 0f);
+            m_AttackDirection = GetDirection(Input.UserHorizontalInput, Input.UserVerticalInput, m_AttackDirection);
 
             m_Block = m_Direction.y == -1f;
             Timer.CountdownTicks(ref m_BlockReleaseBufferTicks, m_Block, UpBufferDuration, Time.deltaTime);

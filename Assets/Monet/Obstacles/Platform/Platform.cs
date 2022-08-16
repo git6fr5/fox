@@ -35,11 +35,11 @@ namespace Monet {
             m_SpriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
             m_Hitbox = GetComponent<BoxCollider2D>();
             Obstacle.EditSpline(m_SpriteShapeController.spline, length);
-            Obstacle.EditHitbox(m_Hitbox, length, 1f /16f);
+            Obstacle.EditHitbox(m_Hitbox, length, 5f /16f);
             gameObject.layer = LayerMask.NameToLayer("Platform");
             
-            Outline.Add(m_SpriteShapeRenderer, 0f, 16f);
-            Outline.Set(m_SpriteShapeRenderer, Color.black);
+            // Outline.Add(m_SpriteShapeRenderer, 0f, 16f);
+            // Outline.Set(m_SpriteShapeRenderer, Color.black);
         }
 
         protected virtual void Update() {

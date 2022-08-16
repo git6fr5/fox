@@ -134,7 +134,7 @@ namespace Monet {
         }
 
         // TODO: find a better place to put this.
-        public void DelayedDashEffect(Rigidbody2D body, Input input, float speed, float duration, float delay, Controller controller) {
+        public void DelayedDashEffect(Rigidbody2D body, Input input, float speed, float duration, float delay, Controller controller, Vector2 cachedV) {
             
             StartCoroutine(IEDelayedDashEffect(body, input, speed, delay, controller));
 
@@ -144,16 +144,40 @@ namespace Monet {
 
                 int count = 4;
                 for (int i = 0; i < count; i++) {
-                    yield return new WaitForSeconds(duration - delay);
-                    if (input.HoldDash && input.FlyDirection != Vector2.zero) {
-                        controller.Knockback(body, Vector2.zero, 0.5f);
 
-                        yield return new WaitForSeconds(delay * 2f);
-                        controller.Knockback(body, input.FlyDirection.normalized * speed, duration);
+                    // Wait for the dash to end.
+                    bool dashing = true;
+                    yield return new WaitForSeconds(duration);
+
+                    // Short pause in between dashes.
+                    int precision = 5;
+                    for (int n = 0; n < precision; n++) {
+
+                        if (input.HoldDash) {
+
+                            controller.Knockback(body, Vector2.zero, 0.5f / (float)precision);
+                            yield return new WaitForSeconds(delay * 2f / (float)(precision - 1));
+
+                        }
+                        else {
+                            dashing = false;
+                            break;
+                        }
+
+                    }
+
+                    if (!dashing) {
+                        break;
+                    }
+
+                    // Next dash.
+                    if (input.HoldDash) {
+                        controller.Knockback(body, input.DashDirection.normalized * speed, duration);
                     }
                     else {
                         break;
                     }
+
                 }
 
                 yield return null;

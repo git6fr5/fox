@@ -84,15 +84,15 @@ namespace Monet {
         [SerializeField] private VisualEffect m_DeathEffect;
 
         // Animations
-        [HideInInspector] private Sprite[] m_IdleAnimation;
-        [HideInInspector] private Sprite[] m_MovementAnimation;
-        [HideInInspector] private Sprite[] m_RisingAnimation;
-        [HideInInspector] private Sprite[] m_FallingAnimation;
-        [HideInInspector] private Sprite[] m_HurtAnimation;
-        [HideInInspector] private Sprite[] m_ChargeAttackAnimation;
-        [HideInInspector] private Sprite[] m_AttackAnimation;
-        [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
-        [HideInInspector] private Sprite[] m_DashAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_IdleAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_MovementAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_RisingAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_FallingAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_HurtAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_ChargeAttackAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_AttackAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_DoubleJumpAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_DashAnimation;
 
         // Animation Conditions.
         private bool Knockedback => m_Character.CharacterController.Knockedback;
@@ -105,15 +105,17 @@ namespace Monet {
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
         private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset && m_Character.CharacterController.UnlockedDoubleJump;
-        private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset && m_Character.CharacterController.UnlockedDash;
+        private bool Dashing => m_Character.CharacterController.Knockedback && m_Character.CharacterController.DashCooldownTicks != 0f && m_Character.CharacterController.UnlockedDash;
 
         // Effect Conditions.
+        private bool CacheOnGround = true;
+        private bool Jump = false;
+        private bool Land = false;
+        
         private bool Step => m_CurrentAnimation == m_MovementAnimation && m_PreviousAnimation != m_MovementAnimation;
         private bool StepA => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
         private int MidStep => (int)Mathf.Ceil(m_MovementFrames / 2f);
         private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == MidStep && m_PreviousFrame != MidStep;
-        private bool Jump => m_CurrentAnimation == m_RisingAnimation && m_PreviousAnimation != m_RisingAnimation;
-        private bool Land => m_PreviousAnimation == m_FallingAnimation && m_CurrentAnimation != m_FallingAnimation;
         private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
         private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
 
@@ -128,8 +130,8 @@ namespace Monet {
 
         public void OnStart() {
             OrganizeSprites();
-            Outline.Add(m_SpriteRenderer, 0f, 16f);
-            Outline.Set(m_SpriteRenderer, m_OutlineColor);
+            // Outline.Add(m_SpriteRenderer, 0f, 16f);
+            // Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
         private int OrganizeSprites() {
@@ -146,6 +148,7 @@ namespace Monet {
             index = SliceSheet(index, m_MovementFrames, ref m_MovementAnimation);
             index = SliceSheet(index, m_RisingFrames, ref m_RisingAnimation);
             index = SliceSheet(index, m_FallingFrames, ref m_FallingAnimation);
+            index = SliceSheet(index, m_HurtFrames, ref m_HurtAnimation);
             index = SliceSheet(index, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);
             index = SliceSheet(index, m_AttackFrames, ref m_AttackAnimation);
             index = SliceSheet(index, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
@@ -213,7 +216,7 @@ namespace Monet {
             else if (DoubleJumping && Game.Validate<Sprite>(m_DoubleJumpAnimation)) {
                 return m_DoubleJumpAnimation;
             }
-            if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
+            else if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
                 return m_RisingAnimation;
             }
             else if (Falling && Game.Validate<Sprite>(m_FallingAnimation)) {
@@ -234,6 +237,11 @@ namespace Monet {
         }
 
         private void GetEffect() {
+
+            Jump = Rising && CacheOnGround;
+            Land = m_Character.CharacterController.OnGround && !CacheOnGround;
+            CacheOnGround = m_Character.CharacterController.OnGround;
+
             if (Step || StepA) {
                 if (m_StepEffectA != null) { m_StepEffectA.Play(); }
                 SoundManager.PlaySound(m_StepSoundA, 0.05f);
@@ -248,7 +256,7 @@ namespace Monet {
             }
             else if (Land) {
                 if (m_LandEffect != null) { m_LandEffect.Play(); }
-                SoundManager.PlaySound(m_LandSound, 0.1f);
+                SoundManager.PlaySound(m_LandSound, 0.2f);
             }
             if (DoubleJump) {
                 if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
@@ -256,7 +264,7 @@ namespace Monet {
             }
             if (Dash) {
                 if (m_DashEffect != null) { m_DashEffect.Play(); }
-                SoundManager.PlaySound(m_DashSound);
+                SoundManager.PlaySound(m_DashSound, 0.2f);
             }
 
         }
