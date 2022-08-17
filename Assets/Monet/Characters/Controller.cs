@@ -50,6 +50,7 @@ namespace Monet {
         [SerializeField, ReadOnly] private bool m_DoubleJumpReset;
         public bool DoubleJumpReset => m_DoubleJumpReset;
         [SerializeField, ReadOnly] private int m_DoubleJumpCounter;
+        public int DoubleJumpCounter => m_DoubleJumpCounter;
 
         // Dash.
         [SerializeField] private bool m_UnlockedDash;
@@ -188,7 +189,7 @@ namespace Monet {
             else {
                 PhysicsAction.Move(body, input.MoveDirection, speed, acceleration, finishKnockback, deltaTime);
             }
-            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpReset, m_UnlockedDoubleJump, m_Flying);
+            float weight = Controller.GetWeight(state, m_Rising, m_OnGround, m_DoubleJumpCounter, m_UnlockedDoubleJump, m_Flying);
             PhysicsAction.Gravity(body, input.HoldJump || m_ChargeJumping, weight, state.Sink, m_OnGround, m_Rising, m_AntiGravityTicks, m_AntiGravityFactor);
 
         }
@@ -217,11 +218,11 @@ namespace Monet {
             return state.Acceleration;
         }
 
-        public static float GetWeight(State state, bool rising, bool onGround, bool doubleJumpReset, bool doubleJumpUnlocked, bool flying) {
+        public static float GetWeight(State state, bool rising, bool onGround, int doubleJumpCounter, bool doubleJumpUnlocked, bool flying) {
             if (flying) {
                 return 0f;
             }
-            if (!doubleJumpReset && doubleJumpUnlocked && rising) {
+            if (doubleJumpCounter < state.DoubleJumps && doubleJumpUnlocked && rising) {
                 return state.DoubleJumpWeight;
             }
             return state.Weight;

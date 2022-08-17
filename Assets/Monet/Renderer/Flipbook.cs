@@ -104,7 +104,7 @@ namespace Monet {
         private float Direction => m_Character.CharacterInput.MoveDirection;
         private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
         private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
-        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset && m_Character.CharacterController.UnlockedDoubleJump;
+        private bool DoubleJumping => m_Character.CharacterController.Rising && m_Character.CharacterController.DoubleJumpCounter < m_Character.CharacterState.DoubleJumps && m_Character.CharacterController.UnlockedDoubleJump;
         private bool Dashing => m_Character.CharacterController.Knockedback && m_Character.CharacterController.DashCooldownTicks != 0f && m_Character.CharacterController.UnlockedDash;
 
         // Effect Conditions.

@@ -208,7 +208,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 951403863079a2a4684f876b2df13863
+      spriteID: 14c6d170be26e454dba6478815305a18
       internalID: -579809030
       vertices: []
       indices: 
@@ -229,7 +229,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 40b82838a8da3b94dbaf6306ecf08389
+      spriteID: 6027f72211d4c704b9705e51d9dfae29
       internalID: -1277603311
       vertices: []
       indices: 
@@ -250,7 +250,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f45fcd06fa67f0e41b956a56c31358de
+      spriteID: e9dca056c3bd31d408ee91d73f76d904
       internalID: -1353392235
       vertices: []
       indices: 
@@ -271,7 +271,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e8da10810a5f7d4fbbd81f6c5a5d935
+      spriteID: 49cba71ddc425b447ad472d935fe2855
       internalID: -1037693730
       vertices: []
       indices: 
@@ -292,7 +292,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e65c6f3eda9aa547963e28775d50844
+      spriteID: 67eceb96d3b60d244915e24052477043
       internalID: 1912346327
       vertices: []
       indices: 
@@ -313,7 +313,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f55dd755a27e42943bc1ffda176cc82d
+      spriteID: 9f603aa0a404fc548a0ea1bb625b286f
       internalID: 341462639
       vertices: []
       indices: 
@@ -334,7 +334,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: adf40b709ea934e4eadd4a1e1cddb5c0
+      spriteID: 9f66a3d160fc60c4e97a69237ea484cc
       internalID: 2075192348
       vertices: []
       indices: 
@@ -355,7 +355,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 549759273fbef5b44b02fcdfbc270372
+      spriteID: 2ae9a8b4b65500044a71e58d455fafc9
       internalID: -1918020307
       vertices: []
       indices: 
@@ -376,7 +376,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6b402f2183133c54d9fffc54d08af833
+      spriteID: 517060a666c10024fb0f8bb2732ef58b
       internalID: -1786952134
       vertices: []
       indices: 
@@ -397,7 +397,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7c08528166dd12f45b4cc75ced087968
+      spriteID: 117079e466d3d46428667c43a8ba8648
       internalID: -661114334
       vertices: []
       indices: 
@@ -418,7 +418,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f94c85f6374104a4891abf7f76d07067
+      spriteID: c3c50ca9a75c36149a0ad71bd2fe35b3
       internalID: 333704703
       vertices: []
       indices: 
@@ -439,8 +439,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2f4addfd191518143b2f280645df11d5
+      spriteID: 815453f14b617fb4ea279c2cba08031f
       internalID: 195646056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Crystal Crawler_14
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10b14ccfad2c902418a78d6dd5bd9420
+      internalID: -703705793
       vertices: []
       indices: 
       edges: []
@@ -463,6 +484,7 @@ TextureImporter:
       Crystal Crawler_1: 1409276226
       Crystal Crawler_6: 1912346327
       Crystal Crawler_13: 195646056
+      Crystal Crawler_14: -703705793
       Crystal Crawler_9: -1918020307
       Crystal Crawler_2: -579809030
       Crystal Crawler_11: -661114334

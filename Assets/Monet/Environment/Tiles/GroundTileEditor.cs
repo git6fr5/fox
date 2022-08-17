@@ -164,7 +164,6 @@ namespace Monet {
                 t.Add(val);
 
             }
-            
 
             for (int i = 0; i < t.Count; i++) {
                 dict.Add(x + t[i], y);
