@@ -59,10 +59,10 @@ namespace Platformer.Rendering {
         [SerializeField] private AudioClip m_StepSound;
         [SerializeField] private AudioClip m_JumpSound;
         [SerializeField] private AudioClip m_LandSound;
-        [SerializeField] private AudioClip m_DoubleJumpSound;
-        [SerializeField] private AudioClip m_DashSound;
         [SerializeField] private AudioClip m_HurtSound;
         [SerializeField] private AudioClip m_DeathSound;
+        [SerializeField] private AudioClip m_DashSound;
+        [SerializeField] private AudioClip m_HopSound;
 
         // Effects.
         [Space(2), Header("Effects")]
@@ -92,10 +92,10 @@ namespace Platformer.Rendering {
         private float Direction => m_Character.Input.Direction.Facing;
         private bool Rising => !m_Character.OnGround && m_Character.Body.Rising();
         private bool Falling => !m_Character.OnGround && !m_Character.Body.Rising();
-        private bool Predashing => m_Character.Dash.Predashing;
-        private bool Dashing => m_Character.Dash.Dashing;
-        private bool ChargingHop => m_Character.Hop.Charge != 0f;
-        private bool Hopping => !m_Character.Hop.Refreshed && Rising;
+        private bool Predashing => m_Character.Dash.Enabled && m_Character.Dash.Predashing;
+        private bool Dashing => m_Character.Dash.Enabled && m_Character.Dash.Dashing;
+        private bool ChargingHop => m_Character.Hop.Enabled && m_Character.Hop.Charge != 0f;
+        private bool Hopping => m_Character.Hop.Enabled && !m_Character.Hop.Refreshed && Rising;
 
         // Landing Conditions.
         private bool CacheOnGround = true;
@@ -109,6 +109,10 @@ namespace Platformer.Rendering {
         [HideInInspector] public bool PlayGroundStepSoundA = false;
         [HideInInspector] public bool PlayGroundStepSoundB = false;
         [HideInInspector] public float GroundStepSoundVolume = 0f;
+
+        // Ability Conditions.
+        private bool Dash => m_CurrentAnimation == m_PredashAnimation && m_PreviousAnimation != m_PredashAnimation;
+        private bool Hop => m_CurrentAnimation == m_HopAnimation && m_PreviousAnimation != m_HopAnimation;
 
         #endregion
 
@@ -173,6 +177,7 @@ namespace Platformer.Rendering {
             // Check for whtether an attack any other effects have started.
             GetJumpEffect();
             GetStepEffect();
+            GetAbilityEffect();
             GetRotation();
             GetScale(deltaTime);
 
@@ -236,6 +241,18 @@ namespace Platformer.Rendering {
                 SoundManager.PlaySound(m_StepSound, vB);
                 PlayGroundStepSoundB = true;
                 GroundStepSoundVolume = vB;
+            }
+
+        }
+
+        private void GetAbilityEffect() {
+            if (Hop) {
+                // if (m_StepEffectA != null) { m_StepEffectA.Play(); }
+                SoundManager.PlaySound(m_HopSound, 0.15f);
+            }
+            else if (Dash) {
+                // if (m_StepEffectB != null) { m_StepEffectB.Play(); }
+                SoundManager.PlaySound(m_DashSound, 0.15f);
             }
 
         }

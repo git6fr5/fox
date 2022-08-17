@@ -39,6 +39,8 @@ namespace Platformer.Character.Actions {
 
         // When this ability is activated.
         public override void Activate(Rigidbody2D body, InputSystem input, CharacterState state) {
+            if (!m_Enabled) { return; }
+            
             // Chain the dash actions.
             body.Move(Vector2.up * Game.Physics.MovementPrecision);
             body.ClampFallSpeed(0f);
@@ -55,6 +57,8 @@ namespace Platformer.Character.Actions {
 
         // Refreshes the settings for this ability every interval.
         public override void Refresh(Rigidbody2D body, InputSystem input, CharacterState state, float dt) {
+            if (!m_Enabled) { return; }
+            
             RefreshJumpSettings(ref m_Speed, ref m_Weight, ref m_Sink, m_Height, m_RisingTime, m_FallingTime);
             if (!state.OnGround) {
                 Timer.TickDown(ref m_CoyoteTicks, dt);
@@ -62,6 +66,7 @@ namespace Platformer.Character.Actions {
             else {
                 Timer.Start(ref m_CoyoteTicks, m_CoyoteBuffer);
             }
+            m_Refreshed = state.OnGround || m_CoyoteTicks > 0f;
         }
 
         // Calculates the speed and weight of the jump.
@@ -75,7 +80,7 @@ namespace Platformer.Character.Actions {
         // Checks the state for whether this ability can be activated.
         public override bool CheckState(CharacterState state) {
             if (state.Disabled) { return false; }
-            return state.OnGround || m_CoyoteTicks > 0f;
+            return m_Refreshed;
         }
 
         // Checks the input for whether this ability should be activated.

@@ -18,11 +18,6 @@ namespace Platformer.Character.Actions {
 
         #region Variables
 
-        // Checks whether the external activation conditions for this
-        // ability have been fulfilled.
-        [SerializeField, ReadOnly] private bool m_Refreshed;
-        public bool Refreshed => m_Refreshed;
-
         // The setting for this jump.
         [SerializeField] private float m_Height;
         [SerializeField] private float m_RisingTime;
@@ -41,11 +36,13 @@ namespace Platformer.Character.Actions {
 
         // When this ability is activated.
         public override void Activate(Rigidbody2D body, InputSystem input, CharacterState state) {
+            if (!m_Enabled) { return; }
 
             // Chain the dash actions.
             state.OverrideFall(true);
             state.OverrideMovement(false);
 
+            body.Move(Vector2.up * Game.Physics.MovementPrecision);
             body.SetVelocity(m_Speed * m_Charge / m_MaxCharge * Vector2.up);
             body.SetWeight(m_Weight);
 
@@ -60,16 +57,20 @@ namespace Platformer.Character.Actions {
 
         // Refreshes the settings for this ability every interval.
         public override void Refresh(Rigidbody2D body, InputSystem input, CharacterState state, float dt) {
+            if (!m_Enabled) { return; }
+            
             m_Refreshed = state.OnGround ? true : m_Refreshed;
             RefreshHopSettings(ref m_Speed, ref m_Weight, m_Height, m_RisingTime);
             
             // Charge the hop.
             if (!state.Disabled && m_Refreshed && input.Action2.Held) {
+                if (m_Charge == 0f) {
+                    body.SetVelocity(Vector2.zero);
+                }
                 bool finished = Timer.TickUp(ref m_Charge, m_MaxCharge, dt);
                 state.OverrideMovement(true);
                 state.OverrideFall(true);
-                body.SetVelocity(Vector2.zero);
-                body.SetWeight(0f);
+                body.SetWeight(0.05f);
             }
 
             if (!state.Disabled && !body.Rising() && !m_Refreshed) {

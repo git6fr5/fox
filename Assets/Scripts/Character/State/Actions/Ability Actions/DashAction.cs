@@ -18,10 +18,6 @@ namespace Platformer.Character.Actions {
 
         #region Variables
 
-        // Checks whether the external activation conditions for this
-        // ability have been fulfilled.
-        [SerializeField, ReadOnly] private bool m_Refreshed;
-
         // Tracks whether the dash has started.
         [SerializeField, ReadOnly] private bool m_PreDashing;
         public bool Predashing => m_PreDashing;
@@ -48,6 +44,8 @@ namespace Platformer.Character.Actions {
 
         // When this ability is activated.
         public override void Activate(Rigidbody2D body, InputSystem input, CharacterState state) {
+            if (!m_Enabled) { return; }
+
             // Chain the dash actions.
             state.Disable(Cooldown - m_CooldownBufferTicks);
             state.OverrideMovement(true);
@@ -70,6 +68,8 @@ namespace Platformer.Character.Actions {
 
         // Refreshes the settings for this ability every interval.
         public override void Refresh(Rigidbody2D body, InputSystem input, CharacterState state, float dt) {
+            if (!m_Enabled) { return; }
+
             m_Refreshed = state.OnGround ? true : m_Refreshed;
             Timer.TickDown(ref m_DashTicks, dt);
             

@@ -21,6 +21,14 @@ namespace Platformer.Utilites {
         [SerializeField] private float m_MuteMusic;
         [SerializeField] private float m_MuteGameSounds;
 
+        // Environemnt sounds.
+        [SerializeField] private AudioClip m_GroundImpactSound;
+        public AudioClip GroundImpactSound => m_GroundImpactSound;
+        [SerializeField] private AudioClip m_GroundStepSoundA;
+        public AudioClip GroundStepSoundA => m_GroundStepSoundA;
+        [SerializeField] private AudioClip m_GroundStepSoundB;
+        public AudioClip GroundStepSoundB => m_GroundStepSoundB;
+        
         // The sound effects.
         private static AudioSource MSCSource;
         private static AudioSource AmbientSource;
@@ -63,10 +71,18 @@ namespace Platformer.Utilites {
         public static void PlaySound(AudioClip audioClip, float volume = 0.45f) {
             if (audioClip == null || SFXSources == null) { return; }
 
+            List<AudioSource> playingSFX = SFXSources.FindAll(source => source.clip == audioClip && source.isPlaying && source.time < 0.05f);
+            float spread = 0.025f;
+            if (playingSFX != null && playingSFX.Count > 1) {
+                volume /= (float)playingSFX.Count;
+                // spread += (playingSFX.Count - 1f) * 0.1f;
+            }
+             
             for (int i = 0; i < SFXSources.Count; i++) {
                 if (!SFXSources[i].isPlaying) {
                     SFXSources[i].clip = audioClip;
-                    SFXSources[i].volume = volume;
+                    SFXSources[i].volume = Mathf.Sqrt(volume);
+                    SFXSources[i].pitch = Random.Range(1f - spread, 1f + spread);
                     SFXSources[i].Play();
                     return;
                 }
