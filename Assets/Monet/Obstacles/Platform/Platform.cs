@@ -28,6 +28,8 @@ namespace Monet {
         [SerializeField, ReadOnly] private float m_PressedTicks;
         [SerializeField, ReadOnly] private bool m_OnPressedDown;
 
+        [SerializeField] private AudioClip OnPressedSound;
+
         public void Init(int length, Vector3[] path) {
             m_Origin = transform.position;
             m_Path = path;
@@ -45,7 +47,13 @@ namespace Monet {
         protected virtual void Update() {
             bool wasPressed = m_PressedDown;
             Obstacle.PressedDown(transform.position, m_CollisionContainer, ref m_PressedDown);
+
+            bool prevOnPressedDown = m_OnPressedDown;
             m_OnPressedDown = !wasPressed && m_PressedDown && m_PressedTicks == PressedBuffer ? true : m_OnPressedDown;
+
+            if (!prevOnPressedDown && m_OnPressedDown) {
+                SoundManager.PlaySound(OnPressedSound, 0.15f);
+            }
 
             Timer.UpdateTicks(ref m_PressedTicks, !m_OnPressedDown, PressedBuffer, Time.deltaTime);
             if (m_PressedTicks == 0f && m_OnPressedDown) {

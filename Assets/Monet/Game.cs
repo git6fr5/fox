@@ -153,7 +153,7 @@ namespace Monet {
                     int precision = 5;
                     for (int n = 0; n < precision; n++) {
 
-                        if (input.HoldDash) {
+                        if (input.HoldDash && !controller.OnGround) {
 
                             controller.Knockback(body, Vector2.zero, 0.5f / (float)precision);
                             yield return new WaitForSeconds(delay * 2f / (float)(precision - 1));
@@ -171,7 +171,7 @@ namespace Monet {
                     }
 
                     // Next dash.
-                    if (input.HoldDash) {
+                    if (input.HoldDash && !controller.OnGround) {
                         controller.Knockback(body, input.DashDirection.normalized * speed, duration);
                     }
                     else {

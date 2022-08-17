@@ -124,6 +124,7 @@ namespace Monet {
             GroundMap.gameObject.GetComponent<CompositeCollider2D>().geometryType = CompositeCollider2D.GeometryType.Polygons;
             GroundMap.GetComponent<TilemapCollider2D>().usedByComposite = true;
             GroundMap.gameObject.AddComponent<ShadowCaster2DTileMap>();
+            GroundMap.gameObject.AddComponent<GroundEffectManager>();
 
             GroundMap.transform.SetParent(transform);
             GroundMap.transform.localPosition = Vector3.zero;

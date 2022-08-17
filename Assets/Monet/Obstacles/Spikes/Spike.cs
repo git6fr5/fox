@@ -92,19 +92,22 @@ namespace Monet {
                 m_SpriteRenderer.color = _temp; 
                 m_SpriteRenderer.enabled = !m_SpriteRenderer.enabled;
                 yield return new WaitForSeconds(ratio * ResetDelay / (float)count);
+
             }
             m_SpriteRenderer.color = temp;
             m_SpriteRenderer.enabled = true;
+
+            if (m_RegrowEffect != null) {
+                m_RegrowEffect.Play();
+            }
+            SoundManager.PlaySound(m_RegrowSound, 0.2f);
+
             yield return new WaitForSeconds(ResetDelay * (1f - 2f * ratio));
             Regrow();
             yield return null;
         }
         
         protected void Regrow() {
-            if (m_RegrowEffect != null) {
-                m_RegrowEffect.Play();
-            }
-            SoundManager.PlaySound(m_RegrowSound);
             m_Hitbox.enabled = true;
             m_SpriteRenderer.enabled = true;
         }

@@ -687,12 +687,11 @@ MonoBehaviour:
   m_RisingFrames: 1
   m_FallingFrames: 1
   m_HurtFrames: 0
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 0}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
@@ -716,6 +715,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &52274427
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1911,12 +1914,11 @@ MonoBehaviour:
   m_RisingFrames: 0
   m_FallingFrames: 0
   m_HurtFrames: 0
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 0}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
@@ -1940,6 +1942,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &130440034
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3022,9 +3028,9 @@ MonoBehaviour:
   m_Rotation: 270
   m_Origin: {x: 0, y: 0, z: 0}
   m_ShatterEffect: {fileID: 0}
-  m_ShatterSound: {fileID: 0}
+  m_ShatterSound: {fileID: 8300000, guid: 7a419ce5a5cbe60449999042795d4d43, type: 3}
   m_RegrowEffect: {fileID: 0}
-  m_RegrowSound: {fileID: 0}
+  m_RegrowSound: {fileID: 8300000, guid: 2b5688495c4d85345b7747a5bf115088, type: 3}
 --- !u!212 &218463725
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4193,6 +4199,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 0}
   m_Speed: 4.5
 --- !u!114 &414938413
 MonoBehaviour:
@@ -4673,6 +4680,10 @@ MonoBehaviour:
   - {fileID: 341462639, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
   - {fileID: 2075192348, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
   - {fileID: -1918020307, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
+  - {fileID: -1786952134, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
+  - {fileID: -661114334, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
+  - {fileID: 333704703, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
+  - {fileID: 195646056, guid: 449f436ab10981e428e2e1701230cc6c, type: 3}
   m_SpriteRenderer: {fileID: 0}
   m_Ticks: 0
   m_CurrentFrame: 0
@@ -4681,19 +4692,18 @@ MonoBehaviour:
   m_MovementFrames: 4
   m_RisingFrames: 1
   m_FallingFrames: 1
-  m_HurtFrames: 0
-  m_AttackFrames: 0
-  m_ChargeAttackFrames: 0
+  m_HurtFrames: 1
+  m_ChargeAttackFrames: 2
+  m_AttackFrames: 2
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 8300000, guid: 8d457b92b81f8f848b621f40d12862d4, type: 3}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
   m_DashSound: {fileID: 0}
-  m_HurtSound: {fileID: 0}
-  m_DeathSound: {fileID: 0}
+  m_HurtSound: {fileID: 8300000, guid: c95e0183f7e07fd47a15c38161669d1e, type: 3}
+  m_DeathSound: {fileID: 8300000, guid: 42c42bf5bd81cf64a8a5163752ee2093, type: 3}
   m_StepEffectA: {fileID: 0}
   m_StepEffectB: {fileID: 0}
   m_JumpEffect: {fileID: 0}
@@ -4711,6 +4721,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &498183699
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5180,9 +5194,9 @@ MonoBehaviour:
   m_PathIndex: 0
   m_WaitBuffer: 2
   m_WaitTicks: 0
-  m_SpitBuffer: 1
+  m_SpitBuffer: 1.5
   m_SpitTicks: 0
-  m_SpitCount: 2
+  m_SpitCount: 3
   m_Spat: 0
 --- !u!1 &526145854
 GameObject:
@@ -6308,7 +6322,7 @@ MonoBehaviour:
   m_Power: 0
   m_Direction: {x: 0, y: 0}
   m_Targets: []
-  m_FireSound: {fileID: 0}
+  m_FireSound: {fileID: 8300000, guid: 58cac54b7abe200429a4e9e8893bb351, type: 3}
   m_OutlineColor: {r: 0, g: 0, b: 0, a: 0}
   m_SpitProjectile: {fileID: 2004634016}
 --- !u!1 &692891877
@@ -6720,9 +6734,9 @@ MonoBehaviour:
   m_Rotation: 180
   m_Origin: {x: 0, y: 0, z: 0}
   m_ShatterEffect: {fileID: 0}
-  m_ShatterSound: {fileID: 0}
+  m_ShatterSound: {fileID: 8300000, guid: 7a419ce5a5cbe60449999042795d4d43, type: 3}
   m_RegrowEffect: {fileID: 0}
-  m_RegrowSound: {fileID: 0}
+  m_RegrowSound: {fileID: 8300000, guid: 2b5688495c4d85345b7747a5bf115088, type: 3}
 --- !u!212 &707584137
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7193,12 +7207,11 @@ MonoBehaviour:
   m_RisingFrames: 0
   m_FallingFrames: 0
   m_HurtFrames: 0
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 0}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
@@ -7222,6 +7235,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &789066174
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7396,9 +7413,9 @@ MonoBehaviour:
   m_Rotation: 90
   m_Origin: {x: 0, y: 0, z: 0}
   m_ShatterEffect: {fileID: 0}
-  m_ShatterSound: {fileID: 0}
+  m_ShatterSound: {fileID: 8300000, guid: 7a419ce5a5cbe60449999042795d4d43, type: 3}
   m_RegrowEffect: {fileID: 0}
-  m_RegrowSound: {fileID: 0}
+  m_RegrowSound: {fileID: 8300000, guid: 2b5688495c4d85345b7747a5bf115088, type: 3}
 --- !u!212 &865551466
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7877,6 +7894,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 0}
   m_Speed: 5
 --- !u!114 &943492563
 MonoBehaviour:
@@ -8513,9 +8531,9 @@ MonoBehaviour:
   m_Rotation: 0
   m_Origin: {x: 0, y: 0, z: 0}
   m_ShatterEffect: {fileID: 0}
-  m_ShatterSound: {fileID: 0}
+  m_ShatterSound: {fileID: 8300000, guid: 7a419ce5a5cbe60449999042795d4d43, type: 3}
   m_RegrowEffect: {fileID: 0}
-  m_RegrowSound: {fileID: 0}
+  m_RegrowSound: {fileID: 8300000, guid: 2b5688495c4d85345b7747a5bf115088, type: 3}
 --- !u!114 &1070833968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9069,6 +9087,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 0}
   m_Crumbling: 0
   m_CrumbleBuffer: 0.75
   m_CrumbleTicks: 0
@@ -9875,12 +9894,11 @@ MonoBehaviour:
   m_RisingFrames: 1
   m_FallingFrames: 1
   m_HurtFrames: 0
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 0}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
@@ -9904,6 +9922,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &1228074352
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10351,8 +10373,10 @@ MonoBehaviour:
   m_Power: 0
   m_Direction: {x: 0, y: 0}
   m_Targets: []
-  m_FireSound: {fileID: 0}
+  m_FireSound: {fileID: 8300000, guid: 9aa92efbe0e6e0549a56e9d8af2247c4, type: 3}
   m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+  m_CatchSound: {fileID: 8300000, guid: 492d42397fdc8fd48afb8d895826641b, type: 3}
+  m_ReturnSound: {fileID: 8300000, guid: a47a37d71efad034496f56c5b0f0b25e, type: 3}
 --- !u!114 &1271503180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10373,7 +10397,7 @@ MonoBehaviour:
   m_Speed: 17.5
   m_KnockbackForce: 5
   m_ImpactShake: 0.075
-  m_ImpactSound: {fileID: 0}
+  m_ImpactSound: {fileID: 8300000, guid: a8fae06ae511e2646aeb9c0ea5bdb4d7, type: 3}
   m_OnGroundCollision: 0
   m_OnCharacterCollision: 0
   m_ReturnSpeed: 25
@@ -10455,18 +10479,17 @@ MonoBehaviour:
   m_RisingFrames: 1
   m_FallingFrames: 1
   m_HurtFrames: 1
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 1
   m_DashFrames: 4
-  m_StepSoundA: {fileID: 8300000, guid: 50777cbb3f45c004a83005919e869ffc, type: 3}
-  m_StepSoundB: {fileID: 8300000, guid: 5c3e5739d5707004d9e720926fcd0503, type: 3}
+  m_StepSound: {fileID: 8300000, guid: 50777cbb3f45c004a83005919e869ffc, type: 3}
   m_JumpSound: {fileID: 8300000, guid: de169e861e4f79046b3306ce17106db1, type: 3}
-  m_LandSound: {fileID: 8300000, guid: bee04b3378c208549983a31288481291, type: 3}
+  m_LandSound: {fileID: 8300000, guid: 1ce8cc21e5d13f1419aaed884a005654, type: 3}
   m_DoubleJumpSound: {fileID: 8300000, guid: de2a9f04b81f5e840bd7c663c756c970, type: 3}
   m_DashSound: {fileID: 8300000, guid: 4ed20f11e44b9d143a7e8b38853f347e, type: 3}
-  m_HurtSound: {fileID: 8300000, guid: 8c5eaf17b16715c43af04957b92ebd4a, type: 3}
-  m_DeathSound: {fileID: 8300000, guid: aae41f2e6a4cc7d43aad05c345d9ba7a, type: 3}
+  m_HurtSound: {fileID: 8300000, guid: cc744a2a73ebb2248853b3983efc14f7, type: 3}
+  m_DeathSound: {fileID: 8300000, guid: 932db81d51addfe4db2b633978d11004, type: 3}
   m_StepEffectA: {fileID: 0}
   m_StepEffectB: {fileID: 0}
   m_JumpEffect: {fileID: 0}
@@ -10484,6 +10507,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 1
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &1282412731
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11749,6 +11776,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 8300000, guid: 4b41c1a06b5d52f43ace317189f26695, type: 3}
 --- !u!114 &1451519434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12269,6 +12297,155 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1574628900
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1574628901}
+  - component: {fileID: 1574628903}
+  - component: {fileID: 1574628902}
+  m_Layer: 0
+  m_Name: Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1574628901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574628900}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2004634014}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1574628902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574628900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a95f95509d7c2f47ae30c0e0cd569c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Width: 0.3125
+  m_FadeInterval: 0.1875
+  m_TrailPrecision: 0
+  m_Trail: []
+  m_CachedPosition: {x: 0, y: 0, z: 0}
+--- !u!120 &1574628903
+LineRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574628900}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 1ede5515dd1d20c459576f272bcd4340, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 0.1882353, g: 0.1882353, b: 0.1882353, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 0}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_UseWorldSpace: 1
+  m_Loop: 0
 --- !u!1 &1575487439
 GameObject:
   m_ObjectHideFlags: 0
@@ -12319,9 +12496,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.027508091
-    width: 1
-    height: 0.94374526
+    y: 0.093851134
+    width: 0.6231743
+    height: 0.5881178
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -12500,6 +12677,9 @@ MonoBehaviour:
   m_AmbientVolume: 0.25
   m_MuteMusic: 0
   m_MuteGameSounds: 0
+  m_GroundImpactSound: {fileID: 8300000, guid: 428100192acfa7d47ab6bfea31868556, type: 3}
+  m_GroundStepSoundA: {fileID: 8300000, guid: 4e0c6affbd276c34db3f91453ab44d13, type: 3}
+  m_GroundStepSoundB: {fileID: 8300000, guid: 5eac6213dce7cb84fbb2364a72ecbef0, type: 3}
 --- !u!1 &1578473550
 GameObject:
   m_ObjectHideFlags: 0
@@ -13345,12 +13525,11 @@ MonoBehaviour:
   m_RisingFrames: 1
   m_FallingFrames: 1
   m_HurtFrames: 0
-  m_AttackFrames: 0
   m_ChargeAttackFrames: 0
+  m_AttackFrames: 0
   m_DoubleJumpFrames: 0
   m_DashFrames: 0
-  m_StepSoundA: {fileID: 0}
-  m_StepSoundB: {fileID: 0}
+  m_StepSound: {fileID: 0}
   m_JumpSound: {fileID: 0}
   m_LandSound: {fileID: 0}
   m_DoubleJumpSound: {fileID: 0}
@@ -13374,6 +13553,10 @@ MonoBehaviour:
   m_AttackAnimation: []
   m_DoubleJumpAnimation: []
   m_DashAnimation: []
+  m_DoubleStepSound: 0
+  ExtStepA: 0
+  ExtStepB: 0
+  ExtStepVol: 0
 --- !u!212 &1701875337
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13479,6 +13662,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 0}
   m_Bouncing: 0
   m_JumpSpeed: 20
   m_SinkSpeed: 5
@@ -14079,7 +14263,7 @@ MonoBehaviour:
   m_LevelLoader: {fileID: 1881129251}
   m_SoundManager: {fileID: 1575487446}
   m_Grid: {fileID: 1881129250}
-  m_OpeningLevel: Level_1
+  m_OpeningLevel: Level_0
 --- !u!156049354 &1881129250
 Grid:
   m_ObjectHideFlags: 0
@@ -15491,7 +15675,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1574628901}
   m_Father: {fileID: 664172223}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15571,7 +15756,7 @@ MonoBehaviour:
   m_OnGroundCollision: 3
   m_OnCharacterCollision: 3
   m_Period: 1
-  m_Ellipse: {x: 0, y: 0.15}
+  m_Ellipse: {x: 0, y: 0.075}
   m_Ticks: 0
 --- !u!58 &2004634017
 CircleCollider2D:
@@ -15588,7 +15773,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.125
+  m_Radius: 0.1875
 --- !u!50 &2004634018
 Rigidbody2D:
   serializedVersion: 4
@@ -16245,6 +16430,7 @@ MonoBehaviour:
   m_PressedDown: 0
   m_PressedTicks: 0
   m_OnPressedDown: 0
+  OnPressedSound: {fileID: 0}
   m_SinkBuffer: 0.075
   m_SinkTicks: 0
   m_RiseSpeed: 3.25

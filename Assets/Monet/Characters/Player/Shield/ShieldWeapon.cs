@@ -17,6 +17,9 @@ namespace Monet {
 
         private ShieldProjectile m_ShieldProjectile => GetComponent<ShieldProjectile>();
         public Vector3 ReturnTarget => m_Character.transform.position + m_LocalOrigin;
+
+        [SerializeField] private AudioClip m_CatchSound;
+        [SerializeField] private AudioClip m_ReturnSound;
  
         #endregion
 
@@ -36,6 +39,7 @@ namespace Monet {
             bool finished = Timer.TickDown(ref m_Ticks, Time.fixedDeltaTime);
             if (m_Ticks <= 0f && !m_ShieldProjectile.Returning) {
                 m_ShieldProjectile.Return();
+                SoundManager.PlaySound(m_ReturnSound, 0.125f);
             }
         }
         
@@ -67,6 +71,7 @@ namespace Monet {
             transform.SetParent(m_Character.transform);
             transform.localPosition = m_LocalOrigin;
             transform.localRotation = Quaternion.identity;
+            SoundManager.PlaySound(m_CatchSound, 0.125f);
         }
 
         private void Animate(Flipbook flipbook) {

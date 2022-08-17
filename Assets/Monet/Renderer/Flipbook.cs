@@ -56,8 +56,8 @@ namespace Monet {
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
         [SerializeField] private int m_HurtFrames;
-        [SerializeField] private int m_AttackFrames;
         [SerializeField] private int m_ChargeAttackFrames;
+        [SerializeField] private int m_AttackFrames;
         [SerializeField] private int m_DoubleJumpFrames;
         [SerializeField] private int m_DashFrames;
 
@@ -112,10 +112,16 @@ namespace Monet {
         private bool Jump = false;
         private bool Land = false;
         
+        [SerializeField] private bool m_DoubleStepSound;
         private bool Step => m_CurrentAnimation == m_MovementAnimation && m_PreviousAnimation != m_MovementAnimation;
         private bool StepA => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
         private int MidStep => (int)Mathf.Ceil(m_MovementFrames / 2f);
         private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == MidStep && m_PreviousFrame != MidStep;
+        [HideInInspector] public bool ExtStepA = false;
+        [HideInInspector] public bool ExtStepB = false;
+        [HideInInspector] public float ExtStepVol = 0f;
+       
+       
         private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
         private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
 
@@ -245,16 +251,17 @@ namespace Monet {
             
             if (Step || StepA) {
                 // if (m_StepEffectA != null) { m_StepEffectA.Play(); }
-                float vA = Random.Range(0.025f, 0.05f);
+                float vA = Random.Range(0.05f, 0.075f);
                 SoundManager.PlaySound(m_StepSound, vA);
-                SoundManager.PlaySound(Game.SoundManager.GroundStepSoundA, vA);
+                ExtStepA = true;
+                ExtStepVol = vA;
             }
-            if (StepB) {
-                float vB = Random.Range(0.02f, 0.03f);
+            if (StepB && m_DoubleStepSound) {
+                float vB = Random.Range(0.03f, 0.05f);
                 // if (m_StepEffectB != null) { m_StepEffectB.Play(); }
                 SoundManager.PlaySound(m_StepSound, vB);
-                SoundManager.PlaySound(Game.SoundManager.GroundStepSoundB, vB);
-
+                ExtStepB = true;
+                ExtStepVol = vB;
             }
 
             if (DoubleJump) {
@@ -280,7 +287,6 @@ namespace Monet {
             else if (Land) {
                 if (m_LandEffect != null) { m_LandEffect.Play(); }
                 SoundManager.PlaySound(m_LandSound, 0.15f);
-                SoundManager.PlaySound(Game.SoundManager.GroundImpactSound, 0.15f);
             }
         }
 

@@ -90,6 +90,7 @@ namespace Monet {
 
         protected virtual void Release() {
             Timer.Reset(ref m_Power);
+            SoundManager.PlaySound(m_FireSound, 0.075f);
         }
 
         protected virtual void WhileActive() {

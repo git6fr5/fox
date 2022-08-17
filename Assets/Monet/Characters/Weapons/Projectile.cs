@@ -138,19 +138,19 @@ namespace Monet {
         }
 
         public void Stick() {
-            SoundManager.PlaySound(m_ImpactSound);
+            SoundManager.PlaySound(m_ImpactSound, 0.1f);
             m_Body.constraints = RigidbodyConstraints2D.FreezeAll;
             enabled = false;
         }
 
         public void Bounce() {
-            SoundManager.PlaySound(m_ImpactSound);
+            SoundManager.PlaySound(m_ImpactSound, Random.Range(0.075f, 0.1f));
             Screen.Shake(m_ImpactShake, 0.1f);
             StartFlash();
         }
 
         public void Delete() {
-            SoundManager.PlaySound(m_ImpactSound);
+            SoundManager.PlaySound(m_ImpactSound, 0.1f);
             Screen.Shake(m_ImpactShake, 0.1f);
             Destroy(gameObject);
         }
