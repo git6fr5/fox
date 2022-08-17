@@ -3,14 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
-using Monet;
+using Platformer;
+using Platformer.Character;
+using Platformer.Obstacles;
 
-namespace Monet {
+namespace Platformer.Obstacles {
 
     ///<summary>
     ///
     ///<summary>
-    public class Obstacle : MonoBehaviour {
+    public static class Obstacle {
 
         // Moves an obstacle towards a target.
         public static void Move(Transform transform, Vector3 destination, float speed, float deltaTime, List<Transform> transforms = null) {
@@ -61,7 +63,7 @@ namespace Monet {
         // When an obstacle collides with something.
         public static void OnCollision(Collision2D collision, ref List<Transform> container, bool enter) {
             // Check if there is a character.
-            Character character = collision.gameObject.GetComponent<Character>();
+            CharacterState character = collision.gameObject.GetComponent<CharacterState>();
             if (character == null) { 
                 return; 
             }
@@ -81,11 +83,11 @@ namespace Monet {
         public static void PressedDown(Vector3 center, List<Transform> container, ref bool pressedDown) {
             pressedDown = false;
             for (int i = 0; i < container.Count; i++) {
-                Character character = container[i].GetComponent<Character>();
+                CharacterState character = container[i].GetComponent<CharacterState>();
                 if (character != null) {
                     // Check the the characters is in contact and above the obstacle.
-                    Vector3 offset = (Vector3)character.CollisionFrame.offset; 
-                    Vector3 height = Vector3.down * character.CollisionFrame.radius;
+                    Vector3 offset = (Vector3)character.Collider.offset; 
+                    Vector3 height = Vector3.down * character.Collider.radius;
                     Vector3 position = container[i].position + offset + height;
                     bool standingStill = Mathf.Abs(character.Body.velocity.y) < Game.Physics.MovementPrecision;
                     if (position.y - center.y > 0f && standingStill) {

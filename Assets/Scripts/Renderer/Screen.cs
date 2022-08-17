@@ -1,3 +1,5 @@
+// TODO: Clean
+
 /* --- Libraries --- */
 using System.Collections;
 using System.Collections.Generic;
@@ -7,11 +9,13 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
 using UnityEngine.U2D;
-using Monet;
+
+using Platformer.Obstacles;
+using Platformer.Rendering;
 
 using PixelPerfectCamera = UnityEngine.Experimental.Rendering.Universal.PixelPerfectCamera;
 
-namespace Monet {
+namespace Platformer.Rendering {
 
     /// <summary>
     /// Controls basic rendering functionality.

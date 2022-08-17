@@ -3,9 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
-using Monet;
 
-namespace Monet {
+using Platformer.Utilites;
+using Platformer.Character;
+using Platformer.Physics;
+using Platformer.Rendering;
+
+namespace Platformer.Rendering {
 
     ///<summary>
     ///
@@ -16,7 +20,7 @@ namespace Monet {
         #region Variables
 
         // Components.
-        [SerializeField] private Character m_Character;
+        [SerializeField] private CharacterState m_Character;
         [SerializeField] private Sprite[] m_Sprites;
         [HideInInspector] public SpriteRenderer m_SpriteRenderer;
         
@@ -30,14 +34,6 @@ namespace Monet {
         // Cached info.
         [HideInInspector] private Sprite[] m_PreviousAnimation;
         [HideInInspector] private int m_PreviousFrame;
-        [HideInInspector] private bool m_PrevImmunity;
-        [HideInInspector] private float m_ImmuneCycleTicks;
-
-        // Attack info.
-        [HideInInspector] private bool m_Attack;
-        [HideInInspector] private bool m_PrevAttack;
-        [HideInInspector] private bool m_StartedAttack;
-        [HideInInspector] private bool m_FinishedAttack;
 
         // After Images.
         [HideInInspector] private float m_AfterImageTicks;
@@ -46,9 +42,6 @@ namespace Monet {
         [HideInInspector] private Vector2 m_CachedStretch = new Vector2(0f, 0f);
         public static float StretchFactor = 1f;
 
-        // Outline color.
-        [SerializeField] private Color m_OutlineColor;
-
         // Frames
         [Space(2), Header("Frames")]
         [SerializeField] private int m_IdleFrames = 4;
@@ -56,15 +49,14 @@ namespace Monet {
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
         [SerializeField] private int m_HurtFrames;
-        [SerializeField] private int m_ChargeAttackFrames;
-        [SerializeField] private int m_AttackFrames;
-        [SerializeField] private int m_DoubleJumpFrames;
+        [SerializeField] private int m_PredashFrames;
         [SerializeField] private int m_DashFrames;
+        [SerializeField] private int m_ChargeHopFrames;
+        [SerializeField] private int m_HopFrames;
 
         // Sounds.
         [Space(2), Header("Sounds")]
         [SerializeField] private AudioClip m_StepSound;
-        // [SerializeField] private AudioClip m_StepSoundB;
         [SerializeField] private AudioClip m_JumpSound;
         [SerializeField] private AudioClip m_LandSound;
         [SerializeField] private AudioClip m_DoubleJumpSound;
@@ -74,14 +66,13 @@ namespace Monet {
 
         // Effects.
         [Space(2), Header("Effects")]
-        [SerializeField] private VisualEffect m_StepEffectA;
-        [SerializeField] private VisualEffect m_StepEffectB;
-        [SerializeField] private VisualEffect m_JumpEffect;
-        [SerializeField] private VisualEffect m_LandEffect;
-        [SerializeField] private VisualEffect m_DoubleJumpEffect;
-        [SerializeField] private VisualEffect m_DashEffect;
         [SerializeField] private VisualEffect m_HurtEffect;
         [SerializeField] private VisualEffect m_DeathEffect;
+        [SerializeField] private VisualEffect m_StepEffect;
+        [SerializeField] private VisualEffect m_JumpEffect;
+        [SerializeField] private VisualEffect m_LandEffect;
+        [SerializeField] private VisualEffect m_DashEffect;
+        [SerializeField] private VisualEffect m_HopEffect;
 
         // Animations
         [SerializeField, ReadOnly] private Sprite[] m_IdleAnimation;
@@ -89,55 +80,43 @@ namespace Monet {
         [SerializeField, ReadOnly] private Sprite[] m_RisingAnimation;
         [SerializeField, ReadOnly] private Sprite[] m_FallingAnimation;
         [SerializeField, ReadOnly] private Sprite[] m_HurtAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_ChargeAttackAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_AttackAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_DoubleJumpAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_PredashAnimation;
         [SerializeField, ReadOnly] private Sprite[] m_DashAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_ChargeHopAnimation;
+        [SerializeField, ReadOnly] private Sprite[] m_HopAnimation;
 
         // Animation Conditions.
-        private bool Knockedback => m_Character.CharacterController.Knockedback;
-        private bool Immune => m_Character.CharacterState.Immune;
 
         // Movement Conditions.
-        private bool Moving => !ChargingAttack && m_Character.CharacterInput.MoveDirection != 0f;
-        private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.Charging;
-        private float Direction => m_Character.CharacterInput.MoveDirection;
-        private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
-        private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
-        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset && m_Character.CharacterController.UnlockedDoubleJump;
-        private bool Dashing => m_Character.CharacterController.Knockedback && m_Character.CharacterController.DashCooldownTicks != 0f && m_Character.CharacterController.UnlockedDash;
+        private bool Moving => m_Character.Input.Direction.Move != 0f;
+        private float Direction => m_Character.Input.Direction.Facing;
+        private bool Rising => !m_Character.OnGround && m_Character.Body.Rising();
+        private bool Falling => !m_Character.OnGround && !m_Character.Body.Rising();
+        private bool Predashing => m_Character.Dash.Predashing;
+        private bool Dashing => m_Character.Dash.Dashing;
+        private bool ChargingHop => m_Character.Hop.Charge != 0f;
+        private bool Hopping => !m_Character.Hop.Refreshed && Rising;
 
-        // Effect Conditions.
+        // Landing Conditions.
         private bool CacheOnGround = true;
         private bool Jump = false;
         private bool Land = false;
         
+        // Stepping Condition.
         [SerializeField] private bool m_DoubleStepSound;
-        private bool Step => m_CurrentAnimation == m_MovementAnimation && m_PreviousAnimation != m_MovementAnimation;
-        private bool StepA => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
-        private int MidStep => (int)Mathf.Ceil(m_MovementFrames / 2f);
-        private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == MidStep && m_PreviousFrame != MidStep;
-        [HideInInspector] public bool ExtStepA = false;
-        [HideInInspector] public bool ExtStepB = false;
-        [HideInInspector] public float ExtStepVol = 0f;
-       
-       
-        private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
-        private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
-
-        // Attack Conditions.
-        private bool StartedAttack => m_StartedAttack;
-        private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
+        private bool StepA => m_CurrentAnimation == m_MovementAnimation && ((m_CurrentFrame == 0 && m_PreviousFrame != 0) || (m_PreviousAnimation != m_MovementAnimation));
+        private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == (int)Mathf.Ceil(m_MovementFrames / 2f) && m_PreviousFrame != (int)Mathf.Ceil(m_MovementFrames / 2f);
+        [HideInInspector] public bool PlayGroundStepSoundA = false;
+        [HideInInspector] public bool PlayGroundStepSoundB = false;
+        [HideInInspector] public float GroundStepSoundVolume = 0f;
 
         #endregion
 
         /* --- Initialization --- */
         #region Initialization
 
-        public void OnStart() {
+        void Start() {
             OrganizeSprites();
-            // Outline.Add(m_SpriteRenderer, 0f, 16f);
-            // Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
         private int OrganizeSprites() {
@@ -155,10 +134,10 @@ namespace Monet {
             index = SliceSheet(index, m_RisingFrames, ref m_RisingAnimation);
             index = SliceSheet(index, m_FallingFrames, ref m_FallingAnimation);
             index = SliceSheet(index, m_HurtFrames, ref m_HurtAnimation);
-            index = SliceSheet(index, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);
-            index = SliceSheet(index, m_AttackFrames, ref m_AttackAnimation);
-            index = SliceSheet(index, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
+            index = SliceSheet(index, m_PredashFrames, ref m_PredashAnimation);
             index = SliceSheet(index, m_DashFrames, ref m_DashAnimation);
+            index = SliceSheet(index, m_ChargeHopFrames, ref m_ChargeHopAnimation);
+            index = SliceSheet(index, m_HopFrames, ref m_HopAnimation);
             return index;
         }
 
@@ -176,12 +155,8 @@ namespace Monet {
         /* --- Rendering --- */
         #region Rendering
 
-        public void OnUpdate(float deltaTime) {
-            Animate(deltaTime);
-        }
-
         void Update() {
-            GetFrameEffect();
+            Animate(Time.deltaTime);
         }
 
         // Animates the flipbook by setting the animation, frame, and playing any effects.
@@ -196,13 +171,10 @@ namespace Monet {
             m_SpriteRenderer.sprite = m_CurrentAnimation[m_CurrentFrame];
 
             // Check for whtether an attack any other effects have started.
-            GetAnimatedEffect();
-            GetAttack();
+            GetJumpEffect();
+            GetStepEffect();
             GetRotation();
-            GetShake();
-            GetImmune(deltaTime);
             GetScale(deltaTime);
-            GetAfterImages(deltaTime);
 
             // Cache the current animation and frame to check for changes.
             m_PreviousAnimation = m_CurrentAnimation;
@@ -211,20 +183,17 @@ namespace Monet {
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
-            if (Immune && Game.Validate<Sprite>(m_HurtAnimation)) {
-                return m_HurtAnimation;
+            if (ChargingHop && Game.Validate<Sprite>(m_ChargeHopAnimation)) {
+                return m_ChargeHopAnimation;
             }
-            else if (StartedAttack && Game.Validate<Sprite>(m_AttackAnimation)) {
-                return m_AttackAnimation;
+            else if (Hopping && Game.Validate<Sprite>(m_HopAnimation)) {
+                return m_HopAnimation;
             }
-            else if (ChargingAttack && Game.Validate<Sprite>(m_ChargeAttackAnimation)) {
-                return m_ChargeAttackAnimation;
+            else if (Predashing && Game.Validate<Sprite>(m_PredashAnimation)) {
+                return m_PredashAnimation;
             }
             else if (Dashing && Game.Validate<Sprite>(m_DashAnimation)) {
                 return m_DashAnimation;
-            }
-            else if (DoubleJumping && Game.Validate<Sprite>(m_DoubleJumpAnimation)) {
-                return m_DoubleJumpAnimation;
             }
             else if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
                 return m_RisingAnimation;
@@ -238,47 +207,10 @@ namespace Monet {
             return m_IdleAnimation;
         }
 
-        private void GetAttack() {
-            m_Attack = m_Character.CharacterController.MainWeapon != null && m_Character.CharacterController.MainWeapon.Active;
-            m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
-
-            m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);
-            m_PrevAttack = m_Attack;
-        }
-
-        private void GetAnimatedEffect() {
-
-            
-            if (Step || StepA) {
-                // if (m_StepEffectA != null) { m_StepEffectA.Play(); }
-                float vA = Random.Range(0.05f, 0.075f);
-                SoundManager.PlaySound(m_StepSound, vA);
-                ExtStepA = true;
-                ExtStepVol = vA;
-            }
-            if (StepB && m_DoubleStepSound) {
-                float vB = Random.Range(0.03f, 0.05f);
-                // if (m_StepEffectB != null) { m_StepEffectB.Play(); }
-                SoundManager.PlaySound(m_StepSound, vB);
-                ExtStepB = true;
-                ExtStepVol = vB;
-            }
-
-            if (DoubleJump) {
-                if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
-                SoundManager.PlaySound(m_DoubleJumpSound);
-            }
-            if (Dash) {
-                if (m_DashEffect != null) { m_DashEffect.Play(); }
-                SoundManager.PlaySound(m_DashSound, 0.2f);
-            }
-
-        }
-
-        private void GetFrameEffect() {
+        private void GetJumpEffect() {
             Jump = Rising && CacheOnGround;
-            Land = m_Character.CharacterController.OnGround && !CacheOnGround;
-            CacheOnGround = m_Character.CharacterController.OnGround;
+            Land = m_Character.OnGround && !CacheOnGround;
+            CacheOnGround = m_Character.OnGround;
 
             if (Jump) {
                 if (m_JumpEffect != null) { m_JumpEffect.Play(); }
@@ -290,41 +222,32 @@ namespace Monet {
             }
         }
 
-        private void GetImmune(float deltaTime) {
-            m_SpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-            if (Immune) {
-                if (!m_PrevImmunity) {
-                    if (m_Character.CharacterState.Health <= 0) {
-                        if (m_DeathEffect != null) { m_DeathEffect.Play(); }
-                        SoundManager.PlaySound(m_DeathSound);
-                    }
-                    else {
-                        if (m_HurtEffect != null) { m_HurtEffect.Play(); }
-                        SoundManager.PlaySound(m_HurtSound);
-                    }
-                    Outline.Set(m_SpriteRenderer, Color.white);
-                }
-                bool on = Timer.CycleTicks(ref m_ImmuneCycleTicks, 0.075f, deltaTime);
-                m_SpriteRenderer.color = on ? new Color(1f, 1f, 1f, 1f) : new Color(1f, 0f, 0f, 1f);
+        private void GetStepEffect() {
+            if (StepA) {
+                // if (m_StepEffectA != null) { m_StepEffectA.Play(); }
+                float vA = Random.Range(0.05f, 0.075f);
+                SoundManager.PlaySound(m_StepSound, vA);
+                PlayGroundStepSoundA = true;
+                GroundStepSoundVolume = vA;
             }
-            if (!Immune && m_PrevImmunity) {
-                Outline.Set(m_SpriteRenderer, m_OutlineColor);
+            else if (StepB && m_DoubleStepSound) {
+                // if (m_StepEffectB != null) { m_StepEffectB.Play(); }
+                float vB = Random.Range(0.03f, 0.05f);
+                SoundManager.PlaySound(m_StepSound, vB);
+                PlayGroundStepSoundB = true;
+                GroundStepSoundVolume = vB;
             }
 
-            m_PrevImmunity = Immune;
         }
 
         protected virtual void GetRotation() {
+            if (m_Character.Disabled) { return; }
+
             float currentAngle = transform.eulerAngles.y;
             float angle = Direction < 0f ? 180f : Direction > 0f ? 0f : currentAngle;
             if (transform.eulerAngles.y != angle) {
                 transform.eulerAngles = angle * Vector3.up;
             }
-        }
-
-        private void GetShake() {
-            float strength = Mathf.Max(m_Character.CharacterController.JumpCharge, m_Character.CharacterController.DashCharge);
-            Obstacle.Shake(transform, m_Character.transform.position, strength * 0.1f);
         }
 
         protected virtual void GetScale(float deltaTime) {
@@ -340,37 +263,10 @@ namespace Monet {
             m_CachedStretch = stretch;
         }
 
-        // public GameObject eyeObj;
-
-        private void GetAfterImages(float deltaTime) {
-            if (Dashing) {
-                // TODO: okay getting real lazy.
-                // eyeObj.SetActive(true);
-                bool finished = Timer.TickDown(ref m_AfterImageTicks, deltaTime);
-                if (finished || m_AfterImageTicks <= 0f) {
-                    AfterImage(m_SpriteRenderer, transform, 0.15f, 0.5f);
-                    Timer.Start(ref m_AfterImageTicks, 0.03f);
-                }
-            }
-            else {
-                // eyeObj.SetActive(false);
-            }
-        }
-
-        public static void AfterImage(SpriteRenderer spriteRenderer, Transform transform, float delay, float transparency) {
-            SpriteRenderer afterImage = new GameObject("AfterImage", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
-            afterImage.transform.position = transform.position;
-            afterImage.transform.localRotation = transform.localRotation;
-            afterImage.transform.localScale = transform.localScale;
-            afterImage.sprite = spriteRenderer.sprite;
-            afterImage.color = Color.white * transparency;
-            afterImage.sortingLayerName = spriteRenderer.sortingLayerName;
-            Destroy(afterImage.gameObject, delay);
-        }
-
         #endregion
 
     }
 
 }
+
 
