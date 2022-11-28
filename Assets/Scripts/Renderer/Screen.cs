@@ -1,3 +1,5 @@
+// TODO: Clean
+
 /* --- Libraries --- */
 using System.Collections;
 using System.Collections.Generic;
@@ -7,11 +9,14 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
 using UnityEngine.U2D;
-using Monet;
+
+using Platformer.Obstacles;
+using Platformer.Rendering;
+using Platformer.Utilites;
 
 using PixelPerfectCamera = UnityEngine.Experimental.Rendering.Universal.PixelPerfectCamera;
 
-namespace Monet {
+namespace Platformer.Rendering {
 
     /// <summary>
     /// Controls basic rendering functionality.
@@ -32,6 +37,7 @@ namespace Monet {
         // Components.
         [HideInInspector] public Camera m_MainCamera;
         [SerializeField] public PixelPerfectCamera m_PixelPerfectCamera;
+        public static int PixelSize => Instance.m_PixelPerfectCamera.assetsPPU;
 
         // Settings.
         [SerializeField, ReadOnly] private Vector3 m_Origin;
@@ -68,6 +74,10 @@ namespace Monet {
         [SerializeField] private Volume[] m_Lighting;
         [SerializeField] private VisualEffect[] m_Weather;
 
+        // Color shifts.
+        [SerializeField] private Color m_ForegroundColorShift;
+        public static Color ForegroundColorShift => Instance.m_ForegroundColorShift;
+
         #endregion
 
         // Runs once before the first frame.
@@ -97,9 +107,14 @@ namespace Monet {
             if (m_Shake) {
                 m_Shake = Shake();
             }
+
+            if (m_Recoloration < 1f) {
+                Timer.TickUp(ref m_Recoloration, 1f, Time.deltaTime / 0.25f);
+            }
+
         }
 
-        public void Shape(Vector2Int shape, int ppu = 16) {
+        public void Shape(Vector2Int shape, int ppu = 64) {
             // ppu /= 2;
             m_PixelPerfectCamera.refResolutionX = shape.x * ppu;
             m_PixelPerfectCamera.refResolutionY = shape.y * ppu;
@@ -165,6 +180,12 @@ namespace Monet {
             float strength = m_ShakeStrength * m_Curve.Evaluate(m_ElapsedTime / m_ShakeDuration);
             transform.position += (Vector3)Random.insideUnitCircle * strength;
             return true;
+        }
+
+        public static Vector2 RandomPositionWithinBounds() {
+            float x = Instance.m_ScreenSize.x;
+            float y = Instance.m_ScreenSize.y;
+            return (Vector2)Instance.transform.position + new Vector2(Random.Range(-x, x), Random.Range(-y, y)) * 1.5f;
         }
 
     }

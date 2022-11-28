@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
-using Monet;
 
-namespace Monet {
+using Platformer.Utilites;
+using Platformer.Obstacles;
+
+namespace Platformer.Obstacles {
 
     ///<summary>
     ///
@@ -19,13 +21,20 @@ namespace Monet {
         [SerializeField] private float m_ShakeStrength;
         private float Strength => m_ShakeStrength * m_CrumbleTicks / m_CrumbleBuffer;
 
+        [SerializeField] private AudioClip m_CrumblingSound;
+        [SerializeField] private AudioClip m_CrumbleSound;
+
         void LateUpdate() {
             m_Crumbling = m_PressedDown ? true : m_Crumbling;
             Obstacle.Shake(transform, m_Origin, Strength);
         }
 
         void FixedUpdate() {
-            Timer.UpdateTicks(ref m_CrumbleTicks, m_Crumbling, m_CrumbleBuffer, Time.fixedDeltaTime);
+            Timer.TriangleTickDownIf(ref m_CrumbleTicks, m_CrumbleBuffer, Time.fixedDeltaTime, m_Crumbling);
+
+            if (m_Crumbling) {
+                SoundManager.PlaySound(m_CrumblingSound, Mathf.Sqrt(m_CrumbleTicks / m_CrumbleBuffer) * 0.1f);
+            }
 
             if (m_CrumbleTicks >= m_CrumbleBuffer) {
                 Activate(false);
@@ -39,6 +48,9 @@ namespace Monet {
         private void Activate(bool activate) {
             m_Hitbox.enabled = activate;
             m_SpriteShapeRenderer.enabled = activate;
+            if (!activate && m_Crumbling) {
+                SoundManager.PlaySound(m_CrumbleSound, 0.15f);
+            }
         }
 
     }

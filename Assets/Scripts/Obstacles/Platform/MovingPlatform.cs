@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Monet;
+using Platformer.Obstacles;
 
-namespace Monet {
+namespace Platformer.Obstacles {
 
     ///<summary>
     ///
