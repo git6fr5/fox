@@ -50,10 +50,13 @@ TagManager:
   - name: Midground
     uniqueID: 4272817811
     locked: 0
+  - name: Characters
+    uniqueID: 4078383229
+    locked: 0
   - name: Foreground
     uniqueID: 618029683
     locked: 0
-  - name: Paticles
+  - name: Particles
     uniqueID: 4249906175
     locked: 0
   - name: UI

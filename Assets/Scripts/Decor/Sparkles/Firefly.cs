@@ -18,13 +18,13 @@ namespace Platformer.Decor {
     ///<summary>
     public class Firefly : SparkleController {
         
-        [SerializeField] protected float m_Speed = 0.75f; 
+        // [SerializeField] protected float m_Speed = 0.75f; 
 
-        [SerializeField] private Vector2 m_Direction; 
-        [SerializeField] private float m_ThinkDuration; 
+        // [SerializeField] private Vector2 m_Direction; 
+        // [SerializeField] private float m_ThinkDuration; 
 
-        [SerializeField] private float m_DirectionTicks = 1f;
-        [SerializeField] private Vector2 m_Target;
+        // [SerializeField] private float m_DirectionTicks = 1f;
+        // [SerializeField] private Vector2 m_Target;
 
         [SerializeField] private Vector2 m_Origin;
 

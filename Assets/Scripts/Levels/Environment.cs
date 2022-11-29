@@ -32,8 +32,15 @@ namespace Platformer.LevelLoader {
 
         /* --- Initialization --- */
         #region Initialization
+
+        void Awake() {
+            if (m_MyEvent == null) {
+                m_MyEvent = new UnityEvent();
+            }
+            m_MyEvent.AddListener(Ping);
+        }
         
-        public void Init() {
+        public void OnGameLoad() {
             FindEntities(transform, ref m_Entities);
         }
 

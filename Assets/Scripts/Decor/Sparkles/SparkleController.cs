@@ -68,6 +68,7 @@ namespace Platformer.Decor {
         [SerializeField] 
         protected float m_RotationSpeed = 5f;
 
+        // Override the activation condition and play. 
         [SerializeField] 
         private bool m_OverrideAndPlay = false;
 
@@ -79,7 +80,7 @@ namespace Platformer.Decor {
 
         void FixedUpdate() {
             // Guard clause if the activation condition is not met.
-            if (!ActivationCondition) { Reset(); return; }
+            if (!ActivationCondition && !m_OverrideAndPlay) { Reset(); return; }
 
             // Check whether to spawn a new sparkle or not.
             SparkleSpawningSystem(Time.fixedDeltaTime);

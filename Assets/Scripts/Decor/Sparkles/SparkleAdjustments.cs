@@ -68,7 +68,7 @@ namespace Platformer {
         public static void OpacityMove2D(ref List<SpriteRenderer> sparkles, Vector3 opacityDirA, float opacitySpeedA, Vector3 opacityDirB, float opacitySpeedB, float dt) {
             sparkles.RemoveAll(sparkle => sparkle == null);
             for (int i = 0; i < sparkles.Count; i++) {
-                Vector3 dx_1 = sparkle * opacitySpeedA * sparkles[i].GetComponent<SpriteRenderer>().color.a * dt;
+                Vector3 dx_1 = opacityDirA * opacitySpeedA * sparkles[i].GetComponent<SpriteRenderer>().color.a * dt;
                 Vector3 dx_0 = opacityDirB * opacitySpeedB * sparkles[i].GetComponent<SpriteRenderer>().color.a * dt;
                 sparkles[i].transform.position += (dx_0 + dx_1);
             }

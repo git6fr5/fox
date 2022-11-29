@@ -13,7 +13,6 @@ namespace Platformer.Character.Actions {
     ///<summary>
     /// An ability that shoots the player into the air.
     ///<summary>
-    [System.Serializable]
     public class DefaultAction : Action {
 
         #region Variables
@@ -56,33 +55,33 @@ namespace Platformer.Character.Actions {
         public override void Enable(CharacterState state, bool enable) {
             m_MoveEnabled = enable;
             m_FallEnabled = enable;
-            m_Enabled = enable;
+            m_ActionEnabled = enable;
         }
 
         // Enable everything.
         public void Enable() {
             m_MoveEnabled = true;
             m_FallEnabled = true;
-            m_Enabled = true;
+            m_ActionEnabled = true;
         }
 
         // Enable/disable the movement and falling seperately.
         public void Enable(bool moveEnable, bool fallEnable) {
             m_MoveEnabled = moveEnable;
             m_FallEnabled = fallEnable;
-            m_Enabled = fallEnable || moveEnable;
+            m_ActionEnabled = fallEnable || moveEnable;
         }
 
         // Disable the default action.
         public void Disable() {
             m_MoveEnabled = false;
             m_FallEnabled = false;
-            m_Enabled = false;
+            m_ActionEnabled = false;
         }
 
         // When this ability is activated.
         public override void Activate(Rigidbody2D body, InputSystem input, CharacterState state) {
-            if (!m_Enabled) { return; }
+            if (!m_ActionEnabled) { return; }
 
             OnJump(body);
             input.Action0.ClearPressBuffer();
@@ -92,7 +91,7 @@ namespace Platformer.Character.Actions {
 
         // Refreshes the settings for this ability every interval.
         public override void PhysicsUpdate(Rigidbody2D body, InputSystem input, CharacterState state, float dt) {
-            if (!m_Enabled) { return; }
+            if (!m_ActionEnabled) { return; }
             
             // Refreshing.
             m_Refreshed = state.OnGround || m_CoyoteTicks > 0f;
@@ -152,7 +151,7 @@ namespace Platformer.Character.Actions {
                 if (body.Rising()) {
 
                     // Multiply it by its weight.
-                    body.gravityScale *= state.Jump.Weight;
+                    body.gravityScale *= m_Weight;
                     Timer.Start(ref m_AntiGravityTicks, m_AntiGravityBuffer);
 
                     // If not holding jump, then rapidly slow the rising body.
@@ -163,7 +162,7 @@ namespace Platformer.Character.Actions {
                 }
                 else {
                     // If it is falling, also multiply the sink weight.
-                    body.gravityScale *= (state.Jump.Weight * state.Jump.Sink);
+                    body.gravityScale *= (m_Weight * m_Sink);
 
                     // If it is still at its apex, factor this in.
                     if (!body.Rising() && m_AntiGravityTicks > 0f) {
@@ -172,7 +171,7 @@ namespace Platformer.Character.Actions {
                     }
 
                     // If the coyote timer is still ticking, fall slower.
-                    if (state.Jump.CoyoteTicks > 0f) {
+                    if (m_CoyoteTicks > 0f) {
                         body.gravityScale *= 0.5f;
                     }
 

@@ -1,6 +1,7 @@
 // TODO: Clean
 
 /* --- Libraries --- */
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,9 @@ namespace Platformer.Rendering {
 
         /* --- Variables --- */
         #region Variables
+
+        public string ClassName => GetType().Name;
+        public string MethodName => MethodBase.GetCurrentMethod().Name;
 
         // Instance.
         public static Screen Instance;
@@ -83,17 +87,24 @@ namespace Platformer.Rendering {
         // Runs once before the first frame.
         void Awake() {
             Instance = this;
-        }
-
-        void Start() {
-            Init();
+            Game.OnGameLoad(0);
         }
 
         // Initializes this script.
-        public void Init() {
-            m_MainCamera = GetComponent<Camera>();
-            m_Origin = transform.position;
-            m_ScreenSize = new Vector2(m_PixelPerfectCamera.refResolutionX, m_PixelPerfectCamera.refResolutionY) / m_PixelPerfectCamera.assetsPPU;
+        public void OnGameLoad(int loadPhase) {
+            Game.Log(ClassName, MethodName, "Game Phase " + loadPhase.ToString());
+            if (loadPhase == 0) {
+                gameObject.SetActive(false);
+            }
+            if (loadPhase == 1) {
+                m_MainCamera = GetComponent<Camera>();
+                m_Origin = transform.position;
+
+                float x = m_PixelPerfectCamera.refResolutionX;
+                float y = m_PixelPerfectCamera.refResolutionY;
+                float ppu = m_PixelPerfectCamera.assetsPPU;
+                m_ScreenSize = new Vector2(x, y) / ppu;
+            }
         }
 
         void LateUpdate() {
@@ -106,10 +117,6 @@ namespace Platformer.Rendering {
             }
             if (m_Shake) {
                 m_Shake = Shake();
-            }
-
-            if (m_Recoloration < 1f) {
-                Timer.TickUp(ref m_Recoloration, 1f, Time.deltaTime / 0.25f);
             }
 
         }

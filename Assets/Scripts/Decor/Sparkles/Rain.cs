@@ -30,7 +30,7 @@ namespace Platformer.Decor {
 
         protected override void UpdateSparkles(float dt) {
             base.UpdateSparkles(dt);
-            SparkleAdjustments.OpacityMove(ref m_Sparkles, Vector3.down, m_FallSpeed, Vector3.right, 0.4, dt);
+            SparkleAdjustments.OpacityMove(ref m_Sparkles, Vector3.down, m_FallSpeed, Vector3.right, m_WindSpeed, dt);
         }
 
     }

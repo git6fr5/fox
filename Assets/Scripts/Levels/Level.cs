@@ -243,11 +243,9 @@ namespace Platformer.LevelLoader {
 
             if (player) {
 
-                character.OverrideFall(false);
-                character.OverrideMovement(false);
-                character.DisableAllAbilityActions();
-
-                Platformer.Rendering.Screen.Recolor(Screen.DefaultPalette);
+                // character.OverrideFall(false);
+                // character.OverrideMovement(false);
+                // cha  racter.DisableAllAbilityActions();
 
                 if (m_Loaded) {
                     m_Unloading = false;

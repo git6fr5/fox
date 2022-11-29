@@ -1,6 +1,7 @@
 // TODO: Clean
 
 /* --- Libraries --- */
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,12 +23,15 @@ namespace Platformer {
 
         #region Variables
 
+        [HideInInspector] 
+        public UnityEngine.Event OnGameStart = new UnityEngine.Event();
+
         // Singleton.
         public static Game Instance;
 
         // Ticks.
-        [SerializeField] private float m_TimeScale;
-        [SerializeField] private float m_Ticks;
+        [SerializeField, ReadOnly] private float m_TimeScale;
+        [SerializeField, ReadOnly] private float m_Ticks;
         public static float Ticks => Instance.m_Ticks;
 
         // Player.
@@ -42,7 +46,6 @@ namespace Platformer {
         [SerializeField] private LDtkLoader m_LevelLoader;
         public static LDtkLoader LevelLoader => Instance.m_LevelLoader;
 
-        // Sound manager.
         [SerializeField] private SoundManager m_SoundManager;
         public static SoundManager SoundManager => Instance.m_SoundManager;
 
@@ -68,28 +71,35 @@ namespace Platformer {
         void Awake() {
             Instance = this;
             Application.targetFrameRate = 60;
+            OnGameStart = 
         }
 
         // Runs once before the first frame.
         void Start() {
-            Level.InitializeGroundLayer(m_Grid.transform);
-            Level.InitializeWaterLayer(m_Grid.transform);
-            m_LevelLoader.Init();
-            Screen.Instance.gameObject.SetActive(false);
+            OnGameStart.Invoke();
+        }
+
+        private void LoadGamePhase1() {
+            
+            Screen.Instance.
             m_Player.gameObject.SetActive(false);
-            StartCoroutine(IELoadOpeningLevel());
+            
+        }
+
+        public static void Log(string className, string methodName, string text = "") {
+            Debug.Log("[" + className + "]" + ": " + methodName + " => " + text);
         }
 
         // Load the opening level.
-        private IEnumerator IELoadOpeningLevel() {
-            yield return 0;
+        private void LoadGamePhase2() {
+            m_SoundManager.OnStart();
+            m_Player.gameObject.SetActive(true);
+        }
+
+        private void LoadGamePhase3() {
             m_LevelLoader.SetLoadPoint(m_OpeningLevel, m_Player.transform);
             Screen.Instance.transform.position = new Vector3(m_Player.transform.position.x, m_Player.transform.position.y + 10f, Screen.Instance.transform.position.z);
             Screen.Instance.gameObject.SetActive(true);
-            yield return 0;
-            m_SoundManager.OnStart();
-            m_Player.gameObject.SetActive(true);
-            yield return null;
         }
 
         // Runs once every frame.

@@ -11,11 +11,10 @@ using Platformer.Character.Actions;
 namespace Platformer.Character.Actions {
 
     ///<summary>
-    /// An abstract class defining the functionality of a
+    /// An class defining the functionality of a
     /// character's action. 
     ///<summary>
-    [System.Serializable]
-    public abstract class Action {
+    public abstract class Action : MonoBehaviour {
 
         // Checks whether the activation conditions have been fulfilled.
         [SerializeField, ReadOnly] 
@@ -24,12 +23,12 @@ namespace Platformer.Character.Actions {
 
         // Checks whether this ability is enabled.
         [SerializeField] 
-        protected bool m_Enabled;
-        public bool Enabled => m_Enabled;
+        protected bool m_ActionEnabled;
+        public bool Enabled => m_ActionEnabled;
 
         // Enable/disable this ability.
         public virtual void Enable(CharacterState state, bool enable) {
-            m_Enabled = enable;
+            m_ActionEnabled = enable;
             m_Refreshed = enable;
         }
         
@@ -44,7 +43,7 @@ namespace Platformer.Character.Actions {
             bool canActivate = CheckState(state);
             bool doActivate = CheckInput(input);
             if (canActivate && doActivate) {
-                Activate(body, input, state);
+                Activate(body, input, state);  
             }
         }
         

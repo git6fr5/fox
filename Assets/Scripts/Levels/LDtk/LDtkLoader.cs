@@ -36,17 +36,24 @@ namespace Platformer.LevelLoader {
         #endregion
 
         // Initializes the world.
-        public void Init() {
+        public void OnStart() {
+            Game.Log(this.GetType().Name, MethodBase.GetCurrentMethod().Name);
+
+            // Initialize the layers.
+            Level.InitializeGroundLayer(Game.Grid.transform);
+            Level.InitializeWaterLayer(Game.Grid.transform);
+
             // Read and collect the data.
             m_Environment.Init();
             m_JSON = m_LDtkData.FromJson();
-            m_Levels = Collect(m_JSON, transform);
+            m_Levels = CollectLevels(m_JSON, transform);
+
             // Load the maps for all the levels.
             LoadMaps(m_Levels, m_Environment);
         }
         
         // Collects all the levels from the LDtk file.
-        private static List<Level> Collect(LdtkJson json, Transform transform) {
+        private static List<Level> CollectLevels(LdtkJson json, Transform transform) {
             List<Level> levels = new List<Level>();
             for (int i = 0; i < json.Levels.Length; i++) {
                 Level level = new GameObject(json.Levels[i].Identifier, typeof(Level)).GetComponent<Level>();
