@@ -14,26 +14,31 @@ namespace Platformer.LevelLoader {
     /// <summary>
     public class Entity : MonoBehaviour {
 
-        #region Variables
+        #region Fields.
 
         // Whether this entity should be duplicated or taken directly.       
-        [SerializeField] bool m_Singular = false;
+        [SerializeField] 
+        private bool m_Singular = false;
         public bool Singular => m_Singular;
 
         // Whether this entity can be unloaded.
-        [SerializeField] bool m_Unloadable = true;
+        [SerializeField] 
+        private bool m_Unloadable = true;
         public bool Unloadable => m_Unloadable;
 
         // The mapping from LDtk to this entity.
-        [SerializeField] private Vector2Int m_VectorID;
+        [SerializeField] 
+        private Vector2Int m_VectorID = new Vector2Int(0, 0);
         public Vector2Int VectorID => m_VectorID;
 
         // The grid space coordinates this entity should be loaded at.
-        [SerializeField, ReadOnly] private Vector2Int m_GridPosition;
+        [SerializeField, ReadOnly] 
+        private Vector2Int m_GridPosition = new Vector2Int(0, 0);
         public Vector2Int GridPosition => m_GridPosition;
 
         // The world space offset this entity should be loaded at.
-        [SerializeField] private Vector2 m_LoadOffset;
+        [SerializeField] 
+        private Vector2 m_LoadOffset = new Vector2(0f, 0f);
         public Vector2 LoadOffset => m_LoadOffset;
         
         #endregion
@@ -74,7 +79,7 @@ namespace Platformer.LevelLoader {
 
             for (int i = 0; i < entityData.Count; i++) {
                 bool preloaded = entities.Find(ent => ent.VectorID == entityData[i].VectorID && ent.GridPosition == entityData[i].GridPosition) != null;
-                Entity entity = Environment.GetEntityByVectorID(entityData[i].VectorID, entityReferences);
+                Entity entity = EntityManager.GetEntityByVectorID(entityData[i].VectorID, entityReferences);
                 if (entity != null && !preloaded) {
                     entity = entity.Duplicate(parent);
                     entities.Add(entity);

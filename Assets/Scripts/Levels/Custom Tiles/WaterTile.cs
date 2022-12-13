@@ -10,8 +10,6 @@ using UnityEngine.Tilemaps;
 using UnityEngine.Serialization;
 // Platformer.
 using Platformer.CustomTiles;
-using Platformer.Rendering;
-using Screen = Platformer.Rendering.Screen;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -26,24 +24,34 @@ namespace Platformer.CustomTiles {
     [Serializable]
     public class WaterTile : Tile {
 
-        // A list of the animations in the tileset.
-        [SerializeField] public TileAnimation[] m_Animations;
+        #region Fields.
 
-        // A reference to the Water Tile mapping for easy reference.
-        private Dictionary<int, int> NeighbourToIndex => CustomTileMappings.WaterTileMapping;
+        /* --- Constants --- */
 
         // The opacity of the water.
-        [SerializeField] private float m_Opacity = 0.75f;
+        private const float OPACITY = 0.75f;
+
+        /* --- Member Variables --- */
+
+        // A list of the animations in the tileset.
+        [SerializeField] 
+        public TileAnimation[] m_Animations;
+
+        // A reference to the Water Tile mapping for easy reference.
+        private Dictionary<int, int> m_Mapping => CustomTileMappings.WaterTileMapping;
+
+        #endregion
+
+        #region Methods.
 
         // Gets the data and sets the sprite.
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
             int neighbours = new NeighbourTileArray(position, tilemap).BinaryValue;
-            if (NeighbourToIndex != null && NeighbourToIndex.ContainsKey(neighbours)) {
-                // Animate the tile.
-                int index = NeighbourToIndex[neighbours];
-                TileAnimation animation = m_Animations[index];
-                int frame = (int)Mathf.Floor(Game.Ticks * Screen.FrameRate) % animation.Sprites.Length;
-                tileData.sprite = animation.Sprites[frame];
+
+            // If there is an index this is mapped to then animate the tile.
+            if (m_Mapping != null && m_Mapping.ContainsKey(neighbours)) {
+                int animationIndex = m_Mapping[neighbours];
+                tileData.sprite = m_Animations[animationIndex].CurrentFrame;
             }
             else if (m_Animations != null && m_Animations.Length > 0 && m_Animations[0].Sprites.Length > 0) {
                 tileData.sprite = m_Animations[0].Sprites[0];
@@ -51,8 +59,11 @@ namespace Platformer.CustomTiles {
             else {
                 tileData.sprite = null;
             }
-            tileData.color = new Color(1f, 1f, 1f, m_Opacity);
+
+            // The opacity and collision type.
+            tileData.color = new Color(1f, 1f, 1f, OPACITY);
             tileData.colliderType = Tile.ColliderType.Grid;
+
         }
 
         #if UNITY_EDITOR
@@ -65,6 +76,8 @@ namespace Platformer.CustomTiles {
             AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<WaterTile>(), path);
         }
         #endif
+
+        #endregion
 
     }
 

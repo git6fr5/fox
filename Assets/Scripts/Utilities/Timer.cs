@@ -1,111 +1,138 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Platformer.Utilites;
+using Platformer.Utilities;
 
-namespace Platformer.Utilites {
+namespace Platformer.Utilities {
 
     public class Timer {
 
-        // Rename this to triangle ticks
-        public static bool TriangleTickDownIf(ref float t, float T, float dt, bool p) {
-            bool wasnotzero = t != 0f;
-            if (p) {  t += dt; }
-            else { t -= dt; }
-            if (t >= T) { t = T; }
-            if (t < 0f) { t = 0f; }
-            bool isnowzero = t == 0f;
-            return wasnotzero && isnowzero;
+        #region Fields
+
+        // The default reset value of the timer.
+        [SerializeField] 
+        private float m_MaxValue = 0f;
+        public float MaxValue => m_MaxValue;
+
+        // The current value of the timer.
+        [SerializeField] 
+        private float m_Value = 0f;
+        public float Value => m_Value;
+
+        // Whether this timer is currently not zero.
+        public bool Active => m_Value > 0f;
+
+        #endregion
+
+        #region Methods
+
+        public Timer(float initialValue, float maxValue) {
+            m_MaxValue = maxValue;
+            m_Value = initialValue;
         }
 
         // Starts the timer to its max value.
-        public static void Start(ref float t, float T) {
-            t = T; 
+        public void Start(float startValue = -1f) {
+            m_Value = startValue == -1f ? m_MaxValue : startValue;  
         }
 
         // Starts the timer to its max value if the predicate is fulfilled.
-        public static void StartIf(ref float t, float T, bool p) {
-            if (p) {  t = T;  }
+        public void StartIf(bool predicate, float startValue = -1f) {
+            if (predicate) {  
+                m_Value = startValue == -1f ? m_MaxValue : startValue;  
+            }
         }
 
         // Stops the timer (resets it to 0).
-        public static void Stop(ref float t, float T = 0f) {
-            t = 0;
+        public void Stop() {
+            m_Value = 0;
         }
 
         // Ticks the timer down by the given interval.
-        public static bool TickDown(ref float t, float dt) {
-            bool wasnotzero = t > 0f;
+        public bool TickDown(float dt) {
+            bool wasnotzero = m_Value > 0f;
             bool isnowzero = false;
-            t -= dt;
-            if (t <= 0f) {
-                t = 0f;
+            m_Value -= dt;
+            if (m_Value <= 0f) {
+                m_Value = 0f;
                 isnowzero = true;
             }
             return wasnotzero && isnowzero;
         }
 
         // Ticks the timer down by the given interval if the predicate is fulfilled.
-        public static bool TickDownIfElseReset(ref float t, float T, float dt, bool p) {
-            bool wasnotzero = t > 0f;
+        public bool TickDownIf(float dt, bool p) {
+            bool wasnotzero = m_Value > 0f;
             bool isnowzero = false;
-            if (p) {  t -= dt; }
-            else { t = T; }
-            if (t <= 0f) {
-                t = 0f;
+            if (p) { m_Value -= dt; }
+            if (m_Value <= 0f) {
+                m_Value = 0f;
                 isnowzero = true;
             }
             return wasnotzero && isnowzero;
         }
 
         // Ticks the timer down by the given interval if the predicate is fulfilled.
-        public static bool TickDownIf(ref float t, float dt, bool p) {
-            bool wasnotzero = t > 0f;
+        public bool TickDownIfElseReset(float dt, bool p) {
+            bool wasnotzero = m_Value > 0f;
             bool isnowzero = false;
-            if (p) {  t -= dt; }
-            if (t <= 0f) {
-                t = 0f;
+            if (p) { m_Value -= dt; }
+            else { m_Value = m_MaxValue; }
+            if (m_Value <= 0f) {
+                m_Value = 0f;
                 isnowzero = true;
             }
+            return wasnotzero && isnowzero;
+        }
+
+        // Rename this to triangle ticks
+        public bool TriangleTickDownIf(float dt, bool p) {
+            bool wasnotzero = m_Value != 0f;
+            if (p) { m_Value += dt; }
+            else { m_Value -= dt; }
+            if (m_Value >= m_MaxValue) { m_Value = m_MaxValue; }
+            if (m_Value < 0f) { m_Value = 0f; }
+            bool isnowzero = m_Value == 0f;
             return wasnotzero && isnowzero;
         }
 
         // Ticks the timer up to a specified maximum by the given interval.
-        public static bool TickUp(ref float t, float T, float dt) {
-            bool wasnotmax = t < T;
+        public bool TickUp(float dt) {
+            bool wasnotmax = m_Value < m_MaxValue;
             bool isnowmax = false;
-            t += dt;
-            if (t >= T) {
-                t = T;
+            m_Value += dt;
+            if (m_Value >= m_MaxValue) {
+                m_Value = m_MaxValue;
                 isnowmax = true;
             }
             return wasnotmax && isnowmax;
         }
 
         // Ticks the timer up by the given interval  a specified maximum if the predicate is fulfilled.
-        public static bool TickUpIf(ref float t, float T, float dt, bool p) {
-            bool wasnotmax = t < T;
+        public bool TickUpIf(float dt, bool p) {
+            bool wasnotmax = m_Value < m_MaxValue;
             bool isnowmax = false;
-            if (p) { t += dt; }
-            if (t >= T) {
-                t = T;
+            if (p) { m_Value += dt; }
+            if (m_Value >= m_MaxValue) {
+                m_Value = m_MaxValue;
                 isnowmax = true;
             }
             return wasnotmax && isnowmax;
         }
 
-         public static bool Cycle(ref float ticks, float buffer, float dt) {
-            ticks += dt;
-            if (ticks > 2f * buffer) {
-                ticks -= 2f * buffer;
+        public bool Cycle(float dt) {
+            m_Value += dt;
+            if (m_Value > 2f * m_MaxValue) {
+                m_Value -= 2f * m_MaxValue;
             }
-            return ticks > buffer;
+            return m_Value > m_MaxValue;
         }
+
+        #endregion
 
     }
 
 }
-
 
 
 

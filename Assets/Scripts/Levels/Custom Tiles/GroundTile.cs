@@ -25,23 +25,30 @@ namespace Platformer.CustomTiles {
     [Serializable]
     public class GroundTile : Tile {
 
-        // A reference to the Ground Tile mapping for easy reference.
-        private Dictionary<int, int> NeighbourToIndex => CustomTileMappings.GroundTileMapping;
+        #region Fields
+
+        /* --- Member Variables --- */
 
         // A list of the sprites in the tileset.
-        [SerializeField] public Sprite[] m_TileSprites;
+        [SerializeField] 
+        public Sprite[] m_Sprites;
+
+        // A reference to the Ground Tile mapping for easy reference.
+        private Dictionary<int, int> m_Mapping => CustomTileMappings.GroundTileMapping;
+
+        #endregion
 
         // Gets the data and sets the sprite.
         public override void GetTileData(Vector3Int position, ITilemap tilemap, ref TileData tileData) {
             // Guard clause.
-            if (NeighbourToIndex == null || m_TileSprites == null || m_TileSprites.Length == 0) {
+            if (m_Mapping == null || m_Sprites == null || m_Sprites.Length == 0) {
                 return;
             }
 
             // Get the sprite based on the neighbour data.
             int neighbours = new NeighbourTileArray(position, tilemap).BinaryValue;
-            int index = NeighbourToIndex.ContainsKey(neighbours) ? NeighbourToIndex[neighbours] : 0;
-            tileData.sprite = m_TileSprites[index];
+            int index = m_Mapping.ContainsKey(neighbours) ? m_Mapping[neighbours] : 0;
+            tileData.sprite = m_Sprites[index];
             tileData.colliderType = Tile.ColliderType.Grid;
         }
 

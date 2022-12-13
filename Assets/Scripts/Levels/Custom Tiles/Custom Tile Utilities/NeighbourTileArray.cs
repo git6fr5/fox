@@ -17,13 +17,20 @@ namespace Platformer.CustomTiles {
     ///<summary>
     public class NeighbourTileArray {
 
+        #region Fields.
+
         // Stores the neigbouring tile data.
         private int[] m_BitArray;
+
+        // Stores the pattern around the tile.
         private int[,] m_PatternArray;
 
         // Converts the bit array into a base 2 ID.
         public int BinaryValue => GetBinaryValue();
 
+        #endregion
+
+        #region Methods.
 
         // Constructs the bit array.
         public NeighbourTileArray(Vector3Int position, ITilemap tilemap) {
@@ -92,6 +99,8 @@ namespace Platformer.CustomTiles {
 
             return pattern;
         }
+
+        #endregion
 
     }
 

@@ -1,15 +1,21 @@
 /* --- Libraries --- */
+// System.
 using System.Collections;
 using System.Collections.Generic;
+// Unity.
 using UnityEngine;
+// Platformer.
 using Platformer.Physics;
+
+/* --- Definitions --- */
+using Game = Platformer.GameManager;
 
 namespace Platformer.Physics {
 
     ///<summary>
     /// A set of functions that define simple collision checks.
     ///<summary>
-    public class CollisionCheck {
+    public static class CollisionCheck {
 
         // Checks whether anything within the circle is touching something on the given layer.
         public static bool Touching(Vector3 center, float radius, Vector3 direction, LayerMask layer) {

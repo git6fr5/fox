@@ -7,9 +7,11 @@ using UnityEngine;
 // LDtk.
 using LDtkUnity;
 // Platformer.
-using Platformer.CustomTiles;
 using Platformer.LevelLoader;
-using Platformer.Rendering;
+using Platformer.CustomTiles;
+
+/* --- Definitions --- */
+using Game = Platformer.GameManager;
 
 namespace Platformer.LevelLoader {
 
@@ -20,52 +22,49 @@ namespace Platformer.LevelLoader {
         
         /* --- Variables --- */
         #region Variables
+
+        [SerializeField] 
+        private string m_OpeningLevel;
+        public string OpeningLevel => m_OpeningLevel;
         
         // The given LDtk file.
-        [SerializeField] private LDtkComponentProject m_LDtkData;
-        [HideInInspector] private LdtkJson m_JSON;
+        [SerializeField] 
+        private LDtkComponentProject m_LDtkData;
 
-        // The environment this scene takes place in.
-        [SerializeField] private Environment m_Environment;
-        public Environment LevelEnvironment => m_Environment;
+        [HideInInspector] 
+        private LdtkJson m_JSON;
 
         // A reference to all the created levels.
-        [HideInInspector] private List<Level> m_Levels;
+        [HideInInspector] 
+        private List<Level> m_Levels;
         public List<Level> Levels => m_Levels;
         
         #endregion
 
         // Initializes the world.
-        public void OnStart() {
-            Game.Log(this.GetType().Name, MethodBase.GetCurrentMethod().Name);
-
-            // Initialize the layers.
-            Level.InitializeGroundLayer(Game.Grid.transform);
-            Level.InitializeWaterLayer(Game.Grid.transform);
-
+        public void OnGameLoad() {
             // Read and collect the data.
-            m_Environment.Init();
             m_JSON = m_LDtkData.FromJson();
-            m_Levels = CollectLevels(m_JSON, transform);
-
+            m_Levels = Collect(m_JSON, transform);
             // Load the maps for all the levels.
-            LoadMaps(m_Levels, m_Environment);
+            LoadMaps(m_Levels);
+            MoveToLoadPoint(m_OpeningLevel, Game.MainPlayer.transform);
         }
         
         // Collects all the levels from the LDtk file.
-        private static List<Level> CollectLevels(LdtkJson json, Transform transform) {
+        private static List<Level> Collect(LdtkJson json, Transform transform) {
             List<Level> levels = new List<Level>();
             for (int i = 0; i < json.Levels.Length; i++) {
                 Level level = new GameObject(json.Levels[i].Identifier, typeof(Level)).GetComponent<Level>();
                 level.transform.SetParent(transform);
-                level.Init(i, json);
+                level.PreLoad(i, json);
                 levels.Add(level);
             }
             return levels;
         }
 
         // Loads the map layouts for all the given levels.
-        public static void LoadMaps(List<Level> levels, Environment environment) {
+        public static void LoadMaps(List<Level> levels) {
             // Load the custom tile mappings.
             CustomTileMappings.CreateGroundTileMapping();
             CustomTileMappings.CreateWaterTileMapping();
@@ -74,35 +73,38 @@ namespace Platformer.LevelLoader {
             for (int i = 0; i < levels.Count; i++) {
                 LDtkUnity.Level ldtkLevel = levels[i].LDtkLevel;
                 List<LDtkTileData> tileData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Ground);
-                levels[i].GenerateMap(tileData, environment.Ground, environment.GroundMask, environment.Water);
+                levels[i].GenerateMap(tileData, Game.Tilemaps.Ground, Game.Tilemaps.GroundMask, Game.Tilemaps.Water);
             }
 
             // Refresh all the maps once after all the data has been loaded.
-            Level.WaterMap.RefreshAllTiles();
-            Level.GroundMap.RefreshAllTiles();
-            Level.GroundMapMask.RefreshAllTiles();
+            Game.Tilemaps.WaterMap.RefreshAllTiles();
+            Game.Tilemaps.GroundMap.RefreshAllTiles();
+            Game.Tilemaps.GroundMaskMap.RefreshAllTiles();
             // Level.GroundMap.GetComponent<ShadowCaster2DTileMap>().Generate(0.5f);
 
         }
 
-        // Sets the loadpoint based on the given level name.
-        public void SetLoadPoint(string levelName, Transform playerTransform = null) {
+        public void MoveToLoadPoint(string levelName, Transform playerTransform) {
             Level level = m_Levels.Find(level => level.LevelName == levelName);
-            if (playerTransform != null) {
-                level.MoveToLoadPoint(playerTransform);
-                playerTransform.gameObject.SetActive(true);
+            if (level.LoadPositions != null && level.LoadPositions.Count > 0) {
+                Vector3 position = Level.GridToWorldPosition(level.LoadPositions[0], level.WorldPosition);
+                playerTransform.position = position;
+                Rigidbody2D body = playerTransform.GetComponent<Rigidbody2D>();
+                if (body != null) {
+                    body.velocity = Vector2.zero;
+                }
             }
         }
 
         // Loads the entities for 
-        public static void LoadEntities(Level level, LDtkUnity.Level ldtkLevel, Environment environment) {
+        public static void LoadEntities(Level level, LDtkUnity.Level ldtkLevel) {
             if (ldtkLevel != null) {
                 // Load the data.
                 List<LDtkTileData> entityData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Entity);
                 List<LDtkTileData> controlData = LDtkReader.GetLayerData(ldtkLevel, LDtkLayer.Control);
 
                 // Load the level.
-                level.GenerateEntities(entityData, controlData, environment.Entities);
+                level.GenerateEntities(entityData, controlData, Game.Entities.All);
                 level.Settings(controlData);                
             }
         }

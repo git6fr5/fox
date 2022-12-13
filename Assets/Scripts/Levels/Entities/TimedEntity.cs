@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using UnityEngine;
 // Platformer.
 using Platformer.LevelLoader;
-using Platformer.Obstacles;
+// using Platformer.Obstacles;
+
+/* --- Definitions --- */
+using Game = Platformer.GameManager;
 
 namespace Platformer.LevelLoader {
 
@@ -20,18 +23,18 @@ namespace Platformer.LevelLoader {
         // Take the control data and turn it into a period offset.
         public override void OnControl(int index, List<LDtkTileData> controlData) {
             int offset = TimedEntity.GetOffset(index, controlData);
-            TimedSpike timedSpike = GetComponent<TimedSpike>();
-            if (timedSpike != null) {
-                timedSpike.Init(offset);
-            }
-            Spitter spitter = GetComponent<Spitter>();
-            if (spitter != null) {
-                spitter.Init(offset);
-            }
-            Spikeball spikeball = GetComponent<Spikeball>();
-            if (spikeball != null) {
-                spikeball.Init(offset);
-            }
+            // TimedSpike timedSpike = GetComponent<TimedSpike>();
+            // if (timedSpike != null) {
+            //     timedSpike.Init(offset);
+            // }
+            // Spitter spitter = GetComponent<Spitter>();
+            // if (spitter != null) {
+            //     spitter.Init(offset);
+            // }
+            // Spikeball spikeball = GetComponent<Spikeball>();
+            // if (spikeball != null) {
+            //     spikeball.Init(offset);
+            // }
 
         }
 
