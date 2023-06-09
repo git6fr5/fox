@@ -1,100 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Platformer.Utilites;
+using Monet;
 
-namespace Platformer.Utilites {
+namespace Monet {
 
     public class Timer {
 
         // Rename this to triangle ticks
-        public static bool TriangleTickDownIf(ref float t, float T, float dt, bool p) {
-            bool wasnotzero = t != 0f;
-            if (p) {  t += dt; }
-            else { t -= dt; }
-            if (t >= T) { t = T; }
-            if (t < 0f) { t = 0f; }
-            bool isnowzero = t == 0f;
+        public static bool UpdateTicks(ref float ticks, bool condition, float buffer, float dt) {
+            bool wasnotzero = ticks != 0f;
+            if (condition) {
+                ticks += dt;
+                if (ticks >= buffer) {
+                    ticks = buffer;
+                }
+            }
+            else {
+                ticks -= dt;
+                if (ticks < 0f) {
+                    ticks = 0f;
+                }
+            }
+            bool isnowzero = ticks == 0f;
             return wasnotzero && isnowzero;
         }
 
-        // Starts the timer to its max value.
-        public static void Start(ref float t, float T) {
-            t = T; 
-        }
-
-        // Starts the timer to its max value if the predicate is fulfilled.
-        public static void StartIf(ref float t, float T, bool p) {
-            if (p) {  t = T;  }
-        }
-
-        // Stops the timer (resets it to 0).
-        public static void Stop(ref float t, float T = 0f) {
-            t = 0;
-        }
-
-        // Ticks the timer down by the given interval.
-        public static bool TickDown(ref float t, float dt) {
-            bool wasnotzero = t > 0f;
-            bool isnowzero = false;
-            t -= dt;
-            if (t <= 0f) {
-                t = 0f;
-                isnowzero = true;
-            }
-            return wasnotzero && isnowzero;
-        }
-
-        // Ticks the timer down by the given interval if the predicate is fulfilled.
-        public static bool TickDownIfElseReset(ref float t, float T, float dt, bool p) {
-            bool wasnotzero = t > 0f;
-            bool isnowzero = false;
-            if (p) {  t -= dt; }
-            else { t = T; }
-            if (t <= 0f) {
-                t = 0f;
-                isnowzero = true;
-            }
-            return wasnotzero && isnowzero;
-        }
-
-        // Ticks the timer down by the given interval if the predicate is fulfilled.
-        public static bool TickDownIf(ref float t, float dt, bool p) {
-            bool wasnotzero = t > 0f;
-            bool isnowzero = false;
-            if (p) {  t -= dt; }
-            if (t <= 0f) {
-                t = 0f;
-                isnowzero = true;
-            }
-            return wasnotzero && isnowzero;
-        }
-
-        // Ticks the timer up to a specified maximum by the given interval.
-        public static bool TickUp(ref float t, float T, float dt) {
-            bool wasnotmax = t < T;
-            bool isnowmax = false;
-            t += dt;
-            if (t >= T) {
-                t = T;
-                isnowmax = true;
-            }
-            return wasnotmax && isnowmax;
-        }
-
-        // Ticks the timer up by the given interval  a specified maximum if the predicate is fulfilled.
-        public static bool TickUpIf(ref float t, float T, float dt, bool p) {
-            bool wasnotmax = t < T;
-            bool isnowmax = false;
-            if (p) { t += dt; }
-            if (t >= T) {
-                t = T;
-                isnowmax = true;
-            }
-            return wasnotmax && isnowmax;
-        }
-
-         public static bool Cycle(ref float ticks, float buffer, float dt) {
+        public static bool CycleTicks(ref float ticks, float buffer, float dt) {
             ticks += dt;
             if (ticks > 2f * buffer) {
                 ticks -= 2f * buffer;
@@ -102,10 +34,82 @@ namespace Platformer.Utilites {
             return ticks > buffer;
         }
 
+        // Rename this to buffer ticks
+        public static bool CountdownTicks(ref float ticks, bool condition, float buffer, float dt) {
+            bool wasnotzero = ticks != 0f;
+            if (condition) {
+                ticks = buffer;
+            }
+            else {
+                ticks -= dt;
+                if (ticks < 0f) {
+                    ticks = 0f;
+                }
+            }
+            bool isnowzero = ticks == 0f;
+            return wasnotzero && isnowzero;
+        }
+
+        public static void Start(ref float ticks, float buffer) {
+            ticks = buffer; 
+        }
+
+        public static void StartIf(ref float ticks, float buffer, bool predicate) {
+            if (predicate) { 
+                ticks = buffer; 
+            }
+        }
+
+        public static bool TickDown(ref float ticks, float dt) {
+            bool wasnotzero = ticks > 0f;
+            ticks -= dt;
+            bool isnowzero = ticks <= 0f;
+            if (isnowzero) {
+                ticks = 0f;
+            }
+            return wasnotzero && isnowzero;
+        }
+
+        public static bool TickDownIf(ref float ticks, float dt, bool predicate) {
+            bool wasnotzero = ticks > 0f;
+            if (predicate) { 
+                ticks -= dt;
+            }
+            if (ticks < 0f) {
+                ticks = 0f;
+            }
+            bool isnowzero = ticks <= 0f;
+            return wasnotzero && isnowzero;
+        }
+
+        public static bool TickUp(ref float ticks, float max, float dt) {
+            bool wasnotmax = ticks < max;
+            ticks += dt;
+            bool isnowmax = ticks >= max;
+            if (ticks >= max) {
+                ticks = max;
+            }
+            return wasnotmax && isnowmax;
+        }
+
+        public static bool TickUpIf(ref float ticks, float max, float dt, bool predicate) {
+            bool wasnotmax = ticks < max;
+            if (predicate) {
+                ticks += dt;
+            }
+            if (ticks > max) {
+                ticks = max;
+            }
+            bool isnowmax = ticks >= max;
+            return wasnotmax && isnowmax;
+        }
+
+        public static void Reset(ref float ticks, float value = 0f) {
+            ticks = value;
+        }
+
     }
 
 }
-
-
 
 

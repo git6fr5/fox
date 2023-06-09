@@ -1,22 +1,14 @@
-// TODO: Clean
 /* --- Libraries --- */
-// System.
 using System.Collections;
 using System.Collections.Generic;
-// Unity.
 using UnityEngine;
 using UnityEngine.VFX;
-// Platformer.
-using Platformer.Decor;
-using Platformer.Utilites;
-using Platformer.Character;
-using Platformer.Physics;
-using Platformer.Rendering;
+using Monet;
 
-namespace Platformer.Rendering {
+namespace Monet {
 
     ///<summary>
-    /// Animates the character.
+    ///
     ///<summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class Flipbook : MonoBehaviour {
@@ -24,7 +16,7 @@ namespace Platformer.Rendering {
         #region Variables
 
         // Components.
-        [SerializeField] private CharacterState m_Character;
+        [SerializeField] private Character m_Character;
         [SerializeField] private Sprite[] m_Sprites;
         [HideInInspector] public SpriteRenderer m_SpriteRenderer;
         
@@ -38,6 +30,14 @@ namespace Platformer.Rendering {
         // Cached info.
         [HideInInspector] private Sprite[] m_PreviousAnimation;
         [HideInInspector] private int m_PreviousFrame;
+        [HideInInspector] private bool m_PrevImmunity;
+        [HideInInspector] private float m_ImmuneCycleTicks;
+
+        // Attack info.
+        [HideInInspector] private bool m_Attack;
+        [HideInInspector] private bool m_PrevAttack;
+        [HideInInspector] private bool m_StartedAttack;
+        [HideInInspector] private bool m_FinishedAttack;
 
         // After Images.
         [HideInInspector] private float m_AfterImageTicks;
@@ -46,6 +46,9 @@ namespace Platformer.Rendering {
         [HideInInspector] private Vector2 m_CachedStretch = new Vector2(0f, 0f);
         public static float StretchFactor = 1f;
 
+        // Outline color.
+        [SerializeField] private Color m_OutlineColor;
+
         // Frames
         [Space(2), Header("Frames")]
         [SerializeField] private int m_IdleFrames = 4;
@@ -53,106 +56,80 @@ namespace Platformer.Rendering {
         [SerializeField] private int m_RisingFrames;
         [SerializeField] private int m_FallingFrames;
         [SerializeField] private int m_HurtFrames;
-        [SerializeField] private int m_PredashFrames;
+        [SerializeField] private int m_AttackFrames;
+        [SerializeField] private int m_ChargeAttackFrames;
+        [SerializeField] private int m_DoubleJumpFrames;
         [SerializeField] private int m_DashFrames;
-        [SerializeField] private int m_ChargeHopFrames;
-        [SerializeField] private int m_HopFrames;
-        [SerializeField] private int m_ShadowDashFrames;
-        [SerializeField] private int m_ShadowLockFrames;
-        [SerializeField] private int m_FlyFrames;
-        [SerializeField] private int m_WallClimbFrames;
-        [SerializeField] private int m_WallJumpFrames;
 
         // Sounds.
         [Space(2), Header("Sounds")]
-        [SerializeField] private AudioClip m_StepSound;
+        [SerializeField] private AudioClip m_StepSoundA;
+        [SerializeField] private AudioClip m_StepSoundB;
         [SerializeField] private AudioClip m_JumpSound;
         [SerializeField] private AudioClip m_LandSound;
+        [SerializeField] private AudioClip m_DoubleJumpSound;
+        [SerializeField] private AudioClip m_DashSound;
         [SerializeField] private AudioClip m_HurtSound;
         [SerializeField] private AudioClip m_DeathSound;
-        [SerializeField] private AudioClip m_DashSound;
-        [SerializeField] private AudioClip m_HopSound;
-        [SerializeField] private AudioClip m_ShadowDashSound;
-        [SerializeField] private AudioClip m_ShadowLockSound;
-        [SerializeField] private AudioClip m_ClimbStepSound;
-        [SerializeField] private AudioClip m_WallJumpSound;
 
         // Effects.
         [Space(2), Header("Effects")]
-        [SerializeField] private Dust m_StepDust;
-        [SerializeField] private Dust m_JumpDust;
-        [SerializeField] private Dust m_LandDust;
-        [SerializeField] private SparkleController m_DashSparkle;
-        [SerializeField] private SparkleController m_ChargeHopSparkle;
-        [SerializeField] private SparkleController m_HopSparkle;
+        [SerializeField] private VisualEffect m_StepEffectA;
+        [SerializeField] private VisualEffect m_StepEffectB;
+        [SerializeField] private VisualEffect m_JumpEffect;
+        [SerializeField] private VisualEffect m_LandEffect;
+        [SerializeField] private VisualEffect m_DoubleJumpEffect;
+        [SerializeField] private VisualEffect m_DashEffect;
+        [SerializeField] private VisualEffect m_HurtEffect;
+        [SerializeField] private VisualEffect m_DeathEffect;
 
         // Animations
-        [SerializeField, ReadOnly] private Sprite[] m_IdleAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_MovementAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_RisingAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_FallingAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_HurtAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_PredashAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_DashAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_ChargeHopAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_HopAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_ShadowDashAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_ShadowLockedAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_FlyAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_WallClimbAnimation;
-        [SerializeField, ReadOnly] private Sprite[] m_WallJumpAnimation;
+        [HideInInspector] private Sprite[] m_IdleAnimation;
+        [HideInInspector] private Sprite[] m_MovementAnimation;
+        [HideInInspector] private Sprite[] m_RisingAnimation;
+        [HideInInspector] private Sprite[] m_FallingAnimation;
+        [HideInInspector] private Sprite[] m_HurtAnimation;
+        [HideInInspector] private Sprite[] m_ChargeAttackAnimation;
+        [HideInInspector] private Sprite[] m_AttackAnimation;
+        [HideInInspector] private Sprite[] m_DoubleJumpAnimation;
+        [HideInInspector] private Sprite[] m_DashAnimation;
 
         // Animation Conditions.
+        private bool Knockedback => m_Character.CharacterController.Knockedback;
+        private bool Immune => m_Character.CharacterState.Immune;
 
         // Movement Conditions.
-        private bool Moving => m_Character.Input.Direction.Move != 0f;
-        private float Direction => m_Character.Input.Direction.Facing;
-        private bool Rising => !m_Character.OnGround && m_Character.Body.Rising();
-        private bool Falling => !m_Character.OnGround && !m_Character.Body.Rising();
-        private bool Predashing => (m_Character.Dash.Enabled && m_Character.Dash.Predashing) || (m_Character.Shadow.Enabled && m_Character.Shadow.Predashing);
-        private bool Dashing => m_Character.Dash.Enabled && m_Character.Dash.Dashing;
-        private bool ChargingHop => m_Character.Hop.Enabled && m_Character.Hop.Charge != 0f;
-        private bool Hopping => m_Character.Hop.Enabled && !m_Character.Hop.Refreshed && Rising;
-        
-        private bool ShadowDashing => m_Character.Shadow.Enabled && m_Character.Shadow.Dashing;
-        private bool ShadowLocked => m_Character.Shadow.Enabled && m_Character.Shadow.Locked;
+        private bool Moving => !ChargingAttack && m_Character.CharacterInput.MoveDirection != 0f;
+        private bool Attacking => m_Character.CharacterController.MainWeapon != null && !m_Character.CharacterController.MainWeapon.Charging;
+        private float Direction => m_Character.CharacterInput.MoveDirection;
+        private bool Rising => !m_Character.CharacterController.OnGround && m_Character.CharacterController.Rising;
+        private bool Falling => !m_Character.CharacterController.OnGround && !m_Character.CharacterController.Rising;
+        private bool DoubleJumping => m_Character.CharacterController.Rising && !m_Character.CharacterController.DoubleJumpReset && m_Character.CharacterController.UnlockedDoubleJump;
+        private bool Dashing => m_Character.CharacterController.Knockedback && !m_Character.CharacterController.DashReset && m_Character.CharacterController.UnlockedDash;
 
-        private bool WallClimbing => m_Character.Sticky.Enabled && m_Character.Sticky.Climbing;
-        private bool WallJumping => m_Character.Sticky.Enabled && m_Character.Sticky.WallJumping;
-        
-        private bool Flying => m_Character.Ghost.Enabled && m_Character.MovementOverride == true;
+        // Effect Conditions.
+        private bool Step => m_CurrentAnimation == m_MovementAnimation && m_PreviousAnimation != m_MovementAnimation;
+        private bool StepA => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == 0 && m_PreviousFrame != 0;
+        private int MidStep => (int)Mathf.Ceil(m_MovementFrames / 2f);
+        private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == MidStep && m_PreviousFrame != MidStep;
+        private bool Jump => m_CurrentAnimation == m_RisingAnimation && m_PreviousAnimation != m_RisingAnimation;
+        private bool Land => m_PreviousAnimation == m_FallingAnimation && m_CurrentAnimation != m_FallingAnimation;
+        private bool DoubleJump => m_CurrentAnimation == m_DoubleJumpAnimation && m_PreviousAnimation != m_DoubleJumpAnimation;
+        private bool Dash => m_CurrentAnimation == m_DashAnimation && m_PreviousAnimation != m_DashAnimation;
 
-        // Landing Conditions.
-        private bool CacheOnGround = true;
-        private bool Jump = false;
-        private bool Land = false;
-        
-        // Stepping Condition.
-        [SerializeField] private bool m_DoubleStepSound;
-        private bool StepA => m_CurrentAnimation == m_MovementAnimation && ((m_CurrentFrame == 0 && m_PreviousFrame != 0) || (m_PreviousAnimation != m_MovementAnimation));
-        private bool StepB => m_CurrentAnimation == m_MovementAnimation && m_CurrentFrame == (int)Mathf.Ceil(m_MovementFrames / 2f) && m_PreviousFrame != (int)Mathf.Ceil(m_MovementFrames / 2f);
-        [HideInInspector] public bool PlayGroundStepSoundA = false;
-        [HideInInspector] public bool PlayGroundStepSoundB = false;
-        [HideInInspector] public float GroundStepSoundVolume = 0f;
-
-        private bool ClimbStepA => m_CurrentAnimation == m_WallClimbAnimation && ((m_CurrentFrame == 0 && m_PreviousFrame != 0) || (m_PreviousAnimation != m_WallClimbAnimation));
-        private bool ClimbStepB => m_CurrentAnimation == m_WallClimbAnimation && m_CurrentFrame == (int)Mathf.Ceil(m_WallClimbFrames / 2f) && m_PreviousFrame != (int)Mathf.Ceil(m_WallClimbFrames / 2f);
-
-        // Ability Conditions.
-        private bool Dash => m_CurrentAnimation == m_PredashAnimation && m_PreviousAnimation != m_PredashAnimation;
-        private bool Hop => m_CurrentAnimation == m_HopAnimation && m_PreviousAnimation != m_HopAnimation;
-        private bool WallJump => m_CurrentAnimation == m_WallJumpAnimation && m_PreviousAnimation != m_WallJumpAnimation;
-        
-        private bool ShadowDash = false; // m_CurrentAnimation == m_PredashAnimation && m_PreviousAnimation != m_PredashAnimation;
-        private bool ShadowLock = false; // m_CurrentAnimation == m_PredashAnimation && m_PreviousAnimation != m_PredashAnimation;
+        // Attack Conditions.
+        private bool StartedAttack => m_StartedAttack;
+        private bool ChargingAttack => m_Character.CharacterController.MainWeapon != null && m_Character.CharacterInput.Attack;
 
         #endregion
 
+        /* --- Initialization --- */
         #region Initialization
 
-        // Runs once before the first frame.
-        void Start() {
+        public void OnStart() {
             OrganizeSprites();
+            Outline.Add(m_SpriteRenderer, 0f, 16f);
+            Outline.Set(m_SpriteRenderer, m_OutlineColor);
         }
 
         private int OrganizeSprites() {
@@ -169,16 +146,10 @@ namespace Platformer.Rendering {
             index = SliceSheet(index, m_MovementFrames, ref m_MovementAnimation);
             index = SliceSheet(index, m_RisingFrames, ref m_RisingAnimation);
             index = SliceSheet(index, m_FallingFrames, ref m_FallingAnimation);
-            index = SliceSheet(index, m_HurtFrames, ref m_HurtAnimation);
-            index = SliceSheet(index, m_PredashFrames, ref m_PredashAnimation);
+            index = SliceSheet(index, m_ChargeAttackFrames, ref m_ChargeAttackAnimation);
+            index = SliceSheet(index, m_AttackFrames, ref m_AttackAnimation);
+            index = SliceSheet(index, m_DoubleJumpFrames, ref m_DoubleJumpAnimation);
             index = SliceSheet(index, m_DashFrames, ref m_DashAnimation);
-            index = SliceSheet(index, m_ChargeHopFrames, ref m_ChargeHopAnimation);
-            index = SliceSheet(index, m_HopFrames, ref m_HopAnimation);
-            index = SliceSheet(index, m_ShadowDashFrames, ref m_ShadowDashAnimation);
-            index = SliceSheet(index, m_ShadowLockFrames, ref m_ShadowLockedAnimation);
-            index = SliceSheet(index, m_FlyFrames, ref m_FlyAnimation);
-            index = SliceSheet(index, m_WallClimbFrames, ref m_WallClimbAnimation);
-            index = SliceSheet(index, m_WallJumpFrames, ref m_WallJumpAnimation);
             return index;
         }
 
@@ -193,10 +164,11 @@ namespace Platformer.Rendering {
 
         #endregion
 
+        /* --- Rendering --- */
         #region Rendering
 
-        void Update() {
-            Animate(Time.deltaTime);
+        public void OnUpdate(float deltaTime) {
+            Animate(deltaTime);
         }
 
         // Animates the flipbook by setting the animation, frame, and playing any effects.
@@ -206,18 +178,18 @@ namespace Platformer.Rendering {
 
             // Update the current animation, frame and sprite.
             m_CurrentAnimation = GetAnimation();
-
-            float frameRate = GetFrameRate();
             m_Ticks = m_PreviousAnimation == m_CurrentAnimation ? m_Ticks + deltaTime : 0f;
-            m_CurrentFrame = (int)Mathf.Floor(m_Ticks * frameRate) % m_CurrentAnimation.Length;
+            m_CurrentFrame = (int)Mathf.Floor(m_Ticks * Screen.FrameRate) % m_CurrentAnimation.Length;
             m_SpriteRenderer.sprite = m_CurrentAnimation[m_CurrentFrame];
 
             // Check for whtether an attack any other effects have started.
-            GetJumpEffect();
-            GetStepEffect();
-            GetAbilityEffect();
+            GetAttack();
+            GetEffect();
             GetRotation();
+            GetShake();
+            GetImmune(deltaTime);
             GetScale(deltaTime);
+            GetAfterImages(deltaTime);
 
             // Cache the current animation and frame to check for changes.
             m_PreviousAnimation = m_CurrentAnimation;
@@ -226,19 +198,22 @@ namespace Platformer.Rendering {
 
         // Gets the current animation info.
         public virtual Sprite[] GetAnimation() {
-            if (WallJumping && Game.Validate<Sprite>(m_WallJumpAnimation)) {
-                return m_WallJumpAnimation;
+            if (Immune && Game.Validate<Sprite>(m_HurtAnimation)) {
+                return m_HurtAnimation;
             }
-            else if (WallClimbing && Game.Validate<Sprite>(m_WallClimbAnimation)) {
-                return m_WallClimbAnimation;
+            else if (StartedAttack && Game.Validate<Sprite>(m_AttackAnimation)) {
+                return m_AttackAnimation;
             }
-            else if (Predashing && Game.Validate<Sprite>(m_PredashAnimation)) {
-                return m_PredashAnimation;
+            else if (ChargingAttack && Game.Validate<Sprite>(m_ChargeAttackAnimation)) {
+                return m_ChargeAttackAnimation;
             }
             else if (Dashing && Game.Validate<Sprite>(m_DashAnimation)) {
                 return m_DashAnimation;
             }
-            else if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
+            else if (DoubleJumping && Game.Validate<Sprite>(m_DoubleJumpAnimation)) {
+                return m_DoubleJumpAnimation;
+            }
+            if (Rising && Game.Validate<Sprite>(m_RisingAnimation)) {
                 return m_RisingAnimation;
             }
             else if (Falling && Game.Validate<Sprite>(m_FallingAnimation)) {
@@ -250,68 +225,77 @@ namespace Platformer.Rendering {
             return m_IdleAnimation;
         }
 
-        private void GetJumpEffect() {
-            Jump = Rising && CacheOnGround;
-            Land = m_Character.OnGround && !CacheOnGround;
-            CacheOnGround = m_Character.OnGround;
+        private void GetAttack() {
+            m_Attack = m_Character.CharacterController.MainWeapon != null && m_Character.CharacterController.MainWeapon.Active;
+            m_FinishedAttack = m_StartedAttack && m_CurrentFrame == m_AttackFrames - 1;
 
+            m_StartedAttack = m_Attack && !m_PrevAttack ? true : (m_FinishedAttack ? false : m_StartedAttack);
+            m_PrevAttack = m_Attack;
+        }
+
+        private void GetEffect() {
+            if (Step || StepA) {
+                if (m_StepEffectA != null) { m_StepEffectA.Play(); }
+                SoundManager.PlaySound(m_StepSoundA, 0.05f);
+            }
+            if (StepB) {
+                if (m_StepEffectB != null) { m_StepEffectB.Play(); }
+                SoundManager.PlaySound(m_StepSoundB, 0.025f);
+            }
             if (Jump) {
-                m_JumpDust.Activate();
-                m_StepDust.Activate();
+                if (m_JumpEffect != null) { m_JumpEffect.Play(); }
                 SoundManager.PlaySound(m_JumpSound, 0.2f);
             }
             else if (Land) {
-                m_LandDust.Activate();
-                m_StepDust.Activate();
-                SoundManager.PlaySound(m_LandSound, 0.15f);
+                if (m_LandEffect != null) { m_LandEffect.Play(); }
+                SoundManager.PlaySound(m_LandSound, 0.1f);
             }
-        }
-
-        private void GetStepEffect() {
-            if (StepA) {
-                float vA = Random.Range(0.05f, 0.075f);
-                SoundManager.PlaySound(m_StepSound, vA);
-                PlayGroundStepSoundA = true;
-                GroundStepSoundVolume = vA;
-                m_StepDust.Activate();
+            if (DoubleJump) {
+                if (m_DoubleJumpEffect != null) { m_DoubleJumpEffect.Play(); }
+                SoundManager.PlaySound(m_DoubleJumpSound);
             }
-            else if (StepB && m_DoubleStepSound) {
-                float vB = Random.Range(0.03f, 0.05f);
-                SoundManager.PlaySound(m_StepSound, vB);
-                PlayGroundStepSoundB = true;
-                GroundStepSoundVolume = vB;
-                m_StepDust.Activate();
-            }
-
-            if (ClimbStepA) {
-                float vA = Random.Range(0.05f, 0.075f);
-                SoundManager.PlaySound(m_ClimbStepSound, vA);
-                PlayGroundStepSoundA = true;
-                GroundStepSoundVolume = vA;
-                m_StepDust.Activate();
-            }
-            else if (ClimbStepB && m_DoubleStepSound) {
-                float vB = Random.Range(0.03f, 0.05f);
-                SoundManager.PlaySound(m_ClimbStepSound, vB);
-                PlayGroundStepSoundB = true;
-                GroundStepSoundVolume = vB;
-                m_StepDust.Activate();
+            if (Dash) {
+                if (m_DashEffect != null) { m_DashEffect.Play(); }
+                SoundManager.PlaySound(m_DashSound);
             }
 
         }
 
-        private void GetAbilityEffect() {
+        private void GetImmune(float deltaTime) {
+            m_SpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+            if (Immune) {
+                if (!m_PrevImmunity) {
+                    if (m_Character.CharacterState.Health <= 0) {
+                        if (m_DeathEffect != null) { m_DeathEffect.Play(); }
+                        SoundManager.PlaySound(m_DeathSound);
+                    }
+                    else {
+                        if (m_HurtEffect != null) { m_HurtEffect.Play(); }
+                        SoundManager.PlaySound(m_HurtSound);
+                    }
+                    Outline.Set(m_SpriteRenderer, Color.white);
+                }
+                bool on = Timer.CycleTicks(ref m_ImmuneCycleTicks, 0.075f, deltaTime);
+                m_SpriteRenderer.color = on ? new Color(1f, 1f, 1f, 1f) : new Color(1f, 0f, 0f, 1f);
+            }
+            if (!Immune && m_PrevImmunity) {
+                Outline.Set(m_SpriteRenderer, m_OutlineColor);
+            }
 
+            m_PrevImmunity = Immune;
         }
 
         protected virtual void GetRotation() {
-            if (m_Character.Disabled) { return; }
-
             float currentAngle = transform.eulerAngles.y;
             float angle = Direction < 0f ? 180f : Direction > 0f ? 0f : currentAngle;
             if (transform.eulerAngles.y != angle) {
                 transform.eulerAngles = angle * Vector3.up;
             }
+        }
+
+        private void GetShake() {
+            float strength = Mathf.Max(m_Character.CharacterController.JumpCharge, m_Character.CharacterController.DashCharge);
+            Obstacle.Shake(transform, m_Character.transform.position, strength * 0.1f);
         }
 
         protected virtual void GetScale(float deltaTime) {
@@ -327,9 +311,32 @@ namespace Platformer.Rendering {
             m_CachedStretch = stretch;
         }
 
-        private float GetFrameRate() {
-            float frameRate = Screen.FrameRate;
-            return frameRate;
+        // public GameObject eyeObj;
+
+        private void GetAfterImages(float deltaTime) {
+            if (Dashing) {
+                // TODO: okay getting real lazy.
+                // eyeObj.SetActive(true);
+                bool finished = Timer.TickDown(ref m_AfterImageTicks, deltaTime);
+                if (finished || m_AfterImageTicks <= 0f) {
+                    AfterImage(m_SpriteRenderer, transform, 0.15f, 0.5f);
+                    Timer.Start(ref m_AfterImageTicks, 0.03f);
+                }
+            }
+            else {
+                // eyeObj.SetActive(false);
+            }
+        }
+
+        public static void AfterImage(SpriteRenderer spriteRenderer, Transform transform, float delay, float transparency) {
+            SpriteRenderer afterImage = new GameObject("AfterImage", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            afterImage.transform.position = transform.position;
+            afterImage.transform.localRotation = transform.localRotation;
+            afterImage.transform.localScale = transform.localScale;
+            afterImage.sprite = spriteRenderer.sprite;
+            afterImage.color = Color.white * transparency;
+            afterImage.sortingLayerName = spriteRenderer.sortingLayerName;
+            Destroy(afterImage.gameObject, delay);
         }
 
         #endregion
@@ -337,5 +344,4 @@ namespace Platformer.Rendering {
     }
 
 }
-
 

@@ -3,13 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
+using Monet;
 
-using Platformer.Utilites;
-using Platformer.Obstacles;
-using Platformer.Rendering;
-using Screen = Platformer.Rendering.Screen;
-
-namespace Platformer.Obstacles {
+namespace Monet {
 
     ///<summary>
     ///
@@ -32,44 +28,37 @@ namespace Platformer.Obstacles {
         [SerializeField, ReadOnly] private float m_PressedTicks;
         [SerializeField, ReadOnly] private bool m_OnPressedDown;
 
-        [SerializeField] private AudioClip OnPressedSound;
-
-        public virtual void Init(int length, Vector3[] path) {
+        public void Init(int length, Vector3[] path) {
             m_Origin = transform.position;
             m_Path = path;
             m_SpriteShapeController = GetComponent<SpriteShapeController>();
             m_SpriteShapeRenderer = GetComponent<SpriteShapeRenderer>();
-
-            m_SpriteShapeRenderer.sortingLayerName = Screen.RenderingLayers.Foreground;
-            m_SpriteShapeRenderer.color = Screen.ForegroundColorShift;
-
             m_Hitbox = GetComponent<BoxCollider2D>();
             Obstacle.EditSpline(m_SpriteShapeController.spline, length);
-            Obstacle.EditHitbox(m_Hitbox, length, 5f /16f);
+            Obstacle.EditHitbox(m_Hitbox, length, 1f /16f);
             gameObject.layer = LayerMask.NameToLayer("Platform");
+            
+            Outline.Add(m_SpriteShapeRenderer, 0f, 16f);
+            Outline.Set(m_SpriteShapeRenderer, Color.black);
         }
 
         protected virtual void Update() {
-            bool waspressed = m_PressedDown;
+            bool wasPressed = m_PressedDown;
             Obstacle.PressedDown(transform.position, m_CollisionContainer, ref m_PressedDown);
-            bool isnowpressed = m_PressedDown;
+            m_OnPressedDown = !wasPressed && m_PressedDown && m_PressedTicks == PressedBuffer ? true : m_OnPressedDown;
 
-            bool prevOnPressedDown = m_OnPressedDown;
-            m_OnPressedDown = !waspressed && isnowpressed && m_PressedTicks == PressedBuffer ? true : m_OnPressedDown;
-
-            if (!waspressed && isnowpressed) {
-                SoundManager.PlaySound(OnPressedSound, 0.15f);
+            Timer.UpdateTicks(ref m_PressedTicks, !m_OnPressedDown, PressedBuffer, Time.deltaTime);
+            if (m_PressedTicks == 0f && m_OnPressedDown) {
+                Obstacle.Shake(transform, m_Origin, 0f);
+                Outline.Set(m_SpriteShapeRenderer, Color.black);
+                m_OnPressedDown = false;
             }
 
-            Timer.TriangleTickDownIf(ref m_PressedTicks, PressedBuffer, Time.deltaTime, !m_OnPressedDown);
-            // if (m_PressedTicks == 0f && m_OnPressedDown) {
-            //     Obstacle.Shake(transform, m_Origin, 0f);
-            //     m_OnPressedDown = false;
-            // }
-
-            // if (m_OnPressedDown) {
-            //     Obstacle.Shake(transform, m_Origin, 0.05f);
-            // }
+            Vector3 origin = m_Origin + 1f/16f * Vector3.down;
+            if (m_OnPressedDown) {
+                Obstacle.Shake(transform, origin, 0.05f);
+                Outline.Set(m_SpriteShapeRenderer, Color.white);
+            }
 
         }
 

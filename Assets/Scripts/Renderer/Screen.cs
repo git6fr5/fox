@@ -1,5 +1,3 @@
-// TODO: Clean
-
 /* --- Libraries --- */
 using System.Collections;
 using System.Collections.Generic;
@@ -9,14 +7,11 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.VFX;
 using UnityEngine.U2D;
-
-using Platformer.Obstacles;
-using Platformer.Rendering;
-using Platformer.Utilites;
+using Monet;
 
 using PixelPerfectCamera = UnityEngine.Experimental.Rendering.Universal.PixelPerfectCamera;
 
-namespace Platformer.Rendering {
+namespace Monet {
 
     /// <summary>
     /// Controls basic rendering functionality.
@@ -37,7 +32,6 @@ namespace Platformer.Rendering {
         // Components.
         [HideInInspector] public Camera m_MainCamera;
         [SerializeField] public PixelPerfectCamera m_PixelPerfectCamera;
-        public static int PixelSize => Instance.m_PixelPerfectCamera.assetsPPU;
 
         // Settings.
         [SerializeField, ReadOnly] private Vector3 m_Origin;
@@ -74,10 +68,6 @@ namespace Platformer.Rendering {
         [SerializeField] private Volume[] m_Lighting;
         [SerializeField] private VisualEffect[] m_Weather;
 
-        // Color shifts.
-        [SerializeField] private Color m_ForegroundColorShift;
-        public static Color ForegroundColorShift => Instance.m_ForegroundColorShift;
-
         #endregion
 
         // Runs once before the first frame.
@@ -107,14 +97,9 @@ namespace Platformer.Rendering {
             if (m_Shake) {
                 m_Shake = Shake();
             }
-
-            if (m_Recoloration < 1f) {
-                Timer.TickUp(ref m_Recoloration, 1f, Time.deltaTime / 0.25f);
-            }
-
         }
 
-        public void Shape(Vector2Int shape, int ppu = 64) {
+        public void Shape(Vector2Int shape, int ppu = 16) {
             // ppu /= 2;
             m_PixelPerfectCamera.refResolutionX = shape.x * ppu;
             m_PixelPerfectCamera.refResolutionY = shape.y * ppu;
@@ -180,12 +165,6 @@ namespace Platformer.Rendering {
             float strength = m_ShakeStrength * m_Curve.Evaluate(m_ElapsedTime / m_ShakeDuration);
             transform.position += (Vector3)Random.insideUnitCircle * strength;
             return true;
-        }
-
-        public static Vector2 RandomPositionWithinBounds() {
-            float x = Instance.m_ScreenSize.x;
-            float y = Instance.m_ScreenSize.y;
-            return (Vector2)Instance.transform.position + new Vector2(Random.Range(-x, x), Random.Range(-y, y)) * 1.5f;
         }
 
     }

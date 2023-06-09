@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Platformer.Rendering;
+using Monet;
 
-namespace Platformer.Rendering {
+namespace Monet {
 
     ///<summary>
     /// Stores a set of rendering layers for easy reference.

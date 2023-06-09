@@ -2241,8 +2241,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Entities_72: 1173565057
       Entities_67: -137854150
+      Entities_79: 2064363932
       Entities_12: -506744744
       Entities_54: 1974569346
       Entities_37: 2059868268
@@ -2257,11 +2257,11 @@ TextureImporter:
       Entities_52: -129087095
       Entities_95: 1040358312
       Entities_89: 490483178
-      Entities_36: 1882169099
       Entities_20: -2043518867
       Entities_71: -111825213
-      Entities_59: -1739179747
       Entities_58: -1945315509
+      Entities_59: -1739179747
+      Entities_36: 1882169099
       Entities_81: 1657110096
       Entities_38: -1871759728
       Entities_3: 1712415672
@@ -2280,8 +2280,8 @@ TextureImporter:
       Entities_60: -474082148
       Entities_34: -375850575
       Entities_93: -1958820332
-      Entities_21: -342744127
       Entities_48: 410811004
+      Entities_21: -342744127
       Entities_76: 1809902814
       Entities_9: -846771126
       Entities_13: -1064620944
@@ -2336,8 +2336,8 @@ TextureImporter:
       Entities_17: 453919413
       Entities_2: 1995994670
       Entities_44: 1158920240
-      Entities_79: 2064363932
       Entities_33: -206772809
+      Entities_72: 1173565057
       Entities_10: 1279836339
       Entities_86: 631655509
   spritePackingTag: 

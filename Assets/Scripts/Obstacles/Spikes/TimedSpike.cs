@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Monet;
 
-using Platformer.Character;
-using Platformer.Obstacles;
-using Platformer.Utilites;
-
-namespace Platformer.Obstacles {
+namespace Monet {
 
     ///<summary>
     ///
@@ -45,7 +42,7 @@ namespace Platformer.Obstacles {
             m_Up = finished ? !m_Up : m_Up;
             Timer.StartIf(ref m_WaitTicks, WaitDuration, finished);
             
-            Timer.TriangleTickDownIf(ref m_Ticks, Period / 4f, Time.fixedDeltaTime, m_Up);
+            Timer.UpdateTicks(ref m_Ticks, m_Up, Period / 4f, Time.fixedDeltaTime);
             Obstacle.Cycle(transform, m_Ticks, Period, OffsetOrigin, Ellipse);
         }
 

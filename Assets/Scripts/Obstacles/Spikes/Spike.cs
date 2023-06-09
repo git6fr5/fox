@@ -3,13 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using Monet;
 
-using Platformer.Character;
-using Platformer.Obstacles;
-using Platformer.Utilites;
-using Platformer.Decor;
-
-namespace Platformer.Obstacles {
+namespace Monet {
 
     ///<summary>
     ///
@@ -56,11 +52,10 @@ namespace Platformer.Obstacles {
         }
 
         private void CharacterCollision(Collider2D collider) {
-            CharacterState character = collider.GetComponent<CharacterState>();
+            Character character = collider.GetComponent<Character>();
             if (character != null && character.IsPlayer) {
                 Vector3 knockbackDirection = GetKnockbackDirection(m_Rotation);
-                bool didDamage = true; // character.Damage(1, knockbackDirection, m_KnockbackForce);
-                character.Reset();
+                bool didDamage = character.Damage(1, knockbackDirection, m_KnockbackForce);
                 if (didDamage) {
                     Shatter();
                 }
@@ -77,7 +72,7 @@ namespace Platformer.Obstacles {
             if (m_ShatterEffect != null) {
                 m_ShatterEffect.Play();
             }
-            SoundManager.PlaySound(m_ShatterSound, 0.15f);
+            SoundManager.PlaySound(m_ShatterSound);
             m_Hitbox.enabled = false;
             m_SpriteRenderer.enabled = false;
             StartCoroutine(IEReset());
@@ -97,22 +92,19 @@ namespace Platformer.Obstacles {
                 m_SpriteRenderer.color = _temp; 
                 m_SpriteRenderer.enabled = !m_SpriteRenderer.enabled;
                 yield return new WaitForSeconds(ratio * ResetDelay / (float)count);
-
             }
             m_SpriteRenderer.color = temp;
             m_SpriteRenderer.enabled = true;
-
-            if (m_RegrowEffect != null) {
-                m_RegrowEffect.Play();
-            }
-            SoundManager.PlaySound(m_RegrowSound, 0.15f);
-
             yield return new WaitForSeconds(ResetDelay * (1f - 2f * ratio));
             Regrow();
             yield return null;
         }
         
         protected void Regrow() {
+            if (m_RegrowEffect != null) {
+                m_RegrowEffect.Play();
+            }
+            SoundManager.PlaySound(m_RegrowSound);
             m_Hitbox.enabled = true;
             m_SpriteRenderer.enabled = true;
         }

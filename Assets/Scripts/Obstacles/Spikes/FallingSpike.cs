@@ -2,14 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using Platformer;
-using Platformer.Physics;
-using Platformer.Character;
-using Platformer.Obstacles;
-using Platformer.Utilites;
-
-using Platformer.Decor;
+using Monet;
 
 namespace Monet {
 
@@ -33,7 +26,6 @@ namespace Monet {
         [SerializeField] private float m_ShakeStrength;
         private float Strength => m_ShakeStrength * m_CrumbleTicks / m_CrumbleBuffer;
 
-        public SparkleController m_Sparkle;
         
         #endregion
         
@@ -43,8 +35,6 @@ namespace Monet {
 
         private void Update() {
             if (!Falling) {
-                m_Sparkle.Reset();
-                m_Sparkle.enabled = false;
                 CheckFall();
                 Obstacle.Shake(transform, m_Origin, Strength);
             }
@@ -75,8 +65,8 @@ namespace Monet {
         }
 
         private void CheckFall() {
-            CharacterState character = CollisionCheck.LineOfSight<CharacterState>(transform.position, Vector3.down, Game.Physics.CollisionLayers.Opaque);
-            m_Crumbling = character != null ? true : m_Crumbling;
+            Player player = PhysicsCheck.LineOfSight<Player>(transform.position, Vector3.down, Game.Physics.CollisionLayers.Opaque);
+            m_Crumbling = player != null ? true : m_Crumbling;
         }
 
         private void Freeze() {
@@ -85,7 +75,6 @@ namespace Monet {
         }
 
         private void Fall() {
-            m_Sparkle.enabled = true;
             transform.position = m_Origin + Game.Physics.CollisionPrecision * Direction;
             m_Body.constraints = RigidbodyConstraints2D.FreezeRotation;
             m_Body.gravityScale = FallGravity;
